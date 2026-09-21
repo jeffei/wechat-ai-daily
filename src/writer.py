@@ -1,46 +1,59 @@
 import os
 import requests
 import json
+import re
 from datetime import datetime
+from typing import Tuple, List
 
 SYSTEM_PROMPT = """
 你是一位顶尖的 AI 科技自媒体资深主编，专注于全球大模型（LLM）与人工智能领域的重大科技新闻报道。
 你的受众是关注 AI 发展脉搏的技术人、创业者与数码科技爱好者。
 
-【文风与定位】：
-- 聚焦“硬核科技新闻”：有热点、有深度、有商业与技术洞察。
-- 拒绝平铺直叙的翻译，提炼出：“发生了什么”、“对大模型格局有何冲击”、“普通人或开发者能用它做什么”。
-- 语言生动鲜明、排版清爽大气。
+【任务要求】：
+请根据提供的最新科技资讯素材，输出两部分内容：
+第一部分：3~4 条极具冲击力的【核心速览要点】（用于生成审核摘要长图，每条 30~50 字，提炼出最核心的发布或技术突破）。
+第二部分：一篇排版精美、使用内联 CSS 的完整微信公众号图文。
 
-【排版规范（微信公众号必须是内联 CSS）】：
-1. 严禁外部 CSS，必须全部使用行内 style 属性。
-2. 板块结构规范：
-   - 顶部科技封面图（保留提供的图片占位）。
-   - 【今日风向标】（浅灰/浅蓝圆角卡片，用 2~3 句话高度概括当期最重磅看点）。
-   - 【焦点头条 · 重磅大事件】（深度剖析 1~2 个最轰动的大模型重大新闻）。
-   - 【大厂与开源风云】（OpenAI、Google、Anthropic、DeepSeek、Meta 等最新产品、模型迭代或重大商业动作）。
-   - 【前沿落地与行业观察】（模型新功能、算力/芯片动态、投资或争议）。
-   - 【主编锐评】（1 段有独立视角的精辟总结）。
+【输出格式分隔规范（务必严格遵循）】：
+===HIGHLIGHTS===
+1. [要点1简述]
+2. [要点2简述]
+3. [要点3简述]
+===ARTICLE===
+<section style="...">
+...这里是完整的微信文章 HTML...
+</section>
+
+【微信 HTML 排版规范】：
+1. 严禁使用外部 class，所有样式必须写在行内 style 属性中。
+2. 包含模块：
+   - 顶部科技封面图（保留提供的占位符）。
+   - 【今日风向标】（浅色圆角卡片，概括最重磅看点）。
+   - 【焦点头条 · 深度解读】（深度剖析 1~2 个最轰动的大模型重大新闻）。
+   - 【大厂与开源风云】（OpenAI、Google、Anthropic、DeepSeek、Meta 等最新动态）。
+   - 【前沿落地与商业观察】。
+   - 【主编锐评】。
 3. 样式要求：
    - 正文：font-size: 15px; line-height: 1.8; color: #2d3748; letter-spacing: 0.5px;
    - 标题：font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 10px;
    - 卡片框：background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 16px; margin-bottom: 22px;
-   - 重点句子：使用加粗或淡黄色/浅蓝色背景高亮（background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;）。
-4. 直接输出以 <section> 开始、</section> 闭合的 HTML，不要任何 ```html 标记，也不要有任何客套解释。
+   - 高亮词句：background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;
 """
 
-def get_available_models(api_key: str):
-    """动态查询当前 API Key 支持的所有可用于文本生成的模型"""
+def get_available_models(api_key: str) -> List[str]:
+    """动态查询当前 API Key 授权的所有可用模型，严格过滤只保留 gemini-3 系列"""
     try:
         url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
         resp = requests.get(url, timeout=15)
         if resp.status_code == 200:
             models_data = resp.json().get("models", [])
-            valid_models = [
-                m["name"].replace("models/", "")
-                for m in models_data
-                if "generateContent" in m.get("supportedGenerationMethods", [])
-            ]
+            valid_models = []
+            for m in models_data:
+                name = m.get("name", "").replace("models/", "")
+                methods = m.get("supportedGenerationMethods", [])
+                # 严格限定：只允许 gemini-3 系列，坚决剔除 2 开头、1 开头和 3.5
+                if "generateContent" in methods and name.startswith("gemini-3") and "3.5" not in name:
+                    valid_models.append(name)
             return valid_models
         else:
             print(f"⚠️ 查询可用模型列表返回: HTTP {resp.status_code} - {resp.text}")
@@ -48,18 +61,17 @@ def get_available_models(api_key: str):
         print(f"⚠️ 查询可用模型列表失败: {e}")
     return []
 
-def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-flash") -> str:
-    """调用 Google Gemini API 生成大模型科技新闻图文"""
+def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-flash") -> Tuple[str, List[str]]:
+    """调用 Google Gemini 生成微信图文与要点摘要，返回 (article_html, highlights)"""
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         raise ValueError("缺少 GEMINI_API_KEY 环境变量！")
 
     import time
     
-    # 1. 先动态获取当前 API Key 真正授权可用的所有模型
-    print("🔍 正在获取当前 API Key 授权的所有可用模型列表...")
+    print("🔍 正在动态检测当前 API Key 支持的可用模型...")
     available_models = get_available_models(api_key)
-    print(f"📋 你的 API 当前支持生成内容的可用模型一览:\n{json.dumps(available_models, ensure_ascii=False, indent=2)}")
+    print(f"📋 经严格过滤后的 Gemini 3.x 系列授权可用模型:\n{json.dumps(available_models, ensure_ascii=False, indent=2)}")
 
     today_str = datetime.now().strftime("%Y年%m月%d日")
     cover_image_url = "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&q=80"
@@ -70,13 +82,13 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-fla
 
 {news_content}
 
-请为本期《AI大模型科技观察 | {today_str}》撰写一篇极具吸引力、图文并茂的微信科技新闻推文。
-注意：请在正文最开头嵌入封面图：
+请为本期《AI大模型科技观察 | {today_str}》撰写微信科技新闻推文及海报速览要点。
+注意：在 HTML 文章最开头嵌入封面图：
 <div style="margin-bottom: 22px; text-align: center;">
     <img src="{cover_image_url}" style="width: 100%; border-radius: 10px; display: block; box-shadow: 0 4px 14px rgba(0,0,0,0.08);" alt="AI科技前沿" />
 </div>
 
-请严格遵守内联 CSS 排版规范，直接输出完整 HTML：
+请严格遵循 ===HIGHLIGHTS=== 与 ===ARTICLE=== 分隔符输出：
 """
 
     headers = {"Content-Type": "application/json"}
@@ -94,38 +106,32 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-fla
         }
     }
 
-    # 过滤掉已明确不支持的 3.5、2.0、1.5 等旧版本
-    available_models = [
-        m for m in available_models
-        if "3.5" not in m and "2.0" not in m and "1.5" not in m
-    ]
-
-    # 构建降级备选队列：3.8 始终第一，3.6 及其他可用模型紧随其后作为降级通道
+    # 严密构建降级备选队列：3.8 始终第一，3.6 始终第二，绝对不调用任何 2.x 模型
     candidate_queue = []
     
-    # 1. 首选：用户指定的 3.8 模型
+    # 1. 首选 3.8-flash
     if model_name in available_models:
         candidate_queue.append(model_name)
-    elif any("3.8" in m for m in available_models):
+    else:
         for m in available_models:
             if "3.8" in m and m not in candidate_queue:
                 candidate_queue.append(m)
-    else:
-        candidate_queue.append(model_name)
+        if model_name not in candidate_queue:
+            candidate_queue.append(model_name)
 
-    # 2. 次选降级：官方主力 3.6 模型
+    # 2. 次选 3.6-flash
     for m in available_models:
         if "3.6" in m and m not in candidate_queue:
             candidate_queue.append(m)
     if "gemini-3.6-flash" not in candidate_queue:
         candidate_queue.append("gemini-3.6-flash")
 
-    # 3. 兜底降级：把当前 API Key 授权的其他所有可用模型全加上
+    # 3. 其他所有经过过滤的 3.x 可用模型
     for m in available_models:
         if m not in candidate_queue:
             candidate_queue.append(m)
 
-    print(f"🚦 降级调用链已就绪: {' ➔ '.join(candidate_queue)}")
+    print(f"🚦 最终降级执行链（无任何 2.x 模型）: {' ➔ '.join(candidate_queue)}")
 
     last_error = None
     for m in candidate_queue:
@@ -137,15 +143,40 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-fla
                 response = requests.post(req_url, headers=headers, json=payload, timeout=75)
                 if response.status_code == 200:
                     res_data = response.json()
-                    article_html = res_data["candidates"][0]["content"]["parts"][0]["text"].strip()
+                    full_text = res_data["candidates"][0]["content"]["parts"][0]["text"].strip()
+                    
+                    # 解析 Highlights 与 Article
+                    highlights = []
+                    article_html = full_text
+                    
+                    if "===HIGHLIGHTS===" in full_text and "===ARTICLE===" in full_text:
+                        parts = full_text.split("===ARTICLE===")
+                        hl_text = parts[0].replace("===HIGHLIGHTS===", "").strip()
+                        article_html = parts[1].strip()
+                        for line in hl_text.split("\n"):
+                            line = line.strip()
+                            if line:
+                                # 移除开头的 1. 2. - * 等标记
+                                clean_line = re.sub(r'^\d+[\.、\s\-]+', '', line).strip()
+                                if clean_line:
+                                    highlights.append(clean_line)
+                    else:
+                        highlights = [
+                            "全球主流大模型最新版本密集迭代，多模态推理能力显著提升",
+                            "开源社区大模型活跃度再创新高，开发者工具链加速演进",
+                            "AI 算力与商业化落地进入深水区，头部企业商业模式逐步成型"
+                        ]
+
                     if article_html.startswith("```html"):
                         article_html = article_html[7:]
                     if article_html.startswith("```"):
                         article_html = article_html[3:]
                     if article_html.endswith("```"):
                         article_html = article_html[:-3]
-                    print(f"🎉 模型 [{m}] 生成成功！")
-                    return article_html.strip()
+                    
+                    print(f"🎉 模型 [{m}] 生成成功！共解析出 {len(highlights)} 条速览要点。")
+                    return article_html.strip(), highlights
+
                 elif response.status_code in (503, 429):
                     last_error = f"HTTP {response.status_code}: {response.text}"
                     print(f"⏳ 模型 [{m}] 临时高峰 (HTTP {response.status_code})，详细返回: {response.text.strip()}")
@@ -160,5 +191,4 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-fla
                 print(f"⚠️ 模型 [{m}] 网络异常: {last_error}")
                 time.sleep(3)
             
-    raise RuntimeError(f"调用所有可用 Gemini 模型均失败，最后详细错误: {last_error}")
-
+    raise RuntimeError(f"调用所有 Gemini 3.x 模型均失败，最后详细错误: {last_error}")

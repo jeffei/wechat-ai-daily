@@ -4,7 +4,7 @@ on:
   schedule:
     # 每周一、三、五 中国时间早上 10:00 (即 UTC 02:00) 自动触发
     - cron: '0 2 * * 1,3,5'
-  workflow_dispatch: # 随时支持在 GitHub 后台手动点击运行测试
+  workflow_dispatch: # 支持随时在 GitHub 后台手动点击运行测试
 
 permissions:
   contents: write
@@ -16,6 +16,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Install Chinese Fonts for Infographic
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-wqy-microhei fonts-wqy-zenhei
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -26,16 +31,16 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Fetch AI News & Generate Article via Gemini
+      - name: Fetch AI News & Generate Article via Gemini 3.x
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           SERVERCHAN_KEY: ${{ secrets.SERVERCHAN_KEY }} # 可选，微信推送提醒
         run: |
           python src/main.py
 
-      - name: Commit and Push Updated Article
+      - name: Commit and Push Updated Article & Summary Images
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/ index.html
-          git diff --staged --quiet || (git commit -m "Auto-update AI tech news [$(date +'%Y-%m-%d')]" && git push)
+          git add -A docs/ index.html summary.png
+          git diff --staged --quiet || (git commit -m "Auto-update AI news & summary card [$(date +'%Y-%m-%d %H:%M')]" && git push)
