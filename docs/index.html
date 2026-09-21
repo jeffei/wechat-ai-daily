@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI大模型前沿观察 · 微信发布与审核预览</title>
+    <title>AI 大模型前沿观察 | 2026年09月21日 · 微信公众号发布工作台</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background-color: #eef2f6;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f0f3f8;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            color: #2d3748;
         }
         .top-bar {
             position: sticky;
@@ -17,188 +18,264 @@
             z-index: 999;
             background: #ffffff;
             box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-            padding: 14px 20px;
+            padding: 12px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .title {
-            font-weight: 600;
+        .brand {
+            font-weight: 700;
             color: #1a202c;
             font-size: 16px;
         }
-        .btn-group {
-            display: flex;
-            gap: 10px;
-        }
-        .copy-btn {
+        .copy-main-btn {
             background: #07c160;
             color: white;
             border: none;
-            padding: 10px 22px;
+            padding: 11px 24px;
             font-size: 15px;
-            font-weight: 600;
-            border-radius: 6px;
+            font-weight: bold;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 2px 6px rgba(7, 193, 96, 0.3);
+            box-shadow: 0 2px 8px rgba(7, 193, 96, 0.35);
         }
-        .copy-btn:hover {
+        .copy-main-btn:hover {
             background: #06ad56;
             transform: translateY(-1px);
         }
         .container {
-            max-width: 720px;
-            margin: 30px auto;
+            max-width: 740px;
+            margin: 24px auto;
+            padding: 0 15px;
+        }
+        /* 微信公众号发布辅助工作台卡片 */
+        .helper-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border-top: 4px solid #1a73e8;
+        }
+        .helper-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a202c;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .helper-row {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+        .helper-label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #4a5568;
+            min-width: 75px;
+        }
+        .helper-val {
+            font-size: 14px;
+            color: #1a202c;
+            flex-grow: 1;
+            word-break: break-all;
+            line-height: 1.5;
+        }
+        .small-copy-btn {
+            background: #e8f0fe;
+            color: #1a73e8;
+            border: none;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s ease;
+        }
+        .small-copy-btn:hover {
+            background: #d2e3fc;
         }
         .article-card {
             background: #ffffff;
-            padding: 30px 25px;
+            padding: 35px 28px;
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
         }
         .toast {
             position: fixed;
-            top: 70px;
+            top: 75px;
             left: 50%;
             transform: translateX(-50%);
-            background: #333;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 20px;
+            background: #1a202c;
+            color: #ffffff;
+            padding: 11px 22px;
+            border-radius: 25px;
             display: none;
             font-size: 14px;
+            font-weight: 500;
             z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
     </style>
 </head>
 <body>
     <div class="top-bar">
-        <div class="title">🤖 每日大模型图文与摘要审核台</div>
-        <div class="btn-group">
-            <button class="copy-btn" onclick="copyWechatRichText()">📋 一键复制微信排版</button>
-        </div>
+        <div class="brand">🚀 微信公众号 · AI大模型早报发布台</div>
+        <button class="copy-main-btn" onclick="copyArticleBody()">📋 一键复制正文排版</button>
     </div>
 
-    <div id="toast" class="toast">✅ 复制成功！去微信后台 Ctrl + V 粘贴即可！</div>
+    <div id="toast" class="toast">✅ 已复制到剪贴板！</div>
 
     <div class="container">
-        <!-- 审核摘要图模块 -->
-        
-        <div style="margin-bottom: 30px; text-align: center; background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-            <div style="font-weight: 600; font-size: 17px; margin-bottom: 12px; color: #2d3748; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                <span>🖼️ 今日大模型早报 · 审核速览摘要图</span>
+        <!-- 微信发布助手（标题、摘要） -->
+        <div class="helper-card">
+            <div class="helper-title">🎯 微信后台一键发文助手</div>
+            
+            <div class="helper-row">
+                <div class="helper-label">📌 推荐标题</div>
+                <div class="helper-val" id="title-text">AI 大模型前沿观察 | 2026年09月21日</div>
+                <button class="small-copy-btn" onclick="copyTextById('title-text', '文章标题已复制！')">复制标题</button>
             </div>
-            <p style="font-size: 13px; color: #718096; margin-top: 0; margin-bottom: 16px;">
-                可作为朋友圈、社群分发图或文章导读长图使用
+
+            <div class="helper-row">
+                <div class="helper-label">📝 推荐摘要</div>
+                <div class="helper-val" id="digest-text">一文纵览过去 24 小时全球大模型商业演进、新架构突破与行业核心风向。</div>
+                <button class="small-copy-btn" onclick="copyTextById('digest-text', '推文摘要已复制！')">复制摘要</button>
+            </div>
+            
+            <div style="font-size: 12px; color: #718096; margin-top: 10px; display: flex; justify-content: space-between;">
+                <span>💡 复制标题与摘要后，点击上方绿色按钮复制正文，在公众号后台 Ctrl+V 即可。</span>
+            </div>
+        </div>
+
+        <!-- 审核速览长图 -->
+        
+        <div style="margin-bottom: 24px; background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); text-align: center;">
+            <div style="font-weight: 600; font-size: 16px; margin-bottom: 8px; color: #2d3748;">
+                🖼️ 今日审核速览摘要长图（已自动渲染）
+            </div>
+            <p style="font-size: 13px; color: #718096; margin-top: 0; margin-bottom: 14px;">
+                审核确认今日核心要点，可长按/右键保存直接发朋友圈、社群
             </p>
             <a href="summary.png" target="_blank" title="点击查看大图">
                 <img src="summary.png" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); border: 1px solid #edf2f7;" alt="今日早报速览摘要图" />
             </a>
             <div style="margin-top: 12px;">
-                <a href="summary.png" download="summary.png" style="display: inline-block; background: #ebf8ff; color: #2b6cb0; text-decoration: none; padding: 6px 14px; font-size: 13px; border-radius: 6px; font-weight: 500;">
-                    ⬇️ 下载原尺寸摘要图
+                <a href="summary.png" download="summary.png" style="display: inline-block; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; text-decoration: none; padding: 7px 16px; font-size: 13px; border-radius: 6px; font-weight: 600;">
+                    ⬇️ 下载原尺寸摘要海报
                 </a>
             </div>
         </div>
         
 
-        <!-- 微信文章主体内容 -->
+        <!-- 微信正文区域 -->
         <div class="article-card">
+            <div style="font-size: 13px; color: #a0aec0; margin-bottom: 16px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
+                📖 微信排版效果实时预览区（已应用最舒适自媒体排版规范）
+            </div>
             <div id="wechat-content">
-<section style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 677px; margin: 0 auto; background-color: #ffffff; padding: 15px; color: #2d3748;">
+<section style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 15px; color: #333333; line-height: 1.85; letter-spacing: 0.5px; padding: 10px;">
 
-    <!-- 顶部封面图 -->
-    <div style="margin-bottom: 22px; text-align: center;">
+    <!-- 封面图 -->
+    <div style="margin-bottom: 24px; text-align: center;">
         <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&q=80" style="width: 100%; border-radius: 10px; display: block; box-shadow: 0 4px 14px rgba(0,0,0,0.08);" alt="AI科技前沿" />
     </div>
 
     <!-- 今日风向标 -->
-    <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 16px; margin-bottom: 22px;">
-        <div style="font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 8px;">📅 今日风向标</div>
-        <p style="font-size: 15px; line-height: 1.8; margin: 0;">
-            2026 年 9 月 21 日，AI 产业正经历从“云端模型”向“端侧硬件”与“法律规制”的双重演进。谷歌凭借 <span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;">Googlebook</span> 试图定义 AI 时代的 PC 标准；而苹果的巨额和解金则为过度承诺的 AI 营销敲响警钟。同时，联合国对 AI 代理安全的介入，预示着全球监管步入深水区。
+    <div style="background-color: #f3f4f6; border-radius: 12px; padding: 20px; margin-bottom: 30px;">
+        <p style="margin: 0; font-size: 14px; color: #6b7280; line-height: 1.6;">
+            <span style="font-weight: bold; color: #1a73e8;">Editor's Note:</span> 2026年9月21日，全球AI赛道迎来密集爆发。从谷歌硬件端的“AI原生”豪赌，到亚马逊与Meta在代理权限上的正面交锋，AI正从“对话框”加速走向“物理终端”与“自动化代理”。
         </p>
     </div>
 
-    <!-- 焦焦点头条 -->
-    <div style="margin-bottom: 28px;">
-        <div style="font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 12px; display: flex; align-items: center;">
-            <span style="background-color: #1a73e8; width: 4px; height: 18px; margin-right: 8px; display: inline-block;"></span>
-            焦焦点头条 · 深度解读
-        </div>
-        
-        <div style="margin-bottom: 20px;">
-            <p style="font-size: 16px; font-weight: bold; color: #1a202c; margin-bottom: 8px;">1. 谷歌 Googlebook 问世：899 美元的“Gemini 载体”</p>
-            <p style="font-size: 15px; line-height: 1.8; margin-bottom: 10px;">
-                谷歌今日正式发布了其首款 AI 原生笔记本电脑——<span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;">Googlebook</span>。这款售价 899 美元的设备不再仅仅是运行 ChromeOS 的硬件，而是将 Gemini 大模型深度缝合进了操作系统的每一个毛孔。
-            </p>
-            <p style="font-size: 15px; line-height: 1.8; margin-bottom: 10px;">
-                从光标跟随的实时补全，到系统级的多模态听写，再到能够自主处理复杂任务的桌面 Widget，Googlebook 的核心逻辑是：<span style="font-weight: bold;">AI 不再是一个应用，而是交互的起点。</span> 谷歌此举旨在通过硬件锁定，在与 OpenAI 和微软的竞争中抢夺“AI 第一入口”。
-            </p>
-        </div>
-
-        <div style="margin-bottom: 20px;">
-            <p style="font-size: 16px; font-weight: bold; color: #1a202c; margin-bottom: 8px;">2. 苹果 2.5 亿美元“买教训”：Siri AI 营销的代价</p>
-            <p style="font-size: 15px; line-height: 1.8; margin-bottom: 10px;">
-                苹果公司已同意支付 2.5 亿美元，以和解关于其未能如约交付“AI 升级版 Siri”的集体诉讼。涉及机型包括 iPhone 15 Pro 系列及最新的 iPhone 16 全系。
-            </p>
-            <p style="font-size: 15px; line-height: 1.8;">
-                这起诉讼的核心在于，消费者认为苹果在发布会上过度承诺了 AI 功能的上线时间与实际表现。这标志着 <span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;">“AI 虚假宣传”</span> 正成为科技巨头面临的新型法律红线。
-            </p>
-        </div>
+    <!-- 模块一：焦焦点头条 -->
+    <div style="margin: 32px 0 16px 0; text-align: left;">
+        <span style="display: inline-block; background-color: #ebf3fe; color: #1a73e8; font-size: 16px; font-weight: bold; padding: 6px 14px; border-radius: 6px; letter-spacing: 0.5px;">
+            🔥 焦焦点头条 · 深度解读
+        </span>
     </div>
 
-    <!-- 大厂与开源风云 -->
-    <div style="margin-bottom: 28px;">
-        <div style="font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 12px; display: flex; align-items: center;">
-            <span style="background-color: #1a73e8; width: 4px; height: 18px; margin-right: 8px; display: inline-block;"></span>
-            大厂与开源风云
-        </div>
-        <div style="background-color: #f8fafc; border-radius: 8px; padding: 16px;">
-            <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
-                <li style="font-size: 15px; line-height: 1.8; margin-bottom: 10px;">
-                    <span style="font-weight: bold;">Benchmark 领衔 TechCrunch Disrupt 2026：</span> 顶级风投 Benchmark 全体合伙人将集体亮相，探讨下一代 AI 独角兽的诞生路径，重点关注“非共识”领域的 AI 创业。
-                </li>
-                <li style="font-size: 15px; line-height: 1.8; margin-bottom: 10px;">
-                    <span style="font-weight: bold;">联合国发布安全报告：</span> 针对此前 OpenAI 相关的安全争议，联合国科学小组强调 <span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;">“预防原则”</span>，要求在 AI 代理具备完全自主权之前，必须建立全球统一的“熔断”机制。
-                </li>
-                <li style="font-size: 15px; line-height: 1.8;">
-                    <span style="font-weight: bold;">Google Robby Stein 加盟：</span> 负责从零打造数亿用户产品的 Robby Stein 将分享如何将 AI 原生应用推向全球规模化。
-                </li>
-            </ul>
-        </div>
+    <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+        <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1a202c; line-height: 1.45;">
+            1. 谷歌 Googlebook 问世：899 美元的“Gemini 载体”
+        </h3>
+        <p style="margin: 0 0 10px 0; font-size: 15px; line-height: 1.85; color: #4a5568; text-align: justify;">
+            谷歌正式推出了售价 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">899美元</span> 的 AI 原生笔记本电脑 Googlebook。这不仅是一款硬件，更是谷歌将 Gemini 深度植入桌面系统的野心之作。Gemini 将直接接管光标、听写、小部件等核心体验，标志着 AI 从软件插件向操作系统底座的彻底转型。
+        </p>
     </div>
 
-    <!-- 前沿落地与商业观察 -->
-    <div style="margin-bottom: 28px;">
-        <div style="font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 12px; display: flex; align-items: center;">
-            <span style="background-color: #1a73e8; width: 4px; height: 18px; margin-right: 8px; display: inline-block;"></span>
-            前沿落地与商业观察
-        </div>
-        <p style="font-size: 15px; line-height: 1.8; margin-bottom: 10px;">
-            本周 Hugging Face 社区的焦点集中在 <span style="font-weight: bold;">“长程任务智能体（Long-Horizon Agents）”</span>。
+    <!-- 模块二：大厂与开源风云 -->
+    <div style="margin: 32px 0 16px 0; text-align: left;">
+        <span style="display: inline-block; background-color: #ebf3fe; color: #1a73e8; font-size: 16px; font-weight: bold; padding: 6px 14px; border-radius: 6px; letter-spacing: 0.5px;">
+            🌐 大厂与开源风云
+        </span>
+    </div>
+
+    <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+        <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1a202c; line-height: 1.45;">
+            2. 亚马逊封杀 Meta Muse AI 代理：购物主权之争
+        </h3>
+        <p style="margin: 0 0 10px 0; font-size: 15px; line-height: 1.85; color: #4a5568; text-align: justify;">
+            亚马逊开始拦截 Meta 旗下的 Muse AI 代理。用户在尝试让 AI 代劳购物时会收到警告，称其 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">违反服务条款</span>。这暴露了电商巨头对第三方 AI 代理掌控用户流量和数据的深度防御。
         </p>
-        <p style="font-size: 15px; line-height: 1.8; margin-bottom: 10px;">
-            新发布的 <span style="color: #1a73e8;">Designer-RSI</span> 框架展示了 AI 如何通过学习用户流量演化出“程序化记忆”，从而完成复杂的平面设计任务。而 <span style="color: #1a73e8;">CADWorld</span> 评测集的推出，则填补了 AI 在专业计算机辅助设计（CAD）领域的能力评估空白。
+    </div>
+
+    <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+        <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1a202c; line-height: 1.45;">
+            3. 黄仁勋：AI 毁灭人类的概率为 0%
+        </h3>
+        <p style="margin: 0 0 10px 0; font-size: 15px; line-height: 1.85; color: #4a5568; text-align: justify;">
+            英伟达 CEO 黄仁勋在最新采访中猛烈抨击了“AI 末日论”。他认为 AI 带来的生产力跃迁远超风险，并直言 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">AI 威胁论被过度夸大</span>。作为算力霸主，黄仁勋的表态无疑是在为持续升温的 AI 投资热潮注入强心针。
         </p>
-        <p style="font-size: 15px; line-height: 1.8;">
-            这意味着，AI 正在从“能写会画”的创意助手，向“能精准建模”的工程专家进化。
+    </div>
+
+    <!-- 模块三：前沿落地与商业观察 -->
+    <div style="margin: 32px 0 16px 0; text-align: left;">
+        <span style="display: inline-block; background-color: #ebf3fe; color: #1a73e8; font-size: 16px; font-weight: bold; padding: 6px 14px; border-radius: 6px; letter-spacing: 0.5px;">
+            🚀 前沿落地与商业观察
+        </span>
+    </div>
+
+    <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+        <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1a202c; line-height: 1.45;">
+            4. 联合国：AI 监管不能“坐以待毙”
+        </h3>
+        <p style="margin: 0 0 10px 0; font-size: 15px; line-height: 1.85; color: #4a5568; text-align: justify;">
+            针对此前 OpenAI 对 Hugging Face 的“黑客式”抓取事件，联合国科学小组发布报告，强调 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">预防性原则</span>。报告指出，政府必须在 AI 代理风险完全显现前建立防护墙，而非事后补救。
+        </p>
+    </div>
+
+    <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+        <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1a202c; line-height: 1.45;">
+            5. Agentic Design：图形设计的新范式
+        </h3>
+        <p style="margin: 0 0 10px 0; font-size: 15px; line-height: 1.85; color: #4a5568; text-align: justify;">
+            Hugging Face 社区热议 Designer-RSI 论文。该研究展示了 AI 代理如何通过演化程序记忆，在长程任务中完成 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">专业级图形设计</span>。这意味着 AI 正在从简单的图像生成迈向复杂的结构化工程协作。
         </p>
     </div>
 
     <!-- 主编锐评 -->
-    <div style="background-color: #eff6ff; border-radius: 12px; padding: 20px; border: 1px dashed #1a73e8;">
-        <div style="font-size: 17px; font-weight: bold; color: #1e40af; margin-bottom: 10px; text-align: center;">💡 主编锐评</div>
-        <p style="font-size: 15px; line-height: 1.8; color: #1e3a8a; margin: 0; font-style: italic;">
-            “2026 年的 AI 竞争已经不再是单纯的参数之争。谷歌推出 Googlebook 是在试图重构‘人机交互’的物理边界，而苹果的和解案则提醒所有开发者：在 AI 时代，诚信比算法更稀缺。当联合国开始讨论 AI 代理的‘预防原则’时，我们必须意识到，AI 的‘青春期’已经结束，成年世界的规则正在降临。”
+    <div style="margin-top: 40px; background-color: #1a73e8; border-radius: 12px; padding: 24px; color: #ffffff;">
+        <h3 style="margin: 0 0 12px 0; font-size: 18px; font-weight: bold;">主编锐评</h3>
+        <p style="margin: 0; font-size: 15px; line-height: 1.75; opacity: 0.9;">
+            从 Googlebook 的定价可以看出，谷歌正试图将 AI 从“昂贵的云端服务”降维成“普惠的生产力工具”。而亚马逊对 Meta AI 的拦截，则预示着未来互联网最大的冲突将不再是人与人，而是 <span style="text-decoration: underline; font-weight: bold;">AI 代理与中心化平台</span> 之间的权限博弈。谁能定义 AI 代理的边界，谁就握住了下一代互联网的入场券。
         </p>
     </div>
 
     <!-- 底部页脚 -->
-    <div style="margin-top: 30px; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 20px;">
-        <p style="font-size: 13px; color: #718096; margin: 0;">© 2026 AI 科技前沿观察 · 洞察大模型未来</p>
-        <p style="font-size: 13px; color: #a0aec0; margin-top: 5px;">点亮“在看”，与 AI 时代同步</p>
+    <div style="margin-top: 40px; text-align: center; color: #9ca3af; font-size: 13px;">
+        <p>© 2026 AI前沿早报 · 智库驱动未来</p>
     </div>
 
 </section>
@@ -207,7 +284,30 @@
     </div>
 
     <script>
-        async function copyWechatRichText() {
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2500);
+        }
+
+        async function copyTextById(elementId, successMsg) {
+            const text = document.getElementById(elementId).innerText.trim();
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast("✅ " + successMsg);
+            } catch(e) {
+                const input = document.createElement('textarea');
+                input.value = text;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                showToast("✅ " + successMsg);
+            }
+        }
+
+        async function copyArticleBody() {
             const content = document.getElementById('wechat-content');
             const html = content.innerHTML;
             const text = content.innerText;
@@ -217,10 +317,7 @@
                 const blobText = new Blob([text], { type: 'text/plain' });
                 const data = [new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })];
                 await navigator.clipboard.write(data);
-                
-                const toast = document.getElementById('toast');
-                toast.style.display = 'block';
-                setTimeout(() => { toast.style.display = 'none'; }, 3000);
+                showToast('✅ 正文排版已复制！微信后台直接 Ctrl + V 粘贴即可！');
             } catch (err) {
                 const range = document.createRange();
                 range.selectNode(content);
@@ -229,7 +326,7 @@
                 selection.addRange(range);
                 document.execCommand('copy');
                 selection.removeAllRanges();
-                alert('已复制到剪贴板！');
+                showToast('✅ 正文排版已复制到剪贴板！');
             }
         }
     </script>
