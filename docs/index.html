@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI大模型前沿早报 · 微信发布预览</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #eef2f6;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .title {
+            font-weight: 600;
+            color: #1a202c;
+            font-size: 16px;
+        }
+        .copy-btn {
+            background: #07c160;
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(7, 193, 96, 0.3);
+        }
+        .copy-btn:hover {
+            background: #06ad56;
+            transform: translateY(-1px);
+        }
+        .container {
+            max-width: 680px;
+            margin: 30px auto;
+            background: #ffffff;
+            padding: 30px 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        .toast {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: none;
+            font-size: 14px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="title">🤖 每日大模型图文早报（已自动排版）</div>
+        <button class="copy-btn" onclick="copyWechatRichText()">📋 一键复制微信排版</button>
+    </div>
+
+    <div id="toast" class="toast">✅ 复制成功！去微信后台 Ctrl + V 粘贴即可！</div>
+
+    <div class="container">
+        <!-- 微信文章主体内容 -->
+        <div id="wechat-content">
+<section style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #ffffff; padding: 16px; max-width: 680px; margin: 0 auto;">
+
+    <!-- 顶部科技封面图 -->
+    <div style="margin-bottom: 22px; text-align: center;">
+        <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&q=80" style="width: 100%; border-radius: 10px; display: block; box-shadow: 0 4px 14px rgba(0,0,0,0.08);" alt="AI科技前沿" />
+    </div>
+
+    <!-- 【今日风向标】 -->
+    <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 16px; margin-bottom: 22px;">
+        <div style="font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 10px;">🌟 今日风向标</div>
+        <p style="font-size: 15px; line-height: 1.8; color: #2d3748; letter-spacing: 0.5px; margin: 0;">
+            今天是 <span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;">2026年9月21日</span>。苹果因未按期交付AI升级版Siri遭遇 <span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;">2.5亿美元集体诉讼和解</span>，正式开放用户索赔；与此同时，谷歌重磅发布 <span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;">$899 AI原生笔记本 Googlebook</span> 将 Gemini 深度融入操作系统，而联合国则发出了“AI风险不容等待”的严厉警示。
+        </p>
+    </div>
+
+    <!-- 【焦点头条 · 重磅大事件】 -->
+    <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 16px; margin-bottom: 22px;">
+        <div style="font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 10px;">🔥 焦点头条 · 重磅大事件</div>
+        
+        <p style="font-size: 15px; line-height: 1.8; color: #2d3748; letter-spacing: 0.5px; margin-top: 0; margin-bottom: 12px;">
+            <strong>苹果为“跳票”的 AI 支付巨额罚单：Siri 案索赔通道开启</strong><br>
+            备受瞩目的苹果 Siri AI 承诺危机迎来了阶段性清算。因未能向早期买家兑现先进的 AI 升级版 Siri 承诺，苹果同意支付高达 <span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;">2.5亿美元</span> 达成集体诉讼和解。凡是在美国购买了 iPhone 15 Pro、Pro Max 以及全系列 iPhone 16 的用户，目前均已获准提交赔偿申请。这场风波折射出大模型时代硬件厂商在 AI 功能“期货化”营销上面临的严峻法律与商业风险。
+        </p>
+
+        <p style="font-size: 15px; line-height: 1.8; color: #2d3748; letter-spacing: 0.5px; margin: 0;">
+            <strong>联合国发布重磅警告：AI 安全治理不能等待“确定性”</strong><br>
+            在首个针对开源大模型及安全事件（如今年早些时候的 Hugging Face 攻击事件）的重大全球评估中，联合国科学小组成员向全球政府发出警告：<strong>必须在风险被完全理解之前，加速对日益强大的 AI Agent（智能体）进行监管与约束</strong>，不能以技术不确定性为由推迟防御。
+        </p>
+    </div>
+
+    <!-- 【大厂与开源风云】 -->
+    <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 16px; margin-bottom: 22px;">
+        <div style="font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 10px;">⚡ 大厂与开源风云</div>
+        
+        <p style="font-size: 15px; line-height: 1.8; color: #2d3748; letter-spacing: 0.5px; margin-top: 0; margin-bottom: 12px;">
+            <strong>谷歌押注 AI 硬件：推出 899 美元 Googlebook</strong><br>
+            谷歌正在全面推行其“硬件+AI”大一统战略。全新发布的 <span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;">$899 Googlebook</span> 绝非传统意义上的轻薄本，它将 Gemini 深度植入光标交互、实时听写、桌面小组件等每一个核心场景，意图通过原生 AI 体验在传统笔记本红海中杀出一条血路。
+        </p>
+
+        <p style="font-size: 15px; line-height: 1.8; color: #2d3748; letter-spacing: 0.5px; margin: 0;">
+            <strong>Hugging Face 社区前沿：长周期专业工程与 Agent 交互突破</strong><br>
+            开源社区持续向深水区迈进。近期热门论文如 <em>Designer-RSI</em> 探索了面向长周期图形设计的智能体程序化记忆演化，而 <em>CADWorld</em> 则为计算机辅助设计（CAD）这一类长期复杂的专业工程场景提供了全新的计算机使用基准（Computer-Use Benchmark），标志着 AI 正在从“通用聊天”大步迈向“工业落地”。
+        </p>
+    </div>
+
+    <!-- 【前沿落地与行业观察】 -->
+    <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 16px; margin-bottom: 22px;">
+        <div style="font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 10px;">📊 前沿落地与行业观察</div>
+        <p style="font-size: 15px; line-height: 1.8; color: #2d3748; letter-spacing: 0.5px; margin: 0;">
+            随着 TechCrunch Disrupt 2026 大会的开幕，全球顶尖风投（如 Benchmark 合伙人团队）正将目光聚焦于“下一个颠覆性初创企业将从何处诞生”。从垂直领域的 CADWorld 仿真评测，到大厂将 AI 深度重构终端系统，资本与技术正加速在 <span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;">Agent 智能体、专业软件工作流与硬核端侧AI</span> 领域完成合围。
+        </p>
+    </div>
+
+    <!-- 【主编锐评】 -->
+    <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 16px; margin-bottom: 22px;">
+        <div style="font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 10px;">💡 主编锐评</div>
+        <p style="font-size: 15px; line-height: 1.8; color: #2d3748; letter-spacing: 0.5px; margin: 0;">
+            苹果的 2.5 亿美元巨额和解与谷歌 899 美元 AI 笔记本的发布，折射出了同一个时代的残酷真相：<strong>留给消费级科技巨头“虚假宣传 AI 功能”的红利期已经结束，市场开始用真金白银的诉讼和钱包投票。</strong> 无论是端侧操作系统的深度重构，还是工业级、长周期的 Agent 落地，大模型产业已经彻底告别了“PPT 概念炒作”，正式驶入硬件、法律红线与真实生产力检验并存的深水深区。
+        </p>
+    </div>
+
+</section>
+        </div>
+    </div>
+
+    <script>
+        async function copyWechatRichText() {
+            const content = document.getElementById('wechat-content');
+            const html = content.innerHTML;
+            const text = content.innerText;
+            
+            try {
+                const blobHtml = new Blob([html], { type: 'text/html' });
+                const blobText = new Blob([text], { type: 'text/plain' });
+                const data = [new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })];
+                await navigator.clipboard.write(data);
+                
+                const toast = document.getElementById('toast');
+                toast.style.display = 'block';
+                setTimeout(() => { toast.style.display = 'none'; }, 3000);
+            } catch (err) {
+                // 兼容降级
+                const range = document.createRange();
+                range.selectNode(content);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+                document.execCommand('copy');
+                selection.removeAllRanges();
+                alert('已复制到剪贴板！');
+            }
+        }
+    </script>
+</body>
+</html>
