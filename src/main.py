@@ -1,11 +1,20 @@
 import os
 import sys
+
+# 确保无论在哪个工作目录下运行都能正确定位模块
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from datetime import datetime
 from fetcher import aggregate_news
 from writer import generate_wechat_article
 from builder import build_preview_page, notify_user
 
 def main():
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        print("❌ 错误：未检测到 GEMINI_API_KEY 环境变量！请确保在 GitHub Settings -> Secrets 中添加了 GEMINI_API_KEY。")
+        sys.exit(1)
+
     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 🚀 开始执行大模型资讯抓取...")
     news_content = aggregate_news()
     print(f"✅ 资讯采集完成，共收集素材约 {len(news_content)} 字符。")

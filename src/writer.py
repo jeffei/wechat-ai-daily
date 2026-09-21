@@ -67,10 +67,11 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-2.5-pro
         }
     }
 
-    models_to_try = [model_name, "gemini-2.5-flash", "gemini-1.5-pro"]
+    models_to_try = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"]
     last_error = None
     for m in models_to_try:
         try:
+            print(f"🤖 正在尝试调用 Gemini 模型: {m} ...")
             req_url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent?key={api_key}"
             response = requests.post(req_url, headers=headers, json=payload, timeout=60)
             if response.status_code == 200:
@@ -82,11 +83,13 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-2.5-pro
                     article_html = article_html[3:]
                 if article_html.endswith("```"):
                     article_html = article_html[:-3]
+                print(f"🎉 模型 {m} 生成成功！")
                 return article_html.strip()
             else:
-                last_error = response.text
-                print(f"尝试模型 {m} 未成功: {response.status_code}，正在自动尝试下一个模型...")
+                last_error = f"HTTP {response.status_code}: {response.text}"
+                print(f"⚠️ 模型 {m} 返回错误: {last_error}，切换备选模型...")
         except Exception as e:
             last_error = str(e)
+            print(f"⚠️ 模型 {m} 请求异常: {last_error}，切换备选模型...")
             
-    raise RuntimeError(f"调用 Gemini 失败: {last_error}")
+    raise RuntimeError(f"调用 Gemini 所有模型均失败: {last_error}")
