@@ -29,11 +29,37 @@ SYSTEM_PROMPT = """
 4. 直接输出以 <section> 开始、</section> 闭合的 HTML，不要任何 ```html 标记，也不要有任何客套解释。
 """
 
+def get_available_models(api_key: str):
+    """动态查询当前 API Key 支持的所有可用于文本生成的模型"""
+    try:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
+        resp = requests.get(url, timeout=15)
+        if resp.status_code == 200:
+            models_data = resp.json().get("models", [])
+            valid_models = [
+                m["name"].replace("models/", "")
+                for m in models_data
+                if "generateContent" in m.get("supportedGenerationMethods", [])
+            ]
+            return valid_models
+        else:
+            print(f"⚠️ 查询可用模型列表返回: HTTP {resp.status_code} - {resp.text}")
+    except Exception as e:
+        print(f"⚠️ 查询可用模型列表失败: {e}")
+    return []
+
 def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-flash") -> str:
     """调用 Google Gemini API 生成大模型科技新闻图文"""
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         raise ValueError("缺少 GEMINI_API_KEY 环境变量！")
+
+    import time
+    
+    # 1. 先动态获取当前 API Key 真正授权可用的所有模型
+    print("🔍 正在获取当前 API Key 授权的所有可用模型列表...")
+    available_models = get_available_models(api_key)
+    print(f"📋 你的 API 当前支持生成内容的可用模型一览:\n{json.dumps(available_models, ensure_ascii=False, indent=2)}")
 
     today_str = datetime.now().strftime("%Y年%m月%d日")
     cover_image_url = "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&q=80"
@@ -57,8 +83,9 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-fla
     payload = {
         "contents": [
             {
-                "role": "user",
-                "parts": [{"text": f"{SYSTEM_PROMPT}\n\n{user_prompt}"}]
+                "parts": [
+                    {"text": f"{SYSTEM_PROMPT}\n\n{user_prompt}"}
+                ]
             }
         ],
         "generationConfig": {
@@ -67,20 +94,37 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-fla
         }
     }
 
-    import time
-
-    # 根据 Google 官方返回指引，最新支持的模型序列
-    models_to_try = [model_name, "gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.5-pro"]
-    last_error = None
+    # 优先使用用户指定的 3.8-flash，其次在可用模型中挑选 flash 和 pro
+    candidate_queue = []
+    if model_name in available_models:
+        candidate_queue.append(model_name)
+    else:
+        # 如果列表中包含带有 3.8 或 3.6 的名字
+        for m in available_models:
+            if "3.8" in m:
+                candidate_queue.append(m)
+        for m in available_models:
+            if "3.6" in m:
+                candidate_queue.append(m)
+        for m in available_models:
+            if "flash" in m and m not in candidate_queue:
+                candidate_queue.append(m)
+        for m in available_models:
+            if m not in candidate_queue:
+                candidate_queue.append(m)
     
-    for m in models_to_try:
-        print(f"🤖 正在尝试调用 Gemini 模型: {m} ...")
+    # 兜底：如果 API 列表没取到，使用默认备选列表
+    if not candidate_queue:
+        candidate_queue = [model_name, "gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.5-pro"]
+
+    last_error = None
+    for m in candidate_queue:
+        print(f"\n🚀 正在尝试调用模型: {m} ...")
         req_url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent?key={api_key}"
         
-        # 针对 503 (High Demand) 和 429 加入自动重试机制
-        for attempt in range(3):
+        for attempt in range(1, 4):
             try:
-                response = requests.post(req_url, headers=headers, json=payload, timeout=60)
+                response = requests.post(req_url, headers=headers, json=payload, timeout=75)
                 if response.status_code == 200:
                     res_data = response.json()
                     article_html = res_data["candidates"][0]["content"]["parts"][0]["text"].strip()
@@ -90,19 +134,21 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-fla
                         article_html = article_html[3:]
                     if article_html.endswith("```"):
                         article_html = article_html[:-3]
-                    print(f"🎉 模型 {m} 生成成功！")
+                    print(f"🎉 模型 [{m}] 生成成功！")
                     return article_html.strip()
                 elif response.status_code in (503, 429):
                     last_error = f"HTTP {response.status_code}: {response.text}"
-                    print(f"⏳ 模型 {m} 遭遇临时高峰 (HTTP {response.status_code})，第 {attempt + 1}/3 次重试中...")
-                    time.sleep(3 * (attempt + 1))
+                    print(f"⏳ 模型 [{m}] 临时高峰 (HTTP {response.status_code})，详细返回: {response.text.strip()}")
+                    print(f"等待 {attempt * 4} 秒后进行第 {attempt}/3 次重试...")
+                    time.sleep(attempt * 4)
                 else:
                     last_error = f"HTTP {response.status_code}: {response.text}"
-                    print(f"⚠️ 模型 {m} 返回错误: {last_error}")
+                    print(f"⚠️ 模型 [{m}] 返回具体错误: {last_error}")
                     break
             except Exception as e:
                 last_error = str(e)
-                print(f"⚠️ 模型 {m} 请求异常: {last_error}")
-                time.sleep(2)
+                print(f"⚠️ 模型 [{m}] 网络异常: {last_error}")
+                time.sleep(3)
             
-    raise RuntimeError(f"调用 Gemini 所有模型均失败: {last_error}")
+    raise RuntimeError(f"调用所有可用 Gemini 模型均失败，最后详细错误: {last_error}")
+
