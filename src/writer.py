@@ -24,21 +24,44 @@ SYSTEM_PROMPT = """
 ...这里是完整的微信文章 HTML...
 </section>
 
-【微信 HTML 排版规范】：
-1. 严禁使用外部 class，所有样式必须写在行内 style 属性中。
-2. 包含模块：
-   - 顶部科技封面图（保留提供的占位符）。
-   - 【今日风向标】（浅色圆角卡片，概括最重磅看点）。
-   - 【焦点头条 · 深度解读】（深度剖析 1~2 个最轰动的大模型重大新闻）。
-   - 【大厂与开源风云】（OpenAI、Google、Anthropic、DeepSeek、Meta 等最新动态）。
-   - 【前沿落地与商业观察】。
-   - 【主编锐评】。
-3. 样式要求：
-   - 正文：font-size: 15px; line-height: 1.8; color: #2d3748; letter-spacing: 0.5px;
-   - 标题：font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 10px;
-   - 卡片框：background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 16px; margin-bottom: 22px;
-   - 高亮词句：background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;
+【核心排版规范与禁止项（极其重要）】：
+1. 严禁事项：
+   - ❌ 绝对严禁给板块大标题添加全宽度的矩形外边框（例如严禁使用 border: 1px solid #... 包裹标题）！你之前生成的标题被套上了一个居中的大空心方框，极其难看！
+   - ❌ 严禁标题居中对齐，所有标题一律靠左对齐。
+2. 板块主标题（H2）标准样式（必须严格使用以下 HTML 胶囊标签结构）：
+   <div style="margin: 30px 0 16px 0; text-align: left;">
+       <span style="display: inline-block; background-color: #ebf3fe; color: #1a73e8; font-size: 16px; font-weight: bold; padding: 6px 14px; border-radius: 6px; letter-spacing: 0.5px;">
+           🔥 焦点头条 · 深度解读
+       </span>
+   </div>
+3. 每条新闻必须使用独立的浅底色精致卡片包裹：
+   <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 16px 18px; margin-bottom: 20px;">
+       <h3 style="margin: 0 0 10px 0; font-size: 16px; font-weight: bold; color: #1a202c; line-height: 1.4;">
+           1. 谷歌 Googlebook 问世：899 美元的“Gemini 载体”
+       </h3>
+       <p style="margin: 0 0 10px 0; font-size: 15px; line-height: 1.8; color: #4a5568; letter-spacing: 0.5px;">
+           [正文内容，重点词句可用 <span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px; font-weight: bold;">高亮标记</span>]
+       </p>
+   </div>
+4. 包含模块：
+   - 顶部封面图
+   - 【今日风向标】（浅灰导读卡片）
+   - 【焦点头条 · 深度解读】（胶囊标 + 新闻卡片）
+   - 【大厂与开源风云】（胶囊标 + 新闻卡片）
+   - 【前沿落地与商业观察】（胶囊标 + 新闻卡片）
+   - 【主编锐评】（总结卡片）
 """
+
+def clean_wechat_html(html_code: str) -> str:
+    """后处理清洗：彻底消除可能出现的居中空心边框标题与异常外框"""
+    # 消除诸如 border: 1px solid ... text-align: center 的标题方框，转换为精美胶囊标题
+    pattern = r'<div[^>]*border\s*:\s*1px\s*solid[^>]*text-align\s*:\s*center[^>]*>(.*?)</div>'
+    def replacer(match):
+        text = re.sub(r'<[^>]+>', '', match.group(1)).strip()
+        return f'<div style="margin: 28px 0 14px 0; text-align: left;"><span style="display: inline-block; background-color: #ebf3fe; color: #1a73e8; font-size: 16px; font-weight: bold; padding: 6px 14px; border-radius: 6px; letter-spacing: 0.5px;">📌 {text}</span></div>'
+    
+    cleaned = re.sub(pattern, replacer, html_code, flags=re.IGNORECASE | re.DOTALL)
+    return cleaned
 
 def get_available_models(api_key: str) -> List[str]:
     """动态查询当前 API Key 授权的所有可用模型，严格过滤只保留 gemini-3 系列"""
@@ -171,11 +194,9 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-fla
                         article_html = article_html[7:]
                     if article_html.startswith("```"):
                         article_html = article_html[3:]
-                    if article_html.endswith("```"):
-                        article_html = article_html[:-3]
-                    
-                    print(f"🎉 模型 [{m}] 生成成功！共解析出 {len(highlights)} 条速览要点。")
-                    return article_html.strip(), highlights
+                    article_html = clean_wechat_html(article_html.strip())
+                    print(f"🎉 模型 [{m}] 生成成功并完成排版美化！共解析出 {len(highlights)} 条速览要点。")
+                    return article_html, highlights
 
                 elif response.status_code in (503, 429):
                     last_error = f"HTTP {response.status_code}: {response.text}"
