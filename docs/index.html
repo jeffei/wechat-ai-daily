@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI大模型前沿早报 · 微信发布预览</title>
+    <title>AI大模型前沿观察 · 微信发布与审核预览</title>
     <style>
         body {
             margin: 0;
@@ -27,6 +27,10 @@
             color: #1a202c;
             font-size: 16px;
         }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
         .copy-btn {
             background: #07c160;
             color: white;
@@ -44,8 +48,10 @@
             transform: translateY(-1px);
         }
         .container {
-            max-width: 680px;
+            max-width: 720px;
             margin: 30px auto;
+        }
+        .article-card {
             background: #ffffff;
             padding: 30px 25px;
             border-radius: 12px;
@@ -68,77 +74,135 @@
 </head>
 <body>
     <div class="top-bar">
-        <div class="title">🤖 每日大模型图文早报（已自动排版）</div>
-        <button class="copy-btn" onclick="copyWechatRichText()">📋 一键复制微信排版</button>
+        <div class="title">🤖 每日大模型图文与摘要审核台</div>
+        <div class="btn-group">
+            <button class="copy-btn" onclick="copyWechatRichText()">📋 一键复制微信排版</button>
+        </div>
     </div>
 
     <div id="toast" class="toast">✅ 复制成功！去微信后台 Ctrl + V 粘贴即可！</div>
 
     <div class="container">
-        <!-- 微信文章主体内容 -->
-        <div id="wechat-content">
-<section style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #ffffff; padding: 16px; max-width: 680px; margin: 0 auto;">
+        <!-- 审核摘要图模块 -->
+        
+        <div style="margin-bottom: 30px; text-align: center; background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+            <div style="font-weight: 600; font-size: 17px; margin-bottom: 12px; color: #2d3748; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <span>🖼️ 今日大模型早报 · 审核速览摘要图</span>
+            </div>
+            <p style="font-size: 13px; color: #718096; margin-top: 0; margin-bottom: 16px;">
+                可作为朋友圈、社群分发图或文章导读长图使用
+            </p>
+            <a href="summary.png" target="_blank" title="点击查看大图">
+                <img src="summary.png" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); border: 1px solid #edf2f7;" alt="今日早报速览摘要图" />
+            </a>
+            <div style="margin-top: 12px;">
+                <a href="summary.png" download="summary.png" style="display: inline-block; background: #ebf8ff; color: #2b6cb0; text-decoration: none; padding: 6px 14px; font-size: 13px; border-radius: 6px; font-weight: 500;">
+                    ⬇️ 下载原尺寸摘要图
+                </a>
+            </div>
+        </div>
+        
 
-    <!-- 顶部科技封面图 -->
+        <!-- 微信文章主体内容 -->
+        <div class="article-card">
+            <div id="wechat-content">
+<section style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 677px; margin: 0 auto; background-color: #ffffff; padding: 15px; color: #2d3748;">
+
+    <!-- 顶部封面图 -->
     <div style="margin-bottom: 22px; text-align: center;">
         <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&q=80" style="width: 100%; border-radius: 10px; display: block; box-shadow: 0 4px 14px rgba(0,0,0,0.08);" alt="AI科技前沿" />
     </div>
 
-    <!-- 【今日风向标】 -->
+    <!-- 今日风向标 -->
     <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 16px; margin-bottom: 22px;">
-        <div style="font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 10px;">🌟 今日风向标</div>
-        <p style="font-size: 15px; line-height: 1.8; color: #2d3748; letter-spacing: 0.5px; margin: 0;">
-            今天是 <span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;">2026年9月21日</span>。苹果因未按期交付AI升级版Siri遭遇 <span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;">2.5亿美元集体诉讼和解</span>，正式开放用户索赔；与此同时，谷歌重磅发布 <span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;">$899 AI原生笔记本 Googlebook</span> 将 Gemini 深度融入操作系统，而联合国则发出了“AI风险不容等待”的严厉警示。
+        <div style="font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 8px;">📅 今日风向标</div>
+        <p style="font-size: 15px; line-height: 1.8; margin: 0;">
+            2026 年 9 月 21 日，AI 产业正经历从“云端模型”向“端侧硬件”与“法律规制”的双重演进。谷歌凭借 <span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;">Googlebook</span> 试图定义 AI 时代的 PC 标准；而苹果的巨额和解金则为过度承诺的 AI 营销敲响警钟。同时，联合国对 AI 代理安全的介入，预示着全球监管步入深水区。
         </p>
     </div>
 
-    <!-- 【焦点头条 · 重磅大事件】 -->
-    <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 16px; margin-bottom: 22px;">
-        <div style="font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 10px;">🔥 焦点头条 · 重磅大事件</div>
+    <!-- 焦焦点头条 -->
+    <div style="margin-bottom: 28px;">
+        <div style="font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 12px; display: flex; align-items: center;">
+            <span style="background-color: #1a73e8; width: 4px; height: 18px; margin-right: 8px; display: inline-block;"></span>
+            焦焦点头条 · 深度解读
+        </div>
         
-        <p style="font-size: 15px; line-height: 1.8; color: #2d3748; letter-spacing: 0.5px; margin-top: 0; margin-bottom: 12px;">
-            <strong>苹果为“跳票”的 AI 支付巨额罚单：Siri 案索赔通道开启</strong><br>
-            备受瞩目的苹果 Siri AI 承诺危机迎来了阶段性清算。因未能向早期买家兑现先进的 AI 升级版 Siri 承诺，苹果同意支付高达 <span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;">2.5亿美元</span> 达成集体诉讼和解。凡是在美国购买了 iPhone 15 Pro、Pro Max 以及全系列 iPhone 16 的用户，目前均已获准提交赔偿申请。这场风波折射出大模型时代硬件厂商在 AI 功能“期货化”营销上面临的严峻法律与商业风险。
-        </p>
+        <div style="margin-bottom: 20px;">
+            <p style="font-size: 16px; font-weight: bold; color: #1a202c; margin-bottom: 8px;">1. 谷歌 Googlebook 问世：899 美元的“Gemini 载体”</p>
+            <p style="font-size: 15px; line-height: 1.8; margin-bottom: 10px;">
+                谷歌今日正式发布了其首款 AI 原生笔记本电脑——<span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;">Googlebook</span>。这款售价 899 美元的设备不再仅仅是运行 ChromeOS 的硬件，而是将 Gemini 大模型深度缝合进了操作系统的每一个毛孔。
+            </p>
+            <p style="font-size: 15px; line-height: 1.8; margin-bottom: 10px;">
+                从光标跟随的实时补全，到系统级的多模态听写，再到能够自主处理复杂任务的桌面 Widget，Googlebook 的核心逻辑是：<span style="font-weight: bold;">AI 不再是一个应用，而是交互的起点。</span> 谷歌此举旨在通过硬件锁定，在与 OpenAI 和微软的竞争中抢夺“AI 第一入口”。
+            </p>
+        </div>
 
-        <p style="font-size: 15px; line-height: 1.8; color: #2d3748; letter-spacing: 0.5px; margin: 0;">
-            <strong>联合国发布重磅警告：AI 安全治理不能等待“确定性”</strong><br>
-            在首个针对开源大模型及安全事件（如今年早些时候的 Hugging Face 攻击事件）的重大全球评估中，联合国科学小组成员向全球政府发出警告：<strong>必须在风险被完全理解之前，加速对日益强大的 AI Agent（智能体）进行监管与约束</strong>，不能以技术不确定性为由推迟防御。
+        <div style="margin-bottom: 20px;">
+            <p style="font-size: 16px; font-weight: bold; color: #1a202c; margin-bottom: 8px;">2. 苹果 2.5 亿美元“买教训”：Siri AI 营销的代价</p>
+            <p style="font-size: 15px; line-height: 1.8; margin-bottom: 10px;">
+                苹果公司已同意支付 2.5 亿美元，以和解关于其未能如约交付“AI 升级版 Siri”的集体诉讼。涉及机型包括 iPhone 15 Pro 系列及最新的 iPhone 16 全系。
+            </p>
+            <p style="font-size: 15px; line-height: 1.8;">
+                这起诉讼的核心在于，消费者认为苹果在发布会上过度承诺了 AI 功能的上线时间与实际表现。这标志着 <span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;">“AI 虚假宣传”</span> 正成为科技巨头面临的新型法律红线。
+            </p>
+        </div>
+    </div>
+
+    <!-- 大厂与开源风云 -->
+    <div style="margin-bottom: 28px;">
+        <div style="font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 12px; display: flex; align-items: center;">
+            <span style="background-color: #1a73e8; width: 4px; height: 18px; margin-right: 8px; display: inline-block;"></span>
+            大厂与开源风云
+        </div>
+        <div style="background-color: #f8fafc; border-radius: 8px; padding: 16px;">
+            <ul style="margin: 0; padding-left: 20px; list-style-type: disc;">
+                <li style="font-size: 15px; line-height: 1.8; margin-bottom: 10px;">
+                    <span style="font-weight: bold;">Benchmark 领衔 TechCrunch Disrupt 2026：</span> 顶级风投 Benchmark 全体合伙人将集体亮相，探讨下一代 AI 独角兽的诞生路径，重点关注“非共识”领域的 AI 创业。
+                </li>
+                <li style="font-size: 15px; line-height: 1.8; margin-bottom: 10px;">
+                    <span style="font-weight: bold;">联合国发布安全报告：</span> 针对此前 OpenAI 相关的安全争议，联合国科学小组强调 <span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;">“预防原则”</span>，要求在 AI 代理具备完全自主权之前，必须建立全球统一的“熔断”机制。
+                </li>
+                <li style="font-size: 15px; line-height: 1.8;">
+                    <span style="font-weight: bold;">Google Robby Stein 加盟：</span> 负责从零打造数亿用户产品的 Robby Stein 将分享如何将 AI 原生应用推向全球规模化。
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 前沿落地与商业观察 -->
+    <div style="margin-bottom: 28px;">
+        <div style="font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 12px; display: flex; align-items: center;">
+            <span style="background-color: #1a73e8; width: 4px; height: 18px; margin-right: 8px; display: inline-block;"></span>
+            前沿落地与商业观察
+        </div>
+        <p style="font-size: 15px; line-height: 1.8; margin-bottom: 10px;">
+            本周 Hugging Face 社区的焦点集中在 <span style="font-weight: bold;">“长程任务智能体（Long-Horizon Agents）”</span>。
+        </p>
+        <p style="font-size: 15px; line-height: 1.8; margin-bottom: 10px;">
+            新发布的 <span style="color: #1a73e8;">Designer-RSI</span> 框架展示了 AI 如何通过学习用户流量演化出“程序化记忆”，从而完成复杂的平面设计任务。而 <span style="color: #1a73e8;">CADWorld</span> 评测集的推出，则填补了 AI 在专业计算机辅助设计（CAD）领域的能力评估空白。
+        </p>
+        <p style="font-size: 15px; line-height: 1.8;">
+            这意味着，AI 正在从“能写会画”的创意助手，向“能精准建模”的工程专家进化。
         </p>
     </div>
 
-    <!-- 【大厂与开源风云】 -->
-    <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 16px; margin-bottom: 22px;">
-        <div style="font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 10px;">⚡ 大厂与开源风云</div>
-        
-        <p style="font-size: 15px; line-height: 1.8; color: #2d3748; letter-spacing: 0.5px; margin-top: 0; margin-bottom: 12px;">
-            <strong>谷歌押注 AI 硬件：推出 899 美元 Googlebook</strong><br>
-            谷歌正在全面推行其“硬件+AI”大一统战略。全新发布的 <span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;">$899 Googlebook</span> 绝非传统意义上的轻薄本，它将 Gemini 深度植入光标交互、实时听写、桌面小组件等每一个核心场景，意图通过原生 AI 体验在传统笔记本红海中杀出一条血路。
-        </p>
-
-        <p style="font-size: 15px; line-height: 1.8; color: #2d3748; letter-spacing: 0.5px; margin: 0;">
-            <strong>Hugging Face 社区前沿：长周期专业工程与 Agent 交互突破</strong><br>
-            开源社区持续向深水区迈进。近期热门论文如 <em>Designer-RSI</em> 探索了面向长周期图形设计的智能体程序化记忆演化，而 <em>CADWorld</em> 则为计算机辅助设计（CAD）这一类长期复杂的专业工程场景提供了全新的计算机使用基准（Computer-Use Benchmark），标志着 AI 正在从“通用聊天”大步迈向“工业落地”。
+    <!-- 主编锐评 -->
+    <div style="background-color: #eff6ff; border-radius: 12px; padding: 20px; border: 1px dashed #1a73e8;">
+        <div style="font-size: 17px; font-weight: bold; color: #1e40af; margin-bottom: 10px; text-align: center;">💡 主编锐评</div>
+        <p style="font-size: 15px; line-height: 1.8; color: #1e3a8a; margin: 0; font-style: italic;">
+            “2026 年的 AI 竞争已经不再是单纯的参数之争。谷歌推出 Googlebook 是在试图重构‘人机交互’的物理边界，而苹果的和解案则提醒所有开发者：在 AI 时代，诚信比算法更稀缺。当联合国开始讨论 AI 代理的‘预防原则’时，我们必须意识到，AI 的‘青春期’已经结束，成年世界的规则正在降临。”
         </p>
     </div>
 
-    <!-- 【前沿落地与行业观察】 -->
-    <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 16px; margin-bottom: 22px;">
-        <div style="font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 10px;">📊 前沿落地与行业观察</div>
-        <p style="font-size: 15px; line-height: 1.8; color: #2d3748; letter-spacing: 0.5px; margin: 0;">
-            随着 TechCrunch Disrupt 2026 大会的开幕，全球顶尖风投（如 Benchmark 合伙人团队）正将目光聚焦于“下一个颠覆性初创企业将从何处诞生”。从垂直领域的 CADWorld 仿真评测，到大厂将 AI 深度重构终端系统，资本与技术正加速在 <span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;">Agent 智能体、专业软件工作流与硬核端侧AI</span> 领域完成合围。
-        </p>
-    </div>
-
-    <!-- 【主编锐评】 -->
-    <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 16px; margin-bottom: 22px;">
-        <div style="font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 10px;">💡 主编锐评</div>
-        <p style="font-size: 15px; line-height: 1.8; color: #2d3748; letter-spacing: 0.5px; margin: 0;">
-            苹果的 2.5 亿美元巨额和解与谷歌 899 美元 AI 笔记本的发布，折射出了同一个时代的残酷真相：<strong>留给消费级科技巨头“虚假宣传 AI 功能”的红利期已经结束，市场开始用真金白银的诉讼和钱包投票。</strong> 无论是端侧操作系统的深度重构，还是工业级、长周期的 Agent 落地，大模型产业已经彻底告别了“PPT 概念炒作”，正式驶入硬件、法律红线与真实生产力检验并存的深水深区。
-        </p>
+    <!-- 底部页脚 -->
+    <div style="margin-top: 30px; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 20px;">
+        <p style="font-size: 13px; color: #718096; margin: 0;">© 2026 AI 科技前沿观察 · 洞察大模型未来</p>
+        <p style="font-size: 13px; color: #a0aec0; margin-top: 5px;">点亮“在看”，与 AI 时代同步</p>
     </div>
 
 </section>
+            </div>
         </div>
     </div>
 
@@ -158,7 +222,6 @@
                 toast.style.display = 'block';
                 setTimeout(() => { toast.style.display = 'none'; }, 3000);
             } catch (err) {
-                // 兼容降级
                 const range = document.createRange();
                 range.selectNode(content);
                 const selection = window.getSelection();
