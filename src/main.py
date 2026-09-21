@@ -50,12 +50,12 @@ def main():
     news_content = aggregate_news()
     print(f"✅ 资讯采集完成，共收集素材约 {len(news_content)} 字符。")
     
-    # 2. 调用 Gemini 3.x 生成微信排版 HTML 及速览要点
-    print("🤖 正在调用 Google Gemini 3.x 生成微信图文与速览摘要...")
-    article_html, highlights = generate_wechat_article(news_content)
-    print("✅ Gemini 文章生成与要点提炼成功！")
+    # 2. 调用 Gemini 3.x 生成微信图文与速览摘要
+    print("🤖 正在调用 Google Gemini 3.x 生成微信图文、爆款标题与速览摘要...")
+    title, digest, article_html, highlights = generate_wechat_article(news_content)
+    print(f"✅ Gemini 生成成功！\n📌 推荐标题: 《{title}》\n📝 推荐摘要: {digest}")
 
-    # 3. 按当前执行时间创建专属历史归档文件夹 (格式: 2026-09-21_10-00-00)
+    # 3. 按当前执行时间创建专属历史归档文件夹 (格式: 2026-09-22_10-00-00)
     exec_timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     archive_dir = os.path.join(DOCS_DIR, exec_timestamp)
     os.makedirs(archive_dir, exist_ok=True)
@@ -67,7 +67,13 @@ def main():
 
     # 5. 生成本次归档的 index.html
     html_archive_path = os.path.join(archive_dir, "index.html")
-    build_preview_page(article_html, output_path=html_archive_path, has_summary_img=True)
+    build_preview_page(
+        article_html=article_html,
+        title=title,
+        digest=digest,
+        output_path=html_archive_path,
+        has_summary_img=True
+    )
 
     # 6. 同时将最新版本同步复制到 docs/ 根目录（便于 GitHub Pages 首页直接打开最新一期）
     latest_html_path = os.path.join(DOCS_DIR, "index.html")

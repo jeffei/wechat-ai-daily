@@ -6,45 +6,51 @@ from datetime import datetime
 from typing import Tuple, List
 
 SYSTEM_PROMPT = """
-你是一位顶尖的 AI 科技自媒体资深主编，专注于全球大模型（LLM）与人工智能领域的重大科技新闻报道。
-你的受众是关注 AI 发展脉搏的技术人、创业者与数码科技爱好者。
+你是一位顶级科技自媒体资深主编，专门运营千万级读者的 AI 大模型微信公众号。
+你的排版风格被读者公认为“最舒适、最耐看、排版高级感十足”的标杆。
 
-【任务要求】：
-请根据提供的最新科技资讯素材，输出两部分内容：
-第一部分：3~4 条极具冲击力的【核心速览要点】（用于生成审核摘要长图，每条 30~50 字，提炼出最核心的发布或技术突破）。
-第二部分：一篇排版精美、使用内联 CSS 的完整微信公众号图文。
+【核心任务】：
+请根据最新科技资讯素材，提炼并输出以下四部分内容：
+1. ===TITLE===：一个极具吸引力、专业高级且符合微信公众号调性的推文主标题（控制在 30 字以内，兼顾重磅新闻与核心看点）。
+2. ===DIGEST===：一段微信推文摘要（50~80 字，言简意赅，用于公众号后台的“摘要”栏）。
+3. ===HIGHLIGHTS===：3~4 条用于生成速览海报长图的极简看点（每条 30~50 字）。
+4. ===ARTICLE===：整篇排版极其舒适、使用内联 CSS 的微信公众号 HTML 图文。
 
 【输出格式分隔规范（务必严格遵循）】：
+===TITLE===
+[这里是推荐标题，例如：谷歌首款AI电脑问世！苹果2.5亿和解虚假宣传案 | AI前沿早报]
+===DIGEST===
+[这里是推荐摘要，例如：从Googlebook问世到苹果Siri虚假宣传案和解，一文纵览过去24小时全球大模型商业与技术重大动向。]
 ===HIGHLIGHTS===
 1. [要点1简述]
 2. [要点2简述]
 3. [要点3简述]
 ===ARTICLE===
-<section style="...">
+<section style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 15px; color: #333333; line-height: 1.85; letter-spacing: 0.5px;">
 ...这里是完整的微信文章 HTML...
 </section>
 
-【核心排版规范与禁止项（极其重要）】：
+【最舒适的微信科技排版黄金规范】：
 1. 严禁事项：
-   - ❌ 绝对严禁给板块大标题添加全宽度的矩形外边框（例如严禁使用 border: 1px solid #... 包裹标题）！你之前生成的标题被套上了一个居中的大空心方框，极其难看！
-   - ❌ 严禁标题居中对齐，所有标题一律靠左对齐。
-2. 板块主标题（H2）标准样式（必须严格使用以下 HTML 胶囊标签结构）：
-   <div style="margin: 30px 0 16px 0; text-align: left;">
+   - ❌ 绝对严禁给标题添加居中空心边框（如 border: 1px solid）！所有标题必须左对齐。
+   - ❌ 严禁出现大段密密麻麻的未分段文字。
+2. 模块主标题（H2）：一律采用微圆角科技蓝胶囊标签：
+   <div style="margin: 32px 0 16px 0; text-align: left;">
        <span style="display: inline-block; background-color: #ebf3fe; color: #1a73e8; font-size: 16px; font-weight: bold; padding: 6px 14px; border-radius: 6px; letter-spacing: 0.5px;">
            🔥 焦点头条 · 深度解读
        </span>
    </div>
-3. 每条新闻必须使用独立的浅底色精致卡片包裹：
-   <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 16px 18px; margin-bottom: 20px;">
-       <h3 style="margin: 0 0 10px 0; font-size: 16px; font-weight: bold; color: #1a202c; line-height: 1.4;">
+3. 单条新闻卡片：使用柔和浅灰底色 + 左侧科技蓝微装饰线：
+   <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+       <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1a202c; line-height: 1.45;">
            1. 谷歌 Googlebook 问世：899 美元的“Gemini 载体”
        </h3>
-       <p style="margin: 0 0 10px 0; font-size: 15px; line-height: 1.8; color: #4a5568; letter-spacing: 0.5px;">
-           [正文内容，重点词句可用 <span style="background-color: #fef3c7; padding: 1px 4px; border-radius: 3px; font-weight: bold;">高亮标记</span>]
+       <p style="margin: 0 0 10px 0; font-size: 15px; line-height: 1.85; color: #4a5568; text-align: justify;">
+           [正文，核心数据或结论可用 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">高亮标记</span>]
        </p>
    </div>
 4. 包含模块：
-   - 顶部封面图
+   - 顶部科技封面图
    - 【今日风向标】（浅灰导读卡片）
    - 【焦点头条 · 深度解读】（胶囊标 + 新闻卡片）
    - 【大厂与开源风云】（胶囊标 + 新闻卡片）
@@ -53,15 +59,12 @@ SYSTEM_PROMPT = """
 """
 
 def clean_wechat_html(html_code: str) -> str:
-    """后处理清洗：彻底消除可能出现的居中空心边框标题与异常外框"""
-    # 消除诸如 border: 1px solid ... text-align: center 的标题方框，转换为精美胶囊标题
+    """彻底消除可能出现的任何居中空心边框标题与异常方框"""
     pattern = r'<div[^>]*border\s*:\s*1px\s*solid[^>]*text-align\s*:\s*center[^>]*>(.*?)</div>'
     def replacer(match):
         text = re.sub(r'<[^>]+>', '', match.group(1)).strip()
         return f'<div style="margin: 28px 0 14px 0; text-align: left;"><span style="display: inline-block; background-color: #ebf3fe; color: #1a73e8; font-size: 16px; font-weight: bold; padding: 6px 14px; border-radius: 6px; letter-spacing: 0.5px;">📌 {text}</span></div>'
-    
-    cleaned = re.sub(pattern, replacer, html_code, flags=re.IGNORECASE | re.DOTALL)
-    return cleaned
+    return re.sub(pattern, replacer, html_code, flags=re.IGNORECASE | re.DOTALL)
 
 def get_available_models(api_key: str) -> List[str]:
     """动态查询当前 API Key 授权的所有可用模型，严格过滤只保留 gemini-3 系列"""
@@ -74,7 +77,6 @@ def get_available_models(api_key: str) -> List[str]:
             for m in models_data:
                 name = m.get("name", "").replace("models/", "")
                 methods = m.get("supportedGenerationMethods", [])
-                # 严格限定：只允许 gemini-3 系列，坚决剔除 2 开头、1 开头和 3.5
                 if "generateContent" in methods and name.startswith("gemini-3") and "3.5" not in name:
                     valid_models.append(name)
             return valid_models
@@ -84,8 +86,11 @@ def get_available_models(api_key: str) -> List[str]:
         print(f"⚠️ 查询可用模型列表失败: {e}")
     return []
 
-def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-flash") -> Tuple[str, List[str]]:
-    """调用 Google Gemini 生成微信图文与要点摘要，返回 (article_html, highlights)"""
+def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-flash") -> Tuple[str, str, str, List[str]]:
+    """
+    调用 Google Gemini 生成微信图文
+    返回: (title, digest, article_html, highlights)
+    """
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         raise ValueError("缺少 GEMINI_API_KEY 环境变量！")
@@ -105,13 +110,18 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-fla
 
 {news_content}
 
-请为本期《AI大模型科技观察 | {today_str}》撰写微信科技新闻推文及海报速览要点。
-注意：在 HTML 文章最开头嵌入封面图：
-<div style="margin-bottom: 22px; text-align: center;">
+请为本期微信公众号推文生成：
+1. 爆款推荐标题 (===TITLE===)
+2. 推荐摘要 (===DIGEST===)
+3. 审核摘要长图要点 (===HIGHLIGHTS===)
+4. 深度美化排版图文 (===ARTICLE===)
+
+注意：在 HTML 正文最开头嵌入封面图：
+<div style="margin-bottom: 24px; text-align: center;">
     <img src="{cover_image_url}" style="width: 100%; border-radius: 10px; display: block; box-shadow: 0 4px 14px rgba(0,0,0,0.08);" alt="AI科技前沿" />
 </div>
 
-请严格遵循 ===HIGHLIGHTS=== 与 ===ARTICLE=== 分隔符输出：
+请严格遵循分隔规范输出：
 """
 
     headers = {"Content-Type": "application/json"}
@@ -129,10 +139,8 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-fla
         }
     }
 
-    # 严密构建降级备选队列：3.8 始终第一，3.6 始终第二，绝对不调用任何 2.x 模型
+    # 严格构建降级备选队列：3.8 始终第一，3.6 始终第二
     candidate_queue = []
-    
-    # 1. 首选 3.8-flash
     if model_name in available_models:
         candidate_queue.append(model_name)
     else:
@@ -142,19 +150,17 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-fla
         if model_name not in candidate_queue:
             candidate_queue.append(model_name)
 
-    # 2. 次选 3.6-flash
     for m in available_models:
         if "3.6" in m and m not in candidate_queue:
             candidate_queue.append(m)
     if "gemini-3.6-flash" not in candidate_queue:
         candidate_queue.append("gemini-3.6-flash")
 
-    # 3. 其他所有经过过滤的 3.x 可用模型
     for m in available_models:
         if m not in candidate_queue:
             candidate_queue.append(m)
 
-    print(f"🚦 最终降级执行链（无任何 2.x 模型）: {' ➔ '.join(candidate_queue)}")
+    print(f"🚦 最终降级执行链（仅限 3.x）: {' ➔ '.join(candidate_queue)}")
 
     last_error = None
     for m in candidate_queue:
@@ -168,22 +174,40 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-fla
                     res_data = response.json()
                     full_text = res_data["candidates"][0]["content"]["parts"][0]["text"].strip()
                     
-                    # 解析 Highlights 与 Article
+                    # 默认值
+                    title = f"AI 大模型前沿观察 | {today_str}"
+                    digest = "一文纵览过去 24 小时全球大模型商业演进、新架构突破与行业核心风向。"
                     highlights = []
                     article_html = full_text
-                    
+
+                    # 解析 TITLE
+                    if "===TITLE===" in full_text:
+                        part_after_title = full_text.split("===TITLE===")[1]
+                        title_line = part_after_title.split("\n")[0].strip()
+                        if title_line:
+                            title = title_line
+
+                    # 解析 DIGEST
+                    if "===DIGEST===" in full_text:
+                        part_after_digest = full_text.split("===DIGEST===")[1]
+                        digest_line = part_after_digest.split("\n")[0].strip()
+                        if digest_line:
+                            digest = digest_line
+
+                    # 解析 HIGHLIGHTS 与 ARTICLE
                     if "===HIGHLIGHTS===" in full_text and "===ARTICLE===" in full_text:
-                        parts = full_text.split("===ARTICLE===")
-                        hl_text = parts[0].replace("===HIGHLIGHTS===", "").strip()
-                        article_html = parts[1].strip()
+                        hl_text = full_text.split("===HIGHLIGHTS===")[1].split("===ARTICLE===")[0].strip()
+                        article_html = full_text.split("===ARTICLE===")[1].strip()
                         for line in hl_text.split("\n"):
                             line = line.strip()
                             if line:
-                                # 移除开头的 1. 2. - * 等标记
                                 clean_line = re.sub(r'^\d+[\.、\s\-]+', '', line).strip()
                                 if clean_line:
                                     highlights.append(clean_line)
-                    else:
+                    elif "===ARTICLE===" in full_text:
+                        article_html = full_text.split("===ARTICLE===")[1].strip()
+
+                    if not highlights:
                         highlights = [
                             "全球主流大模型最新版本密集迭代，多模态推理能力显著提升",
                             "开源社区大模型活跃度再创新高，开发者工具链加速演进",
@@ -194,14 +218,16 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-fla
                         article_html = article_html[7:]
                     if article_html.startswith("```"):
                         article_html = article_html[3:]
+                    if article_html.endswith("```"):
+                        article_html = article_html[:-3]
+                    
                     article_html = clean_wechat_html(article_html.strip())
-                    print(f"🎉 模型 [{m}] 生成成功并完成排版美化！共解析出 {len(highlights)} 条速览要点。")
-                    return article_html, highlights
+                    print(f"🎉 模型 [{m}] 生成成功！标题: 《{title}》")
+                    return title, digest, article_html, highlights
 
                 elif response.status_code in (503, 429):
                     last_error = f"HTTP {response.status_code}: {response.text}"
-                    print(f"⏳ 模型 [{m}] 临时高峰 (HTTP {response.status_code})，详细返回: {response.text.strip()}")
-                    print(f"等待 {attempt * 4} 秒后进行第 {attempt}/3 次重试...")
+                    print(f"⏳ 模型 [{m}] 临时高峰 (HTTP {response.status_code})，等待 {attempt * 4} 秒后重试...")
                     time.sleep(attempt * 4)
                 else:
                     last_error = f"HTTP {response.status_code}: {response.text}"
