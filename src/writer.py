@@ -94,28 +94,30 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-fla
         }
     }
 
-    # 优先使用用户指定的 3.8-flash，其次在可用模型中挑选 flash 和 pro
+    # 过滤掉已明确不支持的 3.5、2.0、1.5 等旧版本
+    available_models = [
+        m for m in available_models
+        if "3.5" not in m and "2.0" not in m and "1.5" not in m
+    ]
+
+    # 优先使用用户指定的 3.8-flash，其次在可用模型中挑选 3.8 / 3.6 / flash
     candidate_queue = []
     if model_name in available_models:
         candidate_queue.append(model_name)
     else:
-        # 如果列表中包含带有 3.8 或 3.6 的名字
         for m in available_models:
-            if "3.8" in m:
+            if "3.8" in m and m not in candidate_queue:
                 candidate_queue.append(m)
         for m in available_models:
-            if "3.6" in m:
-                candidate_queue.append(m)
-        for m in available_models:
-            if "flash" in m and m not in candidate_queue:
+            if "3.6" in m and m not in candidate_queue:
                 candidate_queue.append(m)
         for m in available_models:
             if m not in candidate_queue:
                 candidate_queue.append(m)
     
-    # 兜底：如果 API 列表没取到，使用默认备选列表
+    # 兜底：如果 API 列表没取到，仅使用 3.8-flash 和 3.6-flash
     if not candidate_queue:
-        candidate_queue = [model_name, "gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.5-pro"]
+        candidate_queue = ["gemini-3.8-flash", "gemini-3.6-flash"]
 
     last_error = None
     for m in candidate_queue:
