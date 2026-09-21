@@ -1,93 +1,84 @@
 import requests
 import feedparser
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import List, Dict
 
-def fetch_huggingface_papers() -> List[Dict]:
-    """抓取 Hugging Face Daily Papers 热门大模型论文"""
+def fetch_rss_news(feed_url: str, source_name: str, max_items: int = 5) -> List[Dict]:
+    """通用 RSS 抓取函数"""
+    news = []
+    try:
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+        resp = requests.get(feed_url, headers=headers, timeout=12)
+        if resp.status_code == 200:
+            feed = feedparser.parse(resp.content)
+            for entry in feed.entries[:max_items]:
+                # 清洗摘要中的 HTML 标签
+                summary = entry.get("summary", "") or entry.get("description", "")
+                if "<" in summary:
+                    import re
+                    summary = re.sub(r'<[^>]+>', '', summary)
+                summary = summary.replace("\n", " ").strip()
+                
+                news.append({
+                    "source": source_name,
+                    "title": entry.get("title", "").strip(),
+                    "summary": summary[:280] + "..." if len(summary) > 280 else summary,
+                    "url": entry.get("link", "")
+                })
+    except Exception as e:
+        print(f"抓取 {source_name} 失败: {e}")
+    return news
+
+def fetch_huggingface_trending() -> List[Dict]:
+    """抓取 Hugging Face 社区点赞最高的新大模型动态"""
     url = "https://huggingface.co/api/daily_papers"
-    papers = []
+    items = []
     try:
         resp = requests.get(url, timeout=10)
         if resp.status_code == 200:
             data = resp.json()
-            for item in data[:5]:  # 取前 5 篇
+            for item in data[:3]:
                 paper = item.get("paper", {})
-                title = paper.get("title", "")
-                summary = paper.get("summary", "")
-                upvotes = item.get("upvotes", 0)
-                papers.append({
-                    "source": "Hugging Face Daily Papers",
-                    "title": title,
-                    "summary": summary[:300] + "...",
-                    "upvotes": upvotes,
+                items.append({
+                    "source": "Hugging Face 社区热点",
+                    "title": paper.get("title", ""),
+                    "summary": (paper.get("summary", "")[:200] + "..."),
                     "url": f"https://huggingface.co/papers/{paper.get('id', '')}"
                 })
     except Exception as e:
-        print(f"Error fetching Hugging Face papers: {e}")
-    return papers
-
-def fetch_github_ai_trending() -> List[Dict]:
-    """抓取 GitHub 最新热门的大模型/AI 开源项目"""
-    url = "https://api.github.com/search/repositories?q=topic:llm+stars:>50&sort=updated&order=desc&per_page=6"
-    repos = []
-    try:
-        headers = {"User-Agent": "wechat-ai-daily-bot"}
-        resp = requests.get(url, headers=headers, timeout=10)
-        if resp.status_code == 200:
-            items = resp.json().get("items", [])
-            for item in items[:4]:
-                repos.append({
-                    "source": "GitHub Trending AI",
-                    "title": item.get("full_name", ""),
-                    "summary": item.get("description", "无描述"),
-                    "stars": item.get("stargazers_count", 0),
-                    "url": item.get("html_url", "")
-                })
-    except Exception as e:
-        print(f"Error fetching GitHub trending: {e}")
-    return repos
-
-def fetch_arxiv_ai_rss() -> List[Dict]:
-    """抓取 arXiv cs.CL (计算语言学/LLM) 最新论文 RSS"""
-    url = "https://rss.arxiv.org/rss/cs.CL"
-    papers = []
-    try:
-        feed = feedparser.parse(url)
-        for entry in feed.entries[:4]:
-            papers.append({
-                "source": "arXiv cs.CL",
-                "title": entry.title.replace("\n", " ").strip(),
-                "summary": entry.summary.replace("\n", " ")[:260] + "...",
-                "url": entry.link
-            })
-    except Exception as e:
-        print(f"Error fetching arXiv: {e}")
-    return papers
+        print(f"抓取 Hugging Face 失败: {e}")
+    return items
 
 def aggregate_news() -> str:
-    """聚合所有资讯并整理为 Markdown 文本供 Gemini 消化"""
-    hf_papers = fetch_huggingface_papers()
-    gh_repos = fetch_github_ai_trending()
-    arxiv_papers = fetch_arxiv_ai_rss()
+    """全面聚合全球 AI 大模型重大科技新闻"""
+    all_news = []
+    
+    # 1. TechCrunch 人工智能科技快讯 (权威、深度)
+    print("正在抓取 TechCrunch AI 新闻...")
+    all_news.extend(fetch_rss_news("https://techcrunch.com/category/artificial-intelligence/feed/", "TechCrunch AI", max_items=4))
+    
+    # 2. VentureBeat 专注企业级 AI 与大模型商业化报道
+    print("正在抓取 VentureBeat AI 新闻...")
+    all_news.extend(fetch_rss_news("https://venturebeat.com/category/ai/feed/", "VentureBeat AI", max_items=4))
 
-    content_parts = []
-    content_parts.append(f"# 今日大模型前沿原始素材聚合（抓取时间：{datetime.now().strftime('%Y-%m-%d')}）\n")
+    # 3. The Verge 前沿科技消费与大模型大事件
+    print("正在抓取 The Verge AI 新闻...")
+    all_news.extend(fetch_rss_news("https://www.theverge.com/rss/ai-artificial-intelligence/index.xml", "The Verge AI", max_items=3))
 
-    if hf_papers:
-        content_parts.append("## 1. Hugging Face 社区热议大模型与论文：")
-        for idx, p in enumerate(hf_papers, 1):
-            content_parts.append(f"{idx}. **{p['title']}** (点赞数: {p.get('upvotes', 0)})\n   - 简介: {p['summary']}\n   - 链接: {p['url']}")
+    # 4. Hugging Face 顶级前沿模型突破
+    print("正在抓取 Hugging Face 趋势...")
+    all_news.extend(fetch_huggingface_trending())
 
-    if gh_repos:
-        content_parts.append("\n## 2. GitHub 活跃热门开源 LLM 架构与工具：")
-        for idx, r in enumerate(gh_repos, 1):
-            content_parts.append(f"{idx}. **{r['title']}** (Stars: {r.get('stars', 0)})\n   - 描述: {r['summary']}\n   - 链接: {r['url']}")
-
-    if arxiv_papers:
-        content_parts.append("\n## 3. arXiv 最新前沿自然语言与大模型研究：")
-        for idx, a in enumerate(arxiv_papers, 1):
-            content_parts.append(f"{idx}. **{a['title']}**\n   - 摘要: {a['summary']}\n   - 链接: {a['url']}")
+    # 汇总组织为大模型结构化文本
+    today_str = datetime.now().strftime('%Y-%m-%d')
+    content_parts = [f"# 今日全球 AI & 大模型最新科技新闻动态（聚合时间：{today_str}）\n"]
+    
+    for idx, item in enumerate(all_news, 1):
+        content_parts.append(
+            f"### [{idx}] 【{item['source']}】{item['title']}\n"
+            f"- 核心要点: {item['summary']}\n"
+            f"- 来源链接: {item['url']}\n"
+        )
 
     return "\n".join(content_parts)
 

@@ -4,56 +4,56 @@ import json
 from datetime import datetime
 
 SYSTEM_PROMPT = """
-你是一位专注全球人工智能与大模型（LLM）领域的资深科技主编，长期为顶级科技自媒体撰写公众号内容。
-你的文风特点：客观严谨、兼具极高的技术洞察与通俗可读性，擅长提炼核心价值（“为什么这个模型重要”、“对开发者或行业意味着什么”），杜绝空洞的套话。
+你是一位顶尖的 AI 科技自媒体资深主编，专注于全球大模型（LLM）与人工智能领域的重大科技新闻报道。
+你的受众是关注 AI 发展脉搏的技术人、创业者与数码科技爱好者。
 
-请根据提供的最新素材，撰写一篇图文并茂、排版精美的微信公众号图文。
+【文风与定位】：
+- 聚焦“硬核科技新闻”：有热点、有深度、有商业与技术洞察。
+- 拒绝平铺直叙的翻译，提炼出：“发生了什么”、“对大模型格局有何冲击”、“普通人或开发者能用它做什么”。
+- 语言生动鲜明、排版清爽大气。
 
-【排版与格式要求（极其重要）】：
-1. 微信公众号编辑器仅支持内联 CSS 样式（Inline CSS），因此你必须直接输出一段完整的、可直接粘贴到微信后台的 HTML 结构。
-2. 严禁使用外部 CSS 类名（class），所有样式必须写在标签的 style 属性中。
-3. 结构包含：
-   - 顶部封面横幅图（由我提供占位，你保留即可）。
-   - 导读摘要（用浅灰底色、圆角、精致边框的卡片包裹）。
-   - 【核心头条 · 深度解读】（选 1~2 个最具突破性的大模型/算法，详细阐述技术原理与应用影响）。
-   - 【开源热点 · 神兵利器】（选 2~3 个前沿开源模型或工具，列出核心功能与亮点）。
-   - 【前沿论文 · 趋势速览】（学术前沿动态精粹）。
-   - 【主编观点 / 总结思考】（1~2 句话总结今日技术趋势）。
-4. 样式规范：
-   - 全局字体：-apple-system-font, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-   - 正文字号：15px，行高：1.8，字间距：0.5px，颜色：#2d3748。
-   - 二级标题（H2）：前置精致标签，字号 17px，加粗，主色调建议为高质感的科技蓝（#1a73e8）或紫色。
-   - 强调与引用：重点文字加粗或使用高亮底色背景（例如 background-color: #fff3cd）。
-   - 每个板块必须使用现代卡片式风格（border-radius: 8px, padding: 15px, background-color: #f7fafc, margin-bottom: 20px）。
-5. 直接输出 HTML 代码片段（从包含整个文章的最外层 <section> 开始，到闭合的 </section> 结束），不要用 ```html ``` 这种 markdown 代码块包裹，也不要有任何额外的开场白或解释。
+【排版规范（微信公众号必须是内联 CSS）】：
+1. 严禁外部 CSS，必须全部使用行内 style 属性。
+2. 板块结构规范：
+   - 顶部科技封面图（保留提供的图片占位）。
+   - 【今日风向标】（浅灰/浅蓝圆角卡片，用 2~3 句话高度概括当期最重磅看点）。
+   - 【焦点头条 · 重磅大事件】（深度剖析 1~2 个最轰动的大模型重大新闻）。
+   - 【大厂与开源风云】（OpenAI、Google、Anthropic、DeepSeek、Meta 等最新产品、模型迭代或重大商业动作）。
+   - 【前沿落地与行业观察】（模型新功能、算力/芯片动态、投资或争议）。
+   - 【主编锐评】（1 段有独立视角的精辟总结）。
+3. 样式要求：
+   - 正文：font-size: 15px; line-height: 1.8; color: #2d3748; letter-spacing: 0.5px;
+   - 标题：font-size: 17px; font-weight: bold; color: #1a73e8; margin-bottom: 10px;
+   - 卡片框：background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 16px; margin-bottom: 22px;
+   - 重点句子：使用加粗或淡黄色/浅蓝色背景高亮（background-color: #fef3c7; padding: 1px 4px; border-radius: 3px;）。
+4. 直接输出以 <section> 开始、</section> 闭合的 HTML，不要任何 ```html 标记，也不要有任何客套解释。
 """
 
 def generate_wechat_article(news_content: str, model_name: str = "gemini-2.5-pro") -> str:
-    """调用 Google Gemini API 生成排版好的微信 HTML 文章"""
+    """调用 Google Gemini API 生成大模型科技新闻图文"""
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         raise ValueError("缺少 GEMINI_API_KEY 环境变量！")
 
     today_str = datetime.now().strftime("%Y年%m月%d日")
-    
-    # 动态挑选一张高质量的科技感封面图 (Unsplash 科技主题)
-    cover_image_url = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80"
+    cover_image_url = "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&q=80"
 
     user_prompt = f"""
 今天日期：{today_str}
-以下是过去 24 小时收集到的大模型领域最新素材：
+以下是最新采集到的全球 AI & 大模型重大科技新闻素材：
 
 {news_content}
 
-请为本期《AI大模型前沿早报 | {today_str}》生成微信图文。
+请为本期《AI大模型科技观察 | {today_str}》撰写一篇极具吸引力、图文并茂的微信科技新闻推文。
 注意：请在正文最开头嵌入封面图：
-<div style="margin-bottom: 20px; text-align: center;">
-    <img src="{cover_image_url}" style="width: 100%; border-radius: 10px; display: block; box-shadow: 0 4px 12px rgba(0,0,0,0.08);" alt="AI封面" />
+<div style="margin-bottom: 22px; text-align: center;">
+    <img src="{cover_image_url}" style="width: 100%; border-radius: 10px; display: block; box-shadow: 0 4px 14px rgba(0,0,0,0.08);" alt="AI科技前沿" />
 </div>
-现在，请直接输出美化排版后的完整 HTML 内容：
+
+请严格遵守内联 CSS 排版规范，直接输出完整 HTML：
 """
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
+    headers = {"Content-Type": "application/json"}
     payload = {
         "contents": [
             {
@@ -62,16 +62,12 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-2.5-pro
             }
         ],
         "generationConfig": {
-            "temperature": 0.6,
+            "temperature": 0.5,
             "maxOutputTokens": 8192
         }
     }
 
-    headers = {"Content-Type": "application/json"}
-    
-    # 支持优先使用 gemini-2.5-pro，如果用户权限不同则 fallback 到 gemini-2.5-flash 或 gemini-1.5-pro
     models_to_try = [model_name, "gemini-2.5-flash", "gemini-1.5-pro"]
-    
     last_error = None
     for m in models_to_try:
         try:
@@ -80,7 +76,6 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-2.5-pro
             if response.status_code == 200:
                 res_data = response.json()
                 article_html = res_data["candidates"][0]["content"]["parts"][0]["text"].strip()
-                # 剔除可能存在的 ```html 包裹
                 if article_html.startswith("```html"):
                     article_html = article_html[7:]
                 if article_html.startswith("```"):
@@ -90,7 +85,7 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-2.5-pro
                 return article_html.strip()
             else:
                 last_error = response.text
-                print(f"尝试模型 {m} 失败: {response.status_code}, 正在尝试其他可用模型...")
+                print(f"尝试模型 {m} 未成功: {response.status_code}，正在自动尝试下一个模型...")
         except Exception as e:
             last_error = str(e)
             
