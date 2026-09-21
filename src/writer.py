@@ -100,24 +100,32 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-fla
         if "3.5" not in m and "2.0" not in m and "1.5" not in m
     ]
 
-    # 优先使用用户指定的 3.8-flash，其次在可用模型中挑选 3.8 / 3.6 / flash
+    # 构建降级备选队列：3.8 始终第一，3.6 及其他可用模型紧随其后作为降级通道
     candidate_queue = []
+    
+    # 1. 首选：用户指定的 3.8 模型
     if model_name in available_models:
         candidate_queue.append(model_name)
-    else:
+    elif any("3.8" in m for m in available_models):
         for m in available_models:
             if "3.8" in m and m not in candidate_queue:
                 candidate_queue.append(m)
-        for m in available_models:
-            if "3.6" in m and m not in candidate_queue:
-                candidate_queue.append(m)
-        for m in available_models:
-            if m not in candidate_queue:
-                candidate_queue.append(m)
-    
-    # 兜底：如果 API 列表没取到，仅使用 3.8-flash 和 3.6-flash
-    if not candidate_queue:
-        candidate_queue = ["gemini-3.8-flash", "gemini-3.6-flash"]
+    else:
+        candidate_queue.append(model_name)
+
+    # 2. 次选降级：官方主力 3.6 模型
+    for m in available_models:
+        if "3.6" in m and m not in candidate_queue:
+            candidate_queue.append(m)
+    if "gemini-3.6-flash" not in candidate_queue:
+        candidate_queue.append("gemini-3.6-flash")
+
+    # 3. 兜底降级：把当前 API Key 授权的其他所有可用模型全加上
+    for m in available_models:
+        if m not in candidate_queue:
+            candidate_queue.append(m)
+
+    print(f"🚦 降级调用链已就绪: {' ➔ '.join(candidate_queue)}")
 
     last_error = None
     for m in candidate_queue:
