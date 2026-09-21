@@ -29,7 +29,7 @@ SYSTEM_PROMPT = """
 4. 直接输出以 <section> 开始、</section> 闭合的 HTML，不要任何 ```html 标记，也不要有任何客套解释。
 """
 
-def generate_wechat_article(news_content: str, model_name: str = "gemini-2.5-pro") -> str:
+def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-flash") -> str:
     """调用 Google Gemini API 生成大模型科技新闻图文"""
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
@@ -67,7 +67,7 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-2.5-pro
         }
     }
 
-    models_to_try = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"]
+    models_to_try = [model_name, "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"]
     last_error = None
     for m in models_to_try:
         try:
