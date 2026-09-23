@@ -59,34 +59,6 @@ SYSTEM_PROMPT = """
    - 【主编锐评】（总结卡片）
 """
 
-def clean_wechat_html(html_code: str) -> str:
-    """彻底消除可能出现的任何居中空心边框标题、消除微信多余缩进与拉伸，并纠正错别字"""
-    # 1. 严格纠正错别字：坚决去除重复的“焦”字
-    html_code = html_code.replace("焦焦点头条", "焦点头条")
-    html_code = html_code.replace("焦焦点", "焦点")
-    html_code = html_code.replace("🔥 焦焦点头条", "🔥 焦点头条")
-
-    # 2. 消除残留的居中空心边框标题，转换为微信原生防拉伸胶囊标签
-    box_pattern = r'<div[^>]*border\s*:\s*1px\s*solid[^>]*text-align\s*:\s*center[^>]*>(.*?)</div>'
-    def box_replacer(match):
-        text = re.sub(r'<[^>]+>', '', match.group(1)).strip()
-        text = text.replace("焦焦", "焦")
-        return f'<section style="display: table; text-indent: 0; margin: 28px 0 14px 0; background-color: #ebf3fe; border-radius: 6px; padding: 6px 14px; text-align: left;"><span style="color: #1a73e8; font-size: 15px; font-weight: bold; letter-spacing: 0.5px; text-indent: 0; line-height: 1.2;">📌 {text}</span></section>'
-    html_code = re.sub(box_pattern, box_replacer, html_code, flags=re.IGNORECASE | re.DOTALL)
-
-    # 3. 将原有的 div 包含 span 胶囊标题转换为免疫微信拉伸与免疫首行缩进的 section display: table 结构
-    badge_pattern = r'<div[^>]*text-align\s*:\s*left[^>]*>\s*<span[^>]*background-color\s*:\s*(#[a-fA-F0-9]{3,6})[^>]*color\s*:\s*(#[a-fA-F0-9]{3,6})[^>]*>(.*?)</span>\s*</div>'
-    def badge_replacer(match):
-        bg_color = match.group(1)
-        font_color = match.group(2)
-        text = match.group(3).strip()
-        text_clean = re.sub(r'<[^>]+>', '', text).strip()
-        text_clean = text_clean.replace("焦焦", "焦")
-        return f'<section style="display: table; text-indent: 0; margin: 28px 0 14px 0; background-color: {bg_color}; border-radius: 6px; padding: 6px 14px; text-align: left;"><span style="color: {font_color}; font-size: 15px; font-weight: bold; letter-spacing: 0.5px; text-indent: 0; line-height: 1.2;">{text_clean}</span></section>'
-    html_code = re.sub(badge_pattern, badge_replacer, html_code, flags=re.IGNORECASE | re.DOTALL)
-
-    return html_code
-
 def get_available_models(api_key: str) -> List[str]:
     """动态查询当前 API Key 授权的所有可用模型，严格过滤只保留 gemini-3 系列"""
     try:
@@ -242,7 +214,7 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-fla
                     if article_html.endswith("```"):
                         article_html = article_html[:-3]
                     
-                    article_html = clean_wechat_html(article_html.strip())
+                    article_html = article_html.strip()
                     print(f"🎉 模型 [{m}] 生成成功！标题: 《{title}》")
                     return title, digest, article_html, highlights
 
