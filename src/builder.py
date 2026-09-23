@@ -4,7 +4,7 @@ import requests
 def build_preview_page(
     article_html: str,
     title: str = "AI 大模型前沿科技观察",
-    digest: str = "过去 24 小时全球大模型商业与技术核心风向速览。",
+    digest: str = "近期全球大模型商业与技术核心风向速览。",
     output_path: str = "index.html",
     has_summary_img: bool = True
 ) -> str:

@@ -20,7 +20,7 @@ SYSTEM_PROMPT = """
 ===TITLE===
 [这里是推荐标题，例如：谷歌首款AI电脑问世！苹果2.5亿和解虚假宣传案 | AI前沿早报]
 ===DIGEST===
-[这里是推荐摘要，例如：从Googlebook问世到苹果Siri虚假宣传案和解，一文纵览过去24小时全球大模型商业与技术重大动向。]
+[这里是推荐摘要，例如：从Googlebook问世到苹果Siri虚假宣传案和解，一文纵览近期全球大模型商业与技术重大动向。]
 ===HIGHLIGHTS===
 1. [要点1简述]
 2. [要点2简述]
@@ -169,7 +169,7 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-fla
                     
                     # 默认值
                     title = f"AI 大模型前沿观察 | {today_str}"
-                    digest = "一文纵览过去 24 小时全球大模型商业演进、新架构突破与行业核心风向。"
+                    digest = "一文纵览近期全球大模型商业演进、新架构突破与行业核心风向。"
                     highlights = []
                     article_html = full_text
 
