@@ -95,7 +95,7 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-fla
     print(f"📋 经严格过滤后的 Gemini 3.x 系列授权可用模型:\n{json.dumps(available_models, ensure_ascii=False, indent=2)}")
 
     today_str = datetime.now().strftime("%Y年%m月%d日")
-    cover_image_url = "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&q=80"
+    cover_image_url = "https://jeffei.github.io/wechat-ai-daily/assets/cover.jpg"
 
     user_prompt = f"""
 今天日期：{today_str}
