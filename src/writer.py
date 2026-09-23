@@ -34,12 +34,13 @@ SYSTEM_PROMPT = """
 1. 严禁事项：
    - ❌ 绝对严禁给标题添加居中空心边框（如 border: 1px solid）！所有标题必须左对齐。
    - ❌ 严禁出现大段密密麻麻的未分段文字。
-2. 模块主标题（H2）：一律采用微圆角科技蓝胶囊标签：
-   <div style="margin: 32px 0 16px 0; text-align: left;">
-       <span style="display: inline-block; background-color: #ebf3fe; color: #1a73e8; font-size: 16px; font-weight: bold; padding: 6px 14px; border-radius: 6px; letter-spacing: 0.5px;">
+2. 模块主标题（H2）：一律采用微圆角科技蓝胶囊标签（必须使用 display: table; text-indent: 0;，防止在微信编辑器中被拉伸为全宽条或产生首行缩进）：
+   <section style="display: table; text-indent: 0; margin: 28px 0 14px 0; background-color: #ebf3fe; border-radius: 6px; padding: 6px 14px; text-align: left;">
+       <span style="color: #1a73e8; font-size: 15px; font-weight: bold; letter-spacing: 0.5px; text-indent: 0; line-height: 1.2;">
            🔥 焦点头条 · 深度解读
        </span>
-   </div>
+   </section>
+   【特别注意】：第一个板块主标题必须严格是“🔥 焦点头条 · 深度解读”，千万不要写多字（绝对禁止写成“焦焦点头条”）！
 3. 单条新闻卡片：使用柔和浅灰底色 + 左侧科技蓝微装饰线：
    <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
        <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1a202c; line-height: 1.45;">
@@ -59,12 +60,32 @@ SYSTEM_PROMPT = """
 """
 
 def clean_wechat_html(html_code: str) -> str:
-    """彻底消除可能出现的任何居中空心边框标题与异常方框"""
-    pattern = r'<div[^>]*border\s*:\s*1px\s*solid[^>]*text-align\s*:\s*center[^>]*>(.*?)</div>'
-    def replacer(match):
+    """彻底消除可能出现的任何居中空心边框标题、消除微信多余缩进与拉伸，并纠正错别字"""
+    # 1. 严格纠正错别字：坚决去除重复的“焦”字
+    html_code = html_code.replace("焦焦点头条", "焦点头条")
+    html_code = html_code.replace("焦焦点", "焦点")
+    html_code = html_code.replace("🔥 焦焦点头条", "🔥 焦点头条")
+
+    # 2. 消除残留的居中空心边框标题，转换为微信原生防拉伸胶囊标签
+    box_pattern = r'<div[^>]*border\s*:\s*1px\s*solid[^>]*text-align\s*:\s*center[^>]*>(.*?)</div>'
+    def box_replacer(match):
         text = re.sub(r'<[^>]+>', '', match.group(1)).strip()
-        return f'<div style="margin: 28px 0 14px 0; text-align: left;"><span style="display: inline-block; background-color: #ebf3fe; color: #1a73e8; font-size: 16px; font-weight: bold; padding: 6px 14px; border-radius: 6px; letter-spacing: 0.5px;">📌 {text}</span></div>'
-    return re.sub(pattern, replacer, html_code, flags=re.IGNORECASE | re.DOTALL)
+        text = text.replace("焦焦", "焦")
+        return f'<section style="display: table; text-indent: 0; margin: 28px 0 14px 0; background-color: #ebf3fe; border-radius: 6px; padding: 6px 14px; text-align: left;"><span style="color: #1a73e8; font-size: 15px; font-weight: bold; letter-spacing: 0.5px; text-indent: 0; line-height: 1.2;">📌 {text}</span></section>'
+    html_code = re.sub(box_pattern, box_replacer, html_code, flags=re.IGNORECASE | re.DOTALL)
+
+    # 3. 将原有的 div 包含 span 胶囊标题转换为免疫微信拉伸与免疫首行缩进的 section display: table 结构
+    badge_pattern = r'<div[^>]*text-align\s*:\s*left[^>]*>\s*<span[^>]*background-color\s*:\s*(#[a-fA-F0-9]{3,6})[^>]*color\s*:\s*(#[a-fA-F0-9]{3,6})[^>]*>(.*?)</span>\s*</div>'
+    def badge_replacer(match):
+        bg_color = match.group(1)
+        font_color = match.group(2)
+        text = match.group(3).strip()
+        text_clean = re.sub(r'<[^>]+>', '', text).strip()
+        text_clean = text_clean.replace("焦焦", "焦")
+        return f'<section style="display: table; text-indent: 0; margin: 28px 0 14px 0; background-color: {bg_color}; border-radius: 6px; padding: 6px 14px; text-align: left;"><span style="color: {font_color}; font-size: 15px; font-weight: bold; letter-spacing: 0.5px; text-indent: 0; line-height: 1.2;">{text_clean}</span></section>'
+    html_code = re.sub(badge_pattern, badge_replacer, html_code, flags=re.IGNORECASE | re.DOTALL)
+
+    return html_code
 
 def get_available_models(api_key: str) -> List[str]:
     """动态查询当前 API Key 授权的所有可用模型，严格过滤只保留 gemini-3 系列"""
