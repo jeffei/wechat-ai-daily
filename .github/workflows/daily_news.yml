@@ -31,6 +31,9 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      - name: Test Article Formatting
+        run: python -m unittest discover -s tests -v
+
       - name: Fetch AI News & Generate Article via Gemini 3.x
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}

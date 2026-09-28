@@ -1,5 +1,53 @@
 import os
 import requests
+import re
+from bs4 import BeautifulSoup, NavigableString, Comment
+
+
+SECTION_TITLES = (
+    "焦点头条", "焦点头条·深度解读", "焦点头条·重磅大事件", "大厂与开源风云", "前沿落地与商业观察",
+    "前沿落地与行业观察", "今日风向标", "主编锐评",
+)
+
+
+def normalize_section_headings(article_html: str) -> str:
+    """仅清理栏目标题，保留正文、英文词间空格与标题内嵌格式。"""
+    soup = BeautifulSoup(article_html, "html.parser")
+    for heading in soup.find_all(["section", "div", "h2", "p"]):
+        # 不把包含正文/子标题的整张卡片当成标题处理。
+        if heading.find(["section", "div", "h1", "h2", "h3", "p", "ul", "ol", "table"]):
+            continue
+        label = heading.get_text().strip()
+        compact = re.sub(r"\s+", "", label)
+        if not any(re.fullmatch(r"[^\w]*" + re.escape(name) + r"[^\w]*", compact)
+                   for name in SECTION_TITLES):
+            continue
+        nodes = [node for node in heading.descendants
+                 if isinstance(node, NavigableString) and not isinstance(node, Comment)]
+        # HTML 实体已由解析器解码，strip 同时处理 NBSP、全角空格等。
+        for node in nodes:
+            cleaned = str(node).lstrip()
+            node.replace_with(cleaned)
+            if cleaned:
+                break
+        nodes = [node for node in heading.descendants
+                 if isinstance(node, NavigableString) and not isinstance(node, Comment)]
+        for node in reversed(nodes):
+            cleaned = str(node).rstrip()
+            node.replace_with(cleaned)
+            if cleaned:
+                break
+        for tag in [heading, *heading.find_all(True)]:
+            style = tag.get("style", "")
+            style = re.sub(r"(?:^|;)\s*(?:text-indent|white-space)\s*:[^;]*", "", style,
+                           flags=re.IGNORECASE).strip("; ")
+            tag["style"] = style + "; text-indent: 0; white-space: normal;"
+        # 只缩小胶囊本身的留白，不改变导读/总结卡片的 padding。
+        if re.search(r"display\s*:\s*(?:table|inline-block)\b", heading.get("style", ""), re.I):
+            style = re.sub(r"(?:^|;)\s*padding(?:-left|-right|-inline(?:-start|-end)?)?\s*:[^;]*",
+                           "", heading["style"], flags=re.I).strip("; ")
+            heading["style"] = style + "; padding: 6px 8px;"
+    return str(soup)
 
 def build_preview_page(
     article_html: str,
@@ -9,6 +57,7 @@ def build_preview_page(
     has_summary_img: bool = True
 ) -> str:
     """生成带有『标题复制』、『摘要复制』、『审核图』与『一键复制微信正文』的发布工作台"""
+    article_html = normalize_section_headings(article_html)
     
     summary_img_block = ""
     if has_summary_img:

@@ -35,11 +35,8 @@ SYSTEM_PROMPT = """
    - ❌ 绝对严禁给标题添加居中空心边框（如 border: 1px solid）！所有标题必须左对齐。
    - ❌ 严禁出现大段密密麻麻的未分段文字。
 2. 模块主标题（H2）：一律采用微圆角科技蓝胶囊标签（必须使用 display: table; text-indent: 0;，防止在微信编辑器中被拉伸为全宽条或产生首行缩进）：
-   <section style="display: table; text-indent: 0; margin: 28px 0 14px 0; background-color: #ebf3fe; border-radius: 6px; padding: 6px 14px; text-align: left;">
-       <span style="color: #1a73e8; font-size: 15px; font-weight: bold; letter-spacing: 0.5px; text-indent: 0; line-height: 1.2;">
-           🔥 焦点头条 · 深度解读
-       </span>
-   </section>
+   <section style="display: table; text-indent: 0; white-space: normal; margin: 28px 0 14px 0; background-color: #ebf3fe; border-radius: 6px; padding: 6px 8px; text-align: left;"><span style="color: #1a73e8; font-size: 15px; font-weight: bold; letter-spacing: 0.5px; text-indent: 0; line-height: 1.2;">🔥 焦点头条 · 深度解读</span></section>
+   标题标签与文字紧邻，禁止在标题首尾插入换行、缩进、全角空格或 &nbsp; / &#160; / &#xA0;。不要用空格实现排版；英文词间的正常空格仍需保留。
    【特别注意】：第一个板块主标题必须严格是“🔥 焦点头条 · 深度解读”，千万不要写多字（绝对禁止写成“焦焦点头条”）！
 3. 单条新闻卡片：使用柔和浅灰底色 + 左侧科技蓝微装饰线：
    <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
