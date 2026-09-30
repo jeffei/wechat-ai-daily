@@ -7,6 +7,8 @@ from bs4 import BeautifulSoup, NavigableString, Comment
 SECTION_TITLES = (
     "焦点头条", "焦点头条·深度解读", "焦点头条·重磅大事件", "大厂与开源风云", "前沿落地与商业观察",
     "前沿落地与行业观察", "今日风向标", "主编锐评",
+    "极客彩蛋", "极客彩蛋·OpenRouter免费大模型福利", "极客彩蛋·OpenRouter免费模型福利",
+    "极客彩蛋·免费大模型福利", "极客彩蛋·免费模型福利", "免费模型福利",
 )
 
 

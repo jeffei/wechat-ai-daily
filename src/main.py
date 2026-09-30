@@ -11,6 +11,7 @@ from fetcher import aggregate_news
 from writer import generate_wechat_article
 from image_generator import generate_summary_card
 from builder import build_preview_page, notify_user
+from openrouter import fetch_openrouter_free_models, generate_easter_egg_html, inject_easter_egg
 
 DOCS_DIR = "docs"
 
@@ -54,6 +55,16 @@ def main():
     print("🤖 正在调用 Google Gemini 3.x 生成微信图文、爆款标题与速览摘要...")
     title, digest, article_html, highlights = generate_wechat_article(news_content)
     print(f"✅ Gemini 生成成功！\n📌 推荐标题: 《{title}》\n📝 推荐摘要: {digest}")
+
+    # 2.5 抓取 OpenRouter Discover 免费模型彩蛋并嵌入文章末尾
+    print("🎁 正在抓取 OpenRouter Discover 免费大模型彩蛋福利...")
+    try:
+        free_models = fetch_openrouter_free_models(top_n=2)
+        easter_egg_html = generate_easter_egg_html(free_models)
+        article_html = inject_easter_egg(article_html, easter_egg_html)
+        print(f"✅ 彩蛋已添加: 共包含 {len(free_models)} 款热门免费模型福利")
+    except Exception as e:
+        print(f"⚠️ 添加彩蛋模块失败 (不影响主流程): {e}")
 
     # 3. 按当前执行时间创建专属历史归档文件夹 (格式: 2026-09-22_10-00-00)
     exec_timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
