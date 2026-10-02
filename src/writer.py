@@ -211,6 +211,16 @@ def generate_wechat_article(news_content: str, model_name: str = "gemini-3.8-fla
                     if article_html.endswith("```"):
                         article_html = article_html[:-3]
                     
+                    # 剥离模型自发追加的各类结尾标记（如 ===END===, ===END ARTICLE=== 等）
+                    article_html = re.sub(r'===\s*END(?:[_\s]*ARTICLE)?\s*===.*$', '', article_html, flags=re.IGNORECASE | re.DOTALL).strip()
+                    
+                    # 确保文章截止于最外层的 </section>，过滤掉标签外部的一切杂质文本
+                    last_sec = article_html.rfind("</section>")
+                    if last_sec != -1:
+                        trailing = article_html[last_sec + len("</section>"):].strip()
+                        if trailing and not trailing.startswith("<"):
+                            article_html = article_html[:last_sec + len("</section>")].strip()
+
                     article_html = article_html.strip()
                     print(f"🎉 模型 [{m}] 生成成功！标题: 《{title}》")
                     return title, digest, article_html, highlights

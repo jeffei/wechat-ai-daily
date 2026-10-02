@@ -9,11 +9,15 @@ SECTION_TITLES = (
     "前沿落地与行业观察", "今日风向标", "主编锐评",
     "极客彩蛋", "极客彩蛋·OpenRouter免费大模型福利", "极客彩蛋·OpenRouter免费模型福利",
     "极客彩蛋·免费大模型福利", "极客彩蛋·免费模型福利", "免费模型福利",
+    "彩蛋", "彩蛋·OpenRouter免费大模型福利", "彩蛋·OpenRouter免费模型福利",
+    "彩蛋·免费大模型福利", "彩蛋·免费模型福利",
 )
 
 
 def normalize_section_headings(article_html: str) -> str:
     """仅清理栏目标题，保留正文、英文词间空格与标题内嵌格式。"""
+    # 彻底过滤可能残留的模型结尾标记（如 ===END===）
+    article_html = re.sub(r'===\s*END(?:[_\s]*ARTICLE)?\s*===.*$', '', article_html, flags=re.IGNORECASE | re.DOTALL).strip()
     soup = BeautifulSoup(article_html, "html.parser")
     for heading in soup.find_all(["section", "div", "h2", "p"]):
         # 不把包含正文/子标题的整张卡片当成标题处理。

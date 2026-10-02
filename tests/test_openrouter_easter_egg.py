@@ -39,9 +39,20 @@ class OpenRouterEasterEggTests(unittest.TestCase):
         soup = BeautifulSoup(cleaned, "html.parser")
         heading = soup.find("section")
         self.assertIsNotNone(heading)
-        self.assertEqual(heading.get_text().strip(), "🎁 极客彩蛋 · OpenRouter 免费大模型福利")
+        self.assertEqual(heading.get_text().strip(), "🎁 彩蛋 · OpenRouter 免费大模型福利")
         self.assertIn("padding: 6px 8px", heading["style"])
         self.assertIn("text-indent: 0", heading["style"])
+
+    def test_end_marker_is_stripped_cleanly(self):
+        article_with_end = '<section style="font-size:15px;"><p>Content</p></section>\n===END==='
+        easter_egg = '<div id="easter-egg">Bonus Content</div>'
+        injected = inject_easter_egg(article_with_end, easter_egg)
+        self.assertNotIn("===END===", injected)
+        self.assertTrue(injected.endswith("</section>"))
+
+        normalized = normalize_section_headings(injected + "\n===END===")
+        self.assertNotIn("===END===", normalized)
+
 
 if __name__ == "__main__":
     unittest.main()

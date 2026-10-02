@@ -91,9 +91,11 @@ def inject_easter_egg(article_html: str, easter_egg_html: str) -> str:
     """
     将彩蛋模块嵌入在推文末尾（主编锐评之后，外层容器闭合之前）
     """
+    # 清理可能混入的 ===END=== 等模型结尾标记
+    article_html = re.sub(r'===\s*END(?:[_\s]*ARTICLE)?\s*===.*$', '', article_html, flags=re.IGNORECASE | re.DOTALL).strip()
     last_section_idx = article_html.rfind("</section>")
     if last_section_idx != -1:
-        return article_html[:last_section_idx] + "\n" + easter_egg_html + "\n" + article_html[last_section_idx:]
+        return article_html[:last_section_idx] + "\n" + easter_egg_html + "\n</section>"
     return article_html + "\n" + easter_egg_html
 
 
