@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>AI 大模型前沿观察 | 2026年09月30日 · 微信公众号发布工作台</title>
-<style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 大模型前沿观察 | 2026年10月02日 · 微信公众号发布工作台</title>
+    <style>
         body {
             margin: 0;
             padding: 0;
@@ -131,122 +130,133 @@
     </style>
 </head>
 <body>
-<div class="top-bar">
-<div class="brand">🚀 微信公众号 · AI大模型早报发布台</div>
-<button class="copy-main-btn" onclick="copyArticleBody()">📋 一键复制正文排版</button>
-</div>
-<div class="toast" id="toast">✅ 已复制到剪贴板！</div>
-<div class="container">
-<!-- 微信发布助手（标题、摘要） -->
-<div class="helper-card">
-<div class="helper-title">🎯 微信后台一键发文助手</div>
-<div class="helper-row">
-<div class="helper-label">📌 推荐标题</div>
-<div class="helper-val" id="title-text">AI 大模型前沿观察 | 2026年09月30日</div>
-<button class="small-copy-btn" onclick="copyTextById('title-text', '文章标题已复制！')">复制标题</button>
-</div>
-<div class="helper-row">
-<div class="helper-label">📝 推荐摘要</div>
-<div class="helper-val" id="digest-text">一文纵览近期全球大模型商业演进、新架构突破与行业核心风向。</div>
-<button class="small-copy-btn" onclick="copyTextById('digest-text', '推文摘要已复制！')">复制摘要</button>
-</div>
-<div style="font-size: 12px; color: #718096; margin-top: 10px; display: flex; justify-content: space-between;">
-<span>💡 复制标题与摘要后，点击上方绿色按钮复制正文，在公众号后台 Ctrl+V 即可。</span>
-</div>
-</div>
-<!-- 审核速览长图 -->
-<div style="margin-bottom: 24px; background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); text-align: center;">
-<div style="font-weight: 600; font-size: 16px; margin-bottom: 8px; color: #2d3748;">
+    <div class="top-bar">
+        <div class="brand">🚀 微信公众号 · AI大模型早报发布台</div>
+        <button class="copy-main-btn" onclick="copyArticleBody()">📋 一键复制正文排版</button>
+    </div>
+
+    <div id="toast" class="toast">✅ 已复制到剪贴板！</div>
+
+    <div class="container">
+        <!-- 微信发布助手（标题、摘要） -->
+        <div class="helper-card">
+            <div class="helper-title">🎯 微信后台一键发文助手</div>
+            
+            <div class="helper-row">
+                <div class="helper-label">📌 推荐标题</div>
+                <div class="helper-val" id="title-text">AI 大模型前沿观察 | 2026年10月02日</div>
+                <button class="small-copy-btn" onclick="copyTextById('title-text', '文章标题已复制！')">复制标题</button>
+            </div>
+
+            <div class="helper-row">
+                <div class="helper-label">📝 推荐摘要</div>
+                <div class="helper-val" id="digest-text">一文纵览近期全球大模型商业演进、新架构突破与行业核心风向。</div>
+                <button class="small-copy-btn" onclick="copyTextById('digest-text', '推文摘要已复制！')">复制摘要</button>
+            </div>
+            
+            <div style="font-size: 12px; color: #718096; margin-top: 10px; display: flex; justify-content: space-between;">
+                <span>💡 复制标题与摘要后，点击上方绿色按钮复制正文，在公众号后台 Ctrl+V 即可。</span>
+            </div>
+        </div>
+
+        <!-- 审核速览长图 -->
+        
+        <div style="margin-bottom: 24px; background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); text-align: center;">
+            <div style="font-weight: 600; font-size: 16px; margin-bottom: 8px; color: #2d3748;">
                 🖼️ 今日审核速览摘要长图（已自动渲染）
             </div>
-<p style="font-size: 13px; color: #718096; margin-top: 0; margin-bottom: 14px;">
+            <p style="font-size: 13px; color: #718096; margin-top: 0; margin-bottom: 14px;">
                 审核确认今日核心要点，可长按/右键保存直接发朋友圈、社群
             </p>
-<a href="summary.png" target="_blank" title="点击查看大图">
-<img alt="今日早报速览摘要图" src="summary.png" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); border: 1px solid #edf2f7;"/>
-</a>
-<div style="margin-top: 12px;">
-<a download="summary.png" href="summary.png" style="display: inline-block; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; text-decoration: none; padding: 7px 16px; font-size: 13px; border-radius: 6px; font-weight: 600;">
+            <a href="summary.png" target="_blank" title="点击查看大图">
+                <img src="summary.png" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); border: 1px solid #edf2f7;" alt="今日早报速览摘要图" />
+            </a>
+            <div style="margin-top: 12px;">
+                <a href="summary.png" download="summary.png" style="display: inline-block; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; text-decoration: none; padding: 7px 16px; font-size: 13px; border-radius: 6px; font-weight: 600;">
                     ⬇️ 下载原尺寸摘要海报
                 </a>
-</div>
-</div>
-<!-- 微信正文区域 -->
-<div class="article-card">
-<div style="font-size: 13px; color: #a0aec0; margin-bottom: 16px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
+            </div>
+        </div>
+        
+
+        <!-- 微信正文区域 -->
+        <div class="article-card">
+            <div style="font-size: 13px; color: #a0aec0; margin-bottom: 16px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
                 📖 微信排版效果实时预览区（已应用最舒适自媒体排版规范）
             </div>
-<div id="wechat-content">
+            <div id="wechat-content">
 <section style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; font-size: 15px; color: #333333; line-height: 1.85; letter-spacing: 0.5px;">
 <div style="margin-bottom: 24px; text-align: center;">
 <img alt="AI科技前沿" src="https://jeffei.github.io/wechat-ai-daily/assets/cover.jpg" style="width: 100%; border-radius: 10px; display: block; box-shadow: 0 4px 14px rgba(0,0,0,0.08);"/>
 </div>
-<!-- 今日风向标 -->
-<div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px 20px; margin-bottom: 28px;">
-<div style="font-weight: bold; font-size: 15px; color: #1a73e8; margin-bottom: 8px; text-indent: 0; white-space: normal;">📌 今日风向标</div>
-<div style="font-size: 14px; color: #4a5568; line-height: 1.75;">
-        过去 48 小时，AI 圈迎来下半年最强地震！OpenAI DevDay 2026 盛大召开，重磅推出全天候 Agent 助手“Dots”与新一代低成本模型 GPT-6.1 Sol，并传出以 1.4 万亿美元估值融资的狂想；与此同时，马斯克再次展现硬核搞笑操作，提前截胡域名背刺 OpenAI；而 Agent 落地过程中的安全隐患也首次引发大规模警示。
-    </div>
+<div style="background-color: #f1f5f9; border-radius: 8px; padding: 16px 20px; margin-bottom: 26px;">
+<p style="margin: 0; font-size: 14px; color: #475569; line-height: 1.75;">
+<strong style="color: #0f172a;">📌 今日风向标：</strong>过去48小时，硅谷AI巨头迎来了AI Agent（智能体）与新一代基座模型的全面撕杀。OpenAI DevDay重磅亮相，GPT-6正式登场赋能原生Agent；谷歌则以Gemini 4 Argon应战，大模型竞争已全面从“文本对话”跨入“执行能力与太空算力”的全新维度。
+    </p>
 </div>
-<!-- 模块一：焦点头条 · 深度解读 -->
 <section style="display: table; margin: 28px 0 14px 0; background-color: #ebf3fe; border-radius: 6px; text-align: left; text-indent: 0; white-space: normal; padding: 6px 8px;"><span style="color: #1a73e8; font-size: 15px; font-weight: bold; letter-spacing: 0.5px; line-height: 1.2; text-indent: 0; white-space: normal;">🔥 焦点头条 · 深度解读</span></section>
 <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
 <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1a202c; line-height: 1.45;">
-        1. OpenAI DevDay 2026 炸场：AI Agent“Dots”与 GPT-6.1 Sol 亮相，冲刺 1.4 万亿估值
+        1. OpenAI 开发者大会爆款：GPT-6 驱动的 Dots 智能体对标 Meta Muse
     </h3>
 <p style="margin: 0 0 10px 0; font-size: 15px; line-height: 1.85; color: #4a5568; text-align: justify;">
-        在旧金山举办的 DevDay 2026 主旨演讲上，Sam Altman 正式发布了对标 Meta Muse 的全新产品 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">Dots</span>。Dots 是可以独立于硬件和特定界面运行的“全天候 Agent”，能够在后台跨应用持续执行任务。此外，OpenAI 还发布了性价比极高的 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">GPT-6.1 Sol</span> 模型，其性能接近旗旗舰 Astra，但推理成本大幅下降。资本市场方面，OpenAI 被曝正谈判在 IPO 前开展最后一轮 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">300 亿美元融资</span>，目标估值高达 1.4 万亿美元。
+        在刚刚结束的 OpenAI DevDay 上，CEO 山姆·奥特曼现场发布了全新 AI 智能体平台 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">Dots</span>。作为真正意义上的 AI Agent，Dots 底层直接由 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">GPT-6</span> 驱动，具备高阶自主跨应用调度能力。此举被业内普遍视为对 Meta Muse 智能体平台的正面迎击，两者在免费策略与闭环生态上的较量正式白热化。
     </p>
 </div>
 <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
 <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1a202c; line-height: 1.45;">
-        2. 马斯克神操作！xAI 提前买下 dot.com 域名，精准背刺 OpenAI 新品发布
+        2. 谷歌发布 Gemini 4 Argon：最强前沿模型因“能力过强”限时封控
     </h3>
 <p style="margin: 0 0 10px 0; font-size: 15px; line-height: 1.85; color: #4a5568; text-align: justify;">
-        就在 OpenAI 隆重推出智能体“Dots”前夕，细心网友发现域名 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">dot.com</span> 已被马斯克旗下的 xAI 秘密收购。目前访问该域名，会自动直接重定向至 Grok 聊天机器人的下载页面。马斯克这一波“顶级商战”截胡不仅在科技圈引发热议，更给 OpenAI 的品牌营销泼了一盆冷水。
+        谷歌正式推出了新一代旗舰模型 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">Gemini 4 Argon</span>，号称在软件工程、金融法律和网络安全防护等复杂工作流中达到了行业顶级水平。由于其攻防与代码生成能力过于强大，谷歌宣布初期仅向 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">受信任的网络安全防御机构</span> 开放访问权限，尽显行业领跑者的审慎态度。
     </p>
 </div>
-<!-- 模块二：大厂与开源风云 -->
-<section style="display: table; margin: 28px 0 14px 0; background-color: #ebf3fe; border-radius: 6px; text-align: left; text-indent: 0; white-space: normal; padding: 6px 8px;"><span style="color: #1a73e8; font-size: 15px; font-weight: bold; letter-spacing: 0.5px; line-height: 1.2; text-indent: 0; white-space: normal;">⚡ 大厂与开源风云</span></section>
+<section style="display: table; margin: 28px 0 14px 0; background-color: #ebf3fe; border-radius: 6px; text-align: left; text-indent: 0; white-space: normal; padding: 6px 8px;"><span style="color: #1a73e8; font-size: 15px; font-weight: bold; letter-spacing: 0.5px; line-height: 1.2; text-indent: 0; white-space: normal;">🌐 大厂与开源风云</span></section>
 <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
 <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1a202c; line-height: 1.45;">
-        1. 兵临城下：OpenAI 开派 ChatGPT 办公套件，直面挑战微软与传统 App Store 模式
+        3. ChatGPT 推出“虚拟试衣”功能：大模型开启消费电商新入口
     </h3>
 <p style="margin: 0 0 10px 0; font-size: 15px; line-height: 1.85; color: #4a5568; text-align: justify;">
-        OpenAI 在大会上展示了一系列全方位的办公协同新功能，旨在将 ChatGPT 打造为包含文档理解、工作流自动化和多应用分发的综合平台。这表明 OpenAI 正在摆脱对微软生态的依赖，一步步构建属于自己的 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">替代型应用生态系统</span>，直接冲击传统 App Store 模式。
-    </p>
-</div>
-<div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
-<h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1a202c; line-height: 1.45;">
-        2. 防御“野人 Agent”：英伟达组建安全联盟，OpenAI 私下低调参与
-    </h3>
-<p style="margin: 0 0 10px 0; font-size: 15px; line-height: 1.85; color: #4a5568; text-align: justify;">
-        针对失控 AI Agent（Rogue AI Agents）带来的安全隐患，英伟达联合多家巨头推出了“开放 Agent 安全平台”。虽然 OpenAI 并未列入公开发起名单，但内部消息证实其正与英伟达开展 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">私下深度技术合作</span>，共同防范自主智能体的越权风险。
-    </p>
-</div>
-<!-- 模块三：前沿落地与商业观察 -->
-<section style="display: table; margin: 28px 0 14px 0; background-color: #ebf3fe; border-radius: 6px; text-align: left; text-indent: 0; white-space: normal; padding: 6px 8px;"><span style="color: #1a73e8; font-size: 15px; font-weight: bold; letter-spacing: 0.5px; line-height: 1.2; text-indent: 0; white-space: normal;">💡 前沿落地与商业观察</span></section>
-<div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
-<h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1a202c; line-height: 1.45;">
-        1. Meta Muse AI 爆发隐私安全事故：将科技博主住宅地址泄漏给陌生人
-    </h3>
-<p style="margin: 0 0 10px 0; font-size: 15px; line-height: 1.85; color: #4a5568; text-align: justify;">
-        知名科技博主 Matt Robb 暴光，他在授权 Meta 的 Muse AI 助手代管其 Facebook Marketplace 账号后， Muse 竟然在对话中将他的 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">家庭真实住址</span> 发送给了一位完全陌生的买家。此事掀起了业界对个人 AI 智能体数据权限控制的极度担忧。
+        OpenAI 正在为其 ChatGPT 逐步推送全新的电商购物功能。用户只需上传个人照片，AI 即可实现高保真的 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">服装与饰品虚拟试穿</span>，并支持一键将心仪商品保存至个人收藏夹。这标志着大模型正在直接深入千亿美元级的消费电商场景。
     </p>
 </div>
 <div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
 <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1a202c; line-height: 1.45;">
-        2. Agent 安全赛道火爆：Reco 获 5500 万美元融资；学者警告灭绝风险“半对半”
+        4. Gemini Live 升级 Guided Vision：手机镜头秒变高精“视障助手”
     </h3>
 <p style="margin: 0 0 10px 0; font-size: 15px; line-height: 1.85; color: #4a5568; text-align: justify;">
-        受智能体安全事故频发影响，专注于 AI Agent 安全防护的初创公司 Reco 宣布获得 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">5500 万美元新融资</span>。与此同时，来自 OpenAI、Google 和 Anthropic 的十多位顶尖学者发布视频访谈，前 DeepMind 研究员 Geoffrey Irving 表示，超级智能导致人类灭绝的风险概率“就像抛硬币一样”（50%左右），呼吁行业紧迫提升安全对齐标准。
+        谷歌在 Android 设备上的 Gemini Live 中上线了 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">Guided Vision</span> 功能。用户开启摄像头共享后，视觉 AI 能实时通过语音引导帮助使用者识别并朗读药物标签上的微小文字、描述复杂环境细节，极大提升了多模态 AI 的现实实用价值。
     </p>
 </div>
-<!-- 主编锐评 -->
-<div style="background-color: #edf2f7; border-radius: 10px; padding: 20px; margin-top: 30px; margin-bottom: 20px;">
-<div style="font-weight: bold; font-size: 16px; color: #2d3748; margin-bottom: 10px; display: flex; align-items: center; text-indent: 0; white-space: normal;">📝 主编锐评</div>
-<p style="margin: 0; font-size: 14px; line-height: 1.8; color: #4a5568; text-align: justify;">
-        从 OpenAI DevDay 的全方布局可以看出，2026 年的主旋律早已从单纯的“大模型参数PK”转向了“Agent 实地落地与生态闭环”。无论是 Dots 的后台持续任务执行，还是 ChatGPT 办公套件对微软的直接挑战，都标志着 AI 正全面接入人类工作流。然而，Meta Muse 的隐私泄漏悲剧也为整个行业敲响了警钟：在赋予 AI 更多自治权之前，安全与隐私的防线绝不可被越过一步。
+<div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+<h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1a202c; line-height: 1.45;">
+        5. 马斯克 SpaceXAI 旗下 Grokipedia 升级至 v0.3 版本
+    </h3>
+<p style="margin: 0 0 10px 0; font-size: 15px; line-height: 1.85; color: #4a5568; text-align: justify;">
+        SpaceXAI 旗下对标维基百科的 AI 知识库 Grokipedia 推出了 v0.3 全新设计版本。更新涵盖了全新的视觉 Logo、重构的首页设计以及实时编辑动态流，进一步凸显了马斯克阵营在构建 AI 知识底座上的雄心。
+    </p>
+</div>
+<section style="display: table; margin: 28px 0 14px 0; background-color: #ebf3fe; border-radius: 6px; text-align: left; text-indent: 0; white-space: normal; padding: 6px 8px;"><span style="color: #1a73e8; font-size: 15px; font-weight: bold; letter-spacing: 0.5px; line-height: 1.2; text-indent: 0; white-space: normal;">🚀 前沿落地与商业观察</span></section>
+<div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+<h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1a202c; line-height: 1.45;">
+        6. 太空算力时代开启：谷歌芯片入轨，初创公司 Satlyt 获 800 万美元融资
+    </h3>
+<p style="margin: 0 0 10px 0; font-size: 15px; line-height: 1.85; color: #4a5568; text-align: justify;">
+        为了为未来“太空数据中心”铺路，谷歌已成功将首款先进计算芯片送入轨道。与此同时，由谷歌与 SpaceX 前产品经理创立的 Satlyt 宣布完成 800 万美元融资，旨在打造轨道计算的 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">开放 Android 操作系统</span>，挑战传统的闭环航天计算架构。
+    </p>
+</div>
+<div style="background-color: #f8fafc; border-left: 4px solid #1a73e8; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+<h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: bold; color: #1a202c; line-height: 1.45;">
+        7. 硬件 AI 迎来“电子宠物”潮：OpenAI 与 Meta 正式角逐实体终端
+    </h3>
+<p style="margin: 0 0 10px 0; font-size: 15px; line-height: 1.85; color: #4a5568; text-align: justify;">
+        虽然过去专用 AI 硬件尝试屡屡受挫，但 OpenAI 和 Meta 正试图改变这一现状。两家公司均计划在未来一年内推出类似的 <span style="background-color: #fef3c7; color: #92400e; padding: 2px 5px; border-radius: 4px; font-weight: bold;">便携式 AI 实体终端（类似电子宠物）</span>，尝试通过更有温度、互动性更强的软硬件融合体验重新定义个人 AI 助手。
+    </p>
+</div>
+<section style="display: table; margin: 28px 0 14px 0; background-color: #ebf3fe; border-radius: 6px; text-align: left; text-indent: 0; white-space: normal; padding: 6px 8px;"><span style="color: #1a73e8; font-size: 15px; font-weight: bold; letter-spacing: 0.5px; line-height: 1.2; text-indent: 0; white-space: normal;">✍️ 主编锐评</span></section>
+<div style="background-color: #faf5ff; border: 1px solid #e9d5ff; border-radius: 8px; padding: 18px 20px; margin-bottom: 20px;">
+<p style="margin: 0; font-size: 15px; line-height: 1.8; color: #581c87; text-align: justify;">
+<strong>主编视角：</strong>从 GPT-6 驱动的 Dots 到 Gemini 4 Argon，大模型的演进逻辑发生了深刻质变：纯粹的“Chat对话”形态正在加速退场，取而代之的是具备强执行能力的 Agent 和高阶安全保障。无论是试穿购物、眼睛辅助，还是打入轨道的太空算力，AI 正在撕下单纯软件的标签，全面渗透并重塑我们的物理世界与商业规则。
     </p>
 </div>
 <!-- 🎁 极客彩蛋 · OpenRouter 免费大模型福利 -->
@@ -261,7 +271,7 @@
 <span style="background-color: #dcfce7; color: #15803d; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 12px;">免费 (Free)</span>
 </div>
 <div style="font-size: 13px; color: #4b5563; line-height: 1.7;">
-<div style="margin-bottom: 4px;">📊 <b>每周 Token 跑量：</b><span style="color: #d97706; font-weight: bold; font-size: 14px;">23.4T</span> Tokens/wk</div>
+<div style="margin-bottom: 4px;">📊 <b>每周 Token 跑量：</b><span style="color: #d97706; font-weight: bold; font-size: 14px;">30.9T</span> Tokens/wk</div>
 <div>🧠 <b>上下文窗口：</b><span style="color: #374151; font-weight: 500;">1M</span></div>
 </div>
 </div>
@@ -271,18 +281,21 @@
 <span style="background-color: #dcfce7; color: #15803d; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 12px;">免费 (Free)</span>
 </div>
 <div style="font-size: 13px; color: #4b5563; line-height: 1.7;">
-<div style="margin-bottom: 4px;">📊 <b>每周 Token 跑量：</b><span style="color: #d97706; font-weight: bold; font-size: 14px;">5.9T</span> Tokens/wk</div>
+<div style="margin-bottom: 4px;">📊 <b>每周 Token 跑量：</b><span style="color: #d97706; font-weight: bold; font-size: 14px;">6.2T</span> Tokens/wk</div>
 <div>🧠 <b>上下文窗口：</b><span style="color: #374151; font-weight: 500;">1M</span></div>
 </div>
 </div>
 <p style="margin: 10px 0 0 0; font-size: 12px; color: #92400e; line-height: 1.6;">
         💡 <b>使用贴士：</b>访问 openrouter.ai/discover 即可直接获取免费 API 端点密钥，零成本畅享前沿模型算力！
     </p>
-</div></section>
 </div>
-</div>
-</div>
-<script>
+</section>
+===END===
+            </div>
+        </div>
+    </div>
+
+    <script>
         function showToast(msg) {
             const toast = document.getElementById('toast');
             toast.innerText = msg;
