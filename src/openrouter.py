@@ -72,20 +72,17 @@ def generate_easter_egg_html(models: List[Dict]) -> str:
         
     cards_str = "\n".join(items_html)
     
-    html = f"""<!-- 🎁 极客彩蛋 · OpenRouter 免费大模型福利 -->
+    html = f"""<!-- 🎁 彩蛋 · OpenRouter 免费大模型福利 -->
 <section style="display: table; text-indent: 0; margin: 32px 0 14px 0; background-color: #fef3c7; border-radius: 6px; padding: 6px 14px; text-align: left;">
     <span style="color: #b45309; font-size: 15px; font-weight: bold; letter-spacing: 0.5px; text-indent: 0; line-height: 1.2;">
-        🎁 极客彩蛋 · OpenRouter 免费大模型福利
+        🎁 彩蛋 · OpenRouter 免费大模型福利
     </span>
 </section>
 <div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
     <p style="margin: 0 0 14px 0; font-size: 14px; line-height: 1.8; color: #78350f; text-align: justify;">
-        【专属福利】来自 <b>OpenRouter Discover</b> 实时全网热度最高的 2 款<b>免费商用/开源大模型</b>！零门槛直接调用官方 API，附带每周全网 Token 跑量与上下文规格，送给需要调试与开发的朋友：
+        【专属福利】来自 <b>OpenRouter Discover</b> 实时全网热度最高的 2 款<b>免费大模型</b>！附带每周全网 Token 跑量与上下文规格，送给需要调试与开发的朋友：
     </p>
     {cards_str}
-    <p style="margin: 10px 0 0 0; font-size: 12px; color: #92400e; line-height: 1.6;">
-        💡 <b>使用贴士：</b>访问 openrouter.ai/discover 即可直接获取免费 API 端点密钥，零成本畅享前沿模型算力！
-    </p>
 </div>"""
     return html.strip()
 
