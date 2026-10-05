@@ -1,6 +1,7 @@
 import os
 import requests
 import re
+from html import escape
 from bs4 import BeautifulSoup, NavigableString, Comment
 
 
@@ -12,8 +13,6 @@ SECTION_TITLES = (
     "彩蛋", "彩蛋·OpenRouter免费大模型福利", "彩蛋·OpenRouter免费模型福利",
     "彩蛋·免费大模型福利", "彩蛋·免费模型福利",
 )
-
-
 def normalize_section_headings(article_html: str) -> str:
     """仅清理栏目标题，保留正文、英文词间空格与标题内嵌格式。"""
     # 彻底过滤可能残留的模型结尾标记（如 ===END===）
@@ -63,7 +62,11 @@ def build_preview_page(
     has_summary_img: bool = True
 ) -> str:
     """生成带有『标题复制』、『摘要复制』、『审核图』与『一键复制微信正文』的发布工作台"""
-    article_html = normalize_section_headings(article_html)
+    # 新模板直接保留代码定义的样式；旧版 HTML 继续兼容标题清理。
+    if 'data-template="ai-daily-v1"' not in article_html:
+        article_html = normalize_section_headings(article_html)
+    title = escape(title, quote=True)
+    digest = escape(digest, quote=True)
     
     summary_img_block = ""
     if has_summary_img:

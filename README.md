@@ -10,7 +10,7 @@
 
 * **全球热点自动追踪**：定时聚合 TechCrunch、VentureBeat、The Verge 及 Hugging Face 顶尖大模型动态。
 * **Google Gemini 3.x 深度撰稿**：智能提炼高价值科技新闻，自动产出爆款标题、精炼摘要与深度锐评。
-* **微信原生黄金排版**：严格遵循微信编辑器内联 CSS 渲染机制，采用防拉伸、防缩进的科技蓝胶囊标与温润微卡片。
+* **微信原生黄金排版**：严格遵循微信编辑器内联 CSS 渲染机制，使用固定的深海军蓝、电光青栏目与浅底新闻卡片；AI 只生成 JSON 内容，不参与样式设计。
 * **自动生成速览海报**：基于 Pillow 自动绘制 800px 高清科技风速览长图（`summary.png`），供朋友圈及社群分发。
 * **极速发文工作台**：生成专属静态网页，内置**标题复制、摘要复制、正文一键复制**，将日常发文压缩至 15 秒内。
 * **历史版本自动归档**：按执行时间戳归档，严格滚动保留最新 5 期，避免仓库臃肿。
@@ -22,9 +22,10 @@
 ```mermaid
 flowchart TD
     A[GitHub Actions 定时触发<br/>每周一/三/五 10:00 CST] --> B[src/fetcher.py<br/>抓取全球 AI 重大科技新闻]
-    B --> C[src/writer.py<br/>调用 Gemini 3.x 写作与微信内联排版]
+    B --> C[src/writer.py<br/>调用 Gemini 3.x 生成 JSON 内容]
     C --> D1[生成爆款标题 & 摘要]
-    C --> D2[生成正文 HTML]
+    C --> T[src/template.py 固定模板渲染]
+    T --> D2[生成正文 HTML]
     C --> D3[提取核心看点]
     D3 --> E[src/image_generator.py<br/>生成高清速览海报 summary.png]
     D1 & D2 & E --> F[src/builder.py<br/>组装 index.html 发布工作台]
@@ -47,7 +48,7 @@ flowchart TD
 3. **复制并粘贴正文**：
    * 点击右上角绿色大按钮 **【📋 一键复制正文排版】**。
    * 打开微信公众号后台编辑器，光标置于正文区，按键盘快捷键 **`Ctrl + V`（Mac 按 `Cmd + V`）**。
-   * 包含科技封面、胶囊标签、新闻卡片与高亮标注的完整排版将瞬间呈现。
+   * 包含科技封面、固定栏目、新闻卡片与影响解读的完整排版将瞬间呈现。
 4. **保存封面与摘要图（可选）**：
    * 点击 **【⬇️ 下载原尺寸摘要海报】**，可作为文章封面图或发布到微信朋友圈/社群引流。
 5. **点击群发**，完成发布！
@@ -96,7 +97,8 @@ wechat-ai-daily/
 │   └── summary.png             # 最新一期速览海报
 ├── src/
 │   ├── fetcher.py              # 全球 AI/大模型科技新闻采集器 (RSS/API)
-│   ├── writer.py               # Gemini 3.x 写作、微信内联 CSS 排版与降级引擎
+│   ├── writer.py               # Gemini 3.x JSON 写作、内容校验与降级引擎
+│   ├── template.py             # 固定微信内联样式模板与内容协议
 │   ├── image_generator.py      # Pillow 高清信息图海报生成器
 │   ├── builder.py              # 网页组装器（含一键复制逻辑与样式）
 │   └── main.py                 # 主执行调度入口、历史归档清理与通知分发
@@ -135,12 +137,12 @@ python src/main.py
 #### A. 修改新闻抓取源 (`src/fetcher.py`)
 可在 `aggregate_news()` 中增减 RSS 订阅源或爬虫源。例如增加国内媒体、arXiv 论文或特定行业科技源。
 
-#### B. 调整模型提示词与微信排版 (`src/writer.py`)
-* **文风与栏目调整**：修改 `SYSTEM_PROMPT` 中的栏目设定与字数要求。
-* **微信原生排版避坑规则**：
-  > [!IMPORTANT]
-  > 微信富文本编辑器对外部 CSS 支持度极低，且对 `display: inline-block` 会强制拉伸，并可能继承 `text-indent: 2em`。
-  > 所有小标题必须使用 `<section style="display: table; text-indent: 0; ...">` 结构，确保在微信中紧贴文字、不通栏拉伸且表情符前无缩进空白。
+#### B. 调整内容与固定模板
+* **内容写作**：修改 `src/writer.py` 的 `SYSTEM_PROMPT`，AI 只输出纯文本 JSON。
+* **内容协议**：`src/template.py` 的 `ARTICLE_SCHEMA` 定义 `title`、`digest`、`highlights`、`trend`、`news`、`commentary`；新闻分类固定为 `focus`、`industry`、`business`。
+* **微信样式**：只修改 `src/template.py` 的 `render_article()`，栏目顺序、配色、图片与内联 CSS 统一由代码维护，不再要求 AI 排版。正文中的特殊字符自动转义，错误 JSON 会触发原有重试流程，不会作为 HTML 发布。
+* **保留原有功能**：标题/摘要/正文复制、速览海报、模型降级、历史归档和通知流程不变。已移除人物插画，仅保留顶部科技封面。
+* **验证**：运行 `python -m unittest discover -s tests -v`。历史已生成页面不会自动重新排版，新模板在下一次生成时生效。
 * **模型调用机制**：
   * 首选 `gemini-3.8-flash`（带 3 次 503 弹性退避重试）。
   * 自动无缝降级至 `gemini-3.6-flash` 及当前 API Key 授权的其他 3.x 活跃模型，坚决剔除已下线的 2.x/1.x 旧模型。

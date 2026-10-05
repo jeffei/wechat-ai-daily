@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>固定模板演示｜AI 前沿观察 · 微信公众号发布工作台</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f3f8;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            color: #2d3748;
+        }
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .brand {
+            font-weight: 700;
+            color: #1a202c;
+            font-size: 16px;
+        }
+        .copy-main-btn {
+            background: #07c160;
+            color: white;
+            border: none;
+            padding: 11px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(7, 193, 96, 0.35);
+        }
+        .copy-main-btn:hover {
+            background: #06ad56;
+            transform: translateY(-1px);
+        }
+        .container {
+            max-width: 740px;
+            margin: 24px auto;
+            padding: 0 15px;
+        }
+        /* 微信公众号发布辅助工作台卡片 */
+        .helper-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border-top: 4px solid #1a73e8;
+        }
+        .helper-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a202c;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .helper-row {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+        .helper-label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #4a5568;
+            min-width: 75px;
+        }
+        .helper-val {
+            font-size: 14px;
+            color: #1a202c;
+            flex-grow: 1;
+            word-break: break-all;
+            line-height: 1.5;
+        }
+        .small-copy-btn {
+            background: #e8f0fe;
+            color: #1a73e8;
+            border: none;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s ease;
+        }
+        .small-copy-btn:hover {
+            background: #d2e3fc;
+        }
+        .article-card {
+            background: #ffffff;
+            padding: 35px 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+        .toast {
+            position: fixed;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a202c;
+            color: #ffffff;
+            padding: 11px 22px;
+            border-radius: 25px;
+            display: none;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="brand">🚀 微信公众号 · AI大模型早报发布台</div>
+        <button class="copy-main-btn" onclick="copyArticleBody()">📋 一键复制正文排版</button>
+    </div>
+
+    <div id="toast" class="toast">✅ 已复制到剪贴板！</div>
+
+    <div class="container">
+        <!-- 微信发布助手（标题、摘要） -->
+        <div class="helper-card">
+            <div class="helper-title">🎯 微信后台一键发文助手</div>
+            
+            <div class="helper-row">
+                <div class="helper-label">📌 推荐标题</div>
+                <div class="helper-val" id="title-text">固定模板演示｜AI 前沿观察</div>
+                <button class="small-copy-btn" onclick="copyTextById('title-text', '文章标题已复制！')">复制标题</button>
+            </div>
+
+            <div class="helper-row">
+                <div class="helper-label">📝 推荐摘要</div>
+                <div class="helper-val" id="digest-text">本页仅用于展示固定模板的排版效果，内容为示例，不代表真实新闻。</div>
+                <button class="small-copy-btn" onclick="copyTextById('digest-text', '推文摘要已复制！')">复制摘要</button>
+            </div>
+            
+            <div style="font-size: 12px; color: #718096; margin-top: 10px; display: flex; justify-content: space-between;">
+                <span>💡 复制标题与摘要后，点击上方绿色按钮复制正文，在公众号后台 Ctrl+V 即可。</span>
+            </div>
+        </div>
+
+        <!-- 审核速览长图 -->
+        
+
+        <!-- 微信正文区域 -->
+        <div class="article-card">
+            <div style="font-size: 13px; color: #a0aec0; margin-bottom: 16px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
+                📖 微信排版效果实时预览区（已应用最舒适自媒体排版规范）
+            </div>
+            <div id="wechat-content">
+<section data-template="ai-daily-v1" style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #334155; font-size: 15px; line-height: 1.9; letter-spacing: 0.4px; text-align: left; text-indent: 0; overflow-wrap: anywhere; word-break: break-word;"><section style="background-color: #0b182b; border-top: 4px solid #22d3ee; padding: 24px 20px;"><p style="margin: 0 0 14px; color: #67e8f9; font-size: 11px; letter-spacing: 2px;">AI DAILY / INTELLIGENCE BRIEF</p><p style="margin: 0 0 12px; color: #ffffff; font-size: 28px; font-weight: bold; line-height: 1.4;">大模型前沿观察</p><p style="margin: 0; color: #a5b8d0; font-size: 12px;">模板演示 · 非真实新闻 · 全球 AI 情报精选</p></section><img src="https://jeffei.github.io/wechat-ai-daily/assets/cover.jpg" alt="AI 科技前沿" style="display: block; width: 100%; height: auto; margin: 0 0 24px;"/><section style="background-color: #eff8fc; border-left: 3px solid #0891b2; padding: 18px 16px; margin: 0 0 24px;"><p style="margin: 0 0 10px; color: #087e8b; font-size: 12px; font-weight: bold;">SIGNAL / 今日风向标</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">示例内容：从模型能力到产品体验，关注技术进步如何转化为实际价值。</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #dbe5ef; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #087e8b; font-weight: bold;">01 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">焦点头条 · 深度解读</span></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 01.01</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">模型能力进阶，应用体验成为关注焦点</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">这是一段排版演示内容，不代表真实新闻。标题、段落和卡片样式全部由固定模板控制。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">正文采用浅色背景、清晰字号与舒适行距，适合在手机上连续阅读。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">示例解读：观察实际应用效果，也关注成本、可靠性与用户体验。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：模板演示，非真实新闻</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #dbe5ef; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #087e8b; font-weight: bold;">02 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">大厂与开源风云</span></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 02.01</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">从开源工具到开发生态，观察协作的价值</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">这是一段排版演示内容，不代表真实新闻。标题、段落和卡片样式全部由固定模板控制。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">正文采用浅色背景、清晰字号与舒适行距，适合在手机上连续阅读。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">示例解读：观察实际应用效果，也关注成本、可靠性与用户体验。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：模板演示，非真实新闻</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #dbe5ef; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #087e8b; font-weight: bold;">03 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">前沿落地与商业观察</span></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 03.01</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">从技术验证到业务落地，关注可衡量的成果</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">这是一段排版演示内容，不代表真实新闻。标题、段落和卡片样式全部由固定模板控制。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">正文采用浅色背景、清晰字号与舒适行距，适合在手机上连续阅读。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">示例解读：观察实际应用效果，也关注成本、可靠性与用户体验。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：模板演示，非真实新闻</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #dbe5ef; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #087e8b; font-weight: bold;">04 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">主编锐评</span></section><section style="background-color: #0b182b; border-top: 3px solid #22d3ee; padding: 22px 18px; border-radius: 0 0 8px 8px;"><p style="margin: 0 0 14px; color: #67e8f9; font-size: 11px; letter-spacing: 2px;">EDITOR’S PERSPECTIVE</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #e2e8f0; text-align: left; text-indent: 0;">技术的价值最终要在真实使用中接受检验。以上内容仅用于模板演示。</p></section><p style="margin: 26px 0 0; padding-top: 14px; border-top: 1px solid #dbe5ef; color: #64748b; font-size: 10px; letter-spacing: 1px; text-align: center;">AI DAILY · 持续观察技术与商业的下一步</p></section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2500);
+        }
+
+        async function copyTextById(elementId, successMsg) {
+            const text = document.getElementById(elementId).innerText.trim();
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast("✅ " + successMsg);
+            } catch(e) {
+                const input = document.createElement('textarea');
+                input.value = text;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                showToast("✅ " + successMsg);
+            }
+        }
+
+        async function copyArticleBody() {
+            const content = document.getElementById('wechat-content');
+            const html = content.innerHTML;
+            const text = content.innerText;
+            
+            try {
+                const blobHtml = new Blob([html], { type: 'text/html' });
+                const blobText = new Blob([text], { type: 'text/plain' });
+                const data = [new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })];
+                await navigator.clipboard.write(data);
+                showToast('✅ 正文排版已复制！微信后台直接 Ctrl + V 粘贴即可！');
+            } catch (err) {
+                const range = document.createRange();
+                range.selectNode(content);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+                document.execCommand('copy');
+                selection.removeAllRanges();
+                showToast('✅ 正文排版已复制到剪贴板！');
+            }
+        }
+    </script>
+</body>
+</html>
