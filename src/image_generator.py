@@ -1,7 +1,8 @@
 import os
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 from datetime import datetime
 from typing import List
+from pathlib import Path
 
 def get_chinese_font(size: int):
     """跨平台获取中文字体"""
@@ -47,93 +48,80 @@ def wrap_text(text: str, font, max_width: int, draw: ImageDraw.ImageDraw) -> Lis
     return lines
 
 def generate_summary_card(highlights: List[str], output_path: str = "summary.png") -> str:
-    """
-    生成高颜值的每日 AI 大模型资讯摘要卡片图 (800px 宽)
-    """
-    width = 800
-    padding = 40
+    """固定科技简报长图：放大看点文字，并完整嵌入公众号品牌物料。"""
+    width, padding = 800, 40
     card_width = width - padding * 2
+    navy, cyan = "#0b182b", "#22d3ee"
+    font_title = get_chinese_font(48)
+    font_label = get_chinese_font(20)
+    font_date = get_chinese_font(23)
+    font_lead = get_chinese_font(32)
+    font_body = get_chinese_font(28)
 
-    # 准备字体
-    font_title = get_chinese_font(32)
-    font_subtitle = get_chinese_font(18)
-    font_badge = get_chinese_font(16)
-    font_bullet_title = get_chinese_font(20)
-    font_bullet_body = get_chinese_font(17)
-    font_footer = get_chinese_font(15)
+    # 从源文件位置定位，兼容本地和 GitHub Actions 的不同工作目录。
+    brand_path = Path(__file__).resolve().parents[1] / "微信公众号二维码.png"
+    with Image.open(brand_path) as source:
+        brand = ImageOps.exif_transpose(source).convert("RGBA")
+    brand_height = round(brand.height * card_width / brand.width)
+    brand = brand.resize((card_width, brand_height), Image.Resampling.LANCZOS)
 
-    # 预计算卡片高度
-    # 临时画布用于测量文本尺寸
-    temp_img = Image.new("RGB", (width, 200))
-    temp_draw = ImageDraw.Draw(temp_img)
+    measure = ImageDraw.Draw(Image.new("RGB", (width, 1)))
+    blocks = []
+    for index, item in enumerate(highlights):
+        font = font_lead if index == 0 else font_body
+        line_height = 52 if index == 0 else 46
+        lines = wrap_text(item, font, card_width - 64, measure)
+        block_height = 86 + len(lines) * line_height + 24
+        blocks.append((lines, font, line_height, block_height))
 
-    today_str = datetime.now().strftime("%Y年%m月%d日")
-    
-    # 测量每个亮点卡片的高度
-    content_blocks = []
-    total_content_height = 0
-    for idx, item in enumerate(highlights, 1):
-        lines = wrap_text(item, font_bullet_body, card_width - 50, temp_draw)
-        block_h = 35 + len(lines) * 28 + 20
-        content_blocks.append((f"0{idx}" if idx < 10 else str(idx), lines, block_h))
-        total_content_height += block_h + 15
-
-    header_height = 170
-    footer_height = 80
-    total_height = header_height + total_content_height + footer_height + 30
-
-    # 创建主画布（浅灰高级底色）
-    img = Image.new("RGB", (width, total_height), "#f4f6f9")
+    header_height = 250
+    content_height = sum(block[3] + 20 for block in blocks)
+    brand_y = header_height + content_height + 72
+    total_height = brand_y + brand_height + 40
+    img = Image.new("RGB", (width, total_height), navy)
     draw = ImageDraw.Draw(img)
 
-    # 1. 顶部 Header 渐变质感背景 (科技深蓝底色卡片)
-    draw.rounded_rectangle(
-        [(padding, 30), (width - padding, header_height)],
-        radius=14,
-        fill="#1a365d"
-    )
+    # 仅在顶部添加低对比度网格与电光青线条，正文区域保持干净。
+    for x in range(480, width, 32):
+        draw.line((x, 0, x, 215), fill="#142c43", width=1)
+    for y in range(0, 216, 32):
+        draw.line((480, y, width, y), fill="#142c43", width=1)
+    draw.rectangle((padding, 34, padding + 42, 39), fill=cyan)
+    draw.text((padding, 58), "AI DAILY / INTELLIGENCE BRIEF", font=font_label, fill=cyan)
+    draw.text((padding - 2, 100), "大模型前沿 · 核心速览", font=font_title, fill="#ffffff")
+    today_str = datetime.now().strftime("%Y.%m.%d")
+    draw.text((padding, 180), today_str, font=font_date, fill="#b3c7db")
+    edition = f"本期 {len(highlights):02d} 条精选"
+    draw.text((width - padding - draw.textlength(edition, font=font_label), 183),
+              edition, font=font_label, fill="#b3c7db")
 
-    # 顶部标签
-    draw.text((padding + 25, 52), "⚡ DAILY AI INSIGHT", font=font_badge, fill="#63b3ed")
-    # 顶层主标题
-    draw.text((padding + 25, 80), "AI 大模型科技前沿 · 每日速报", font=font_title, fill="#ffffff")
-    # 副标题与日期
-    draw.text((padding + 25, 126), f"📅 {today_str} · 全球大模型重磅动态与行业风向", font=font_subtitle, fill="#cbd5e0")
-
-    # 2. 依次渲染每个核心要点卡片 (白色圆角卡片，带左侧微重音)
-    cur_y = header_height + 25
-    for num_str, lines, block_h in content_blocks:
-        card_box = [(padding, cur_y), (width - padding, cur_y + block_h)]
-        # 白色卡片背景
-        draw.rounded_rectangle(card_box, radius=10, fill="#ffffff", outline="#e2e8f0", width=1)
-        # 左侧装饰条 (科技蓝)
-        draw.rounded_rectangle([(padding, cur_y), (padding + 6, cur_y + block_h)], radius=3, fill="#3182ce")
-
-        # 序号 Badge
-        draw.rounded_rectangle(
-            [(padding + 20, cur_y + 16), (padding + 52, cur_y + 40)],
-            radius=6,
-            fill="#ebf8ff"
-        )
-        draw.text((padding + 25, cur_y + 18), f"#{num_str}", font=font_badge, fill="#2b6cb0")
-
-        # 内容文本逐行渲染
-        line_y = cur_y + 48
+    cur_y = header_height
+    for index, (lines, font, line_height, block_height) in enumerate(blocks):
+        lead = index == 0
+        draw.rounded_rectangle((padding, cur_y, width - padding, cur_y + block_height),
+                               radius=16, fill="#102f46" if lead else "#f3f7fb",
+                               outline="#23718a" if lead else "#dce6ef", width=2)
+        draw.rounded_rectangle((padding + 28, cur_y + 26, padding + 79, cur_y + 59),
+                               radius=6, fill=cyan if lead else "#dbeaf4")
+        draw.text((padding + 39, cur_y + 28), f"{index + 1:02d}", font=font_label,
+                  fill=navy if lead else "#155e75")
+        draw.text((padding + 94, cur_y + 28), "本期焦点 / FOCUS" if lead else "前沿简讯 / BRIEF",
+                  font=font_label, fill="#67e8f9" if lead else "#247087")
+        line_y = cur_y + 84
         for line in lines:
-            draw.text((padding + 24, line_y), line, font=font_bullet_body, fill="#2d3748")
-            line_y += 28
+            draw.text((padding + 32, line_y), line, font=font,
+                      fill="#f0f9ff" if lead else "#1e3449")
+            line_y += line_height
+        cur_y += block_height + 20
 
-        cur_y += block_h + 15
+    # 公众号信息和新闻在同一张图片中；完整保留物料与二维码留白。
+    draw.line((padding, cur_y + 12, width - padding, cur_y + 12), fill="#284156", width=1)
+    draw.text((padding, cur_y + 30), "关注长安派 · 长按识别下方二维码", font=font_label, fill="#b3c7db")
+    img.paste(brand, (padding, brand_y), brand)
 
-    # 3. 底部 Footer 审核水印与提示
-    footer_text = "🤖 本期图文已就绪 · 由 Google Gemini 自动化分析生成 · 供审核确认"
-    draw.text((padding + 10, total_height - 50), footer_text, font=font_footer, fill="#718096")
-
-    # 确保输出目录存在
     out_dir = os.path.dirname(output_path)
     if out_dir:
         os.makedirs(out_dir, exist_ok=True)
-
-    img.save(output_path, "PNG", quality=95)
+    img.save(output_path, "PNG")
     print(f"✅ 摘要图已成功生成至: {output_path}")
     return output_path
