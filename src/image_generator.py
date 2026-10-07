@@ -48,15 +48,15 @@ def wrap_text(text: str, font, max_width: int, draw: ImageDraw.ImageDraw) -> Lis
     return lines
 
 def generate_summary_card(highlights: List[str], output_path: str = "summary.png") -> str:
-    """固定科技简报长图：放大看点文字，并完整嵌入公众号品牌物料。"""
+    """固定科技简报长图：紧凑呈现看点，并完整嵌入公众号品牌物料。"""
     width, padding = 800, 40
     card_width = width - padding * 2
     navy, cyan = "#0b182b", "#22d3ee"
-    font_title = get_chinese_font(48)
+    font_title = get_chinese_font(42)
     font_label = get_chinese_font(20)
     font_date = get_chinese_font(23)
-    font_lead = get_chinese_font(32)
-    font_body = get_chinese_font(28)
+    font_lead = get_chinese_font(27)
+    font_body = get_chinese_font(24)
 
     # 从源文件位置定位，兼容本地和 GitHub Actions 的不同工作目录。
     brand_path = Path(__file__).resolve().parents[1] / "微信公众号二维码.png"
@@ -69,7 +69,7 @@ def generate_summary_card(highlights: List[str], output_path: str = "summary.png
     blocks = []
     for index, item in enumerate(highlights):
         font = font_lead if index == 0 else font_body
-        line_height = 52 if index == 0 else 46
+        line_height = 43 if index == 0 else 38
         lines = wrap_text(item, font, card_width - 64, measure)
         block_height = 86 + len(lines) * line_height + 24
         blocks.append((lines, font, line_height, block_height))
