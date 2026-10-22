@@ -7,17 +7,44 @@ from typing import List, Dict
 
 # 顶级 AI 巨头与前沿大模型核心关键词库（高权重）
 TOP_TIER_KEYWORDS = [
-    "openai", "google", "gemini", "anthropic", "claude", "deepseek", 
-    "qwen", "通义千问", "meta", "llama", "nvidia", "英伟达", "microsoft", 
+    "openai", "google", "gemini", "anthropic", "claude", "deepseek",
+    "qwen", "meta", "llama", "nvidia", "microsoft",
     "apple", "xai", "grok", "mistral", "blackwell", "gpt"
 ]
 
 # 行业重大突破与轰动事件关键词库
 IMPACT_KEYWORDS = [
-    "billion", "million", "funding", "raises", "launch", "unveils", 
-    "releases", "breakthrough", "chip", "gpu", "lawsuit", "acquire", 
-    "acquisition", "autonomous", "agent", "supercomputer", "open source",
-    "融资", "发布", "突破", "开源", "和解", "芯片", "算力", "首款"
+    "billion", "million", "funding", "raises", "launch", "unveils",
+    "releases", "breakthrough", "chip", "gpu", "lawsuit", "acquire",
+    "acquisition", "autonomous", "agent", "supercomputer", "open source"
+]
+
+# ── 具身智能周报专用关键词 ────────────────────────────────────────────
+
+# 顶级机器人公司关键词（美国 + 中国英文名）
+EMBODIED_TOP_KEYWORDS = [
+    # 美国头部
+    "boston dynamics", "figure", "1x technologies", "agility robotics",
+    "apptronik", "physical intelligence", "sanctuary ai", "optimus",
+    "hello robot", "aescape", "covariant",
+    # 中国头部（英文名）
+    "unitree",        # 宇树
+    "agibot",         # 智元
+    "fourier",        # 傅利叶
+    "ubtech",         # 优必选
+    "deep robotics",  # 逐际动力
+    "kepler",         # 开普勒
+    "leju",           # 乐聚
+]
+
+# 具身智能技术/事件关键词
+EMBODIED_IMPACT_KEYWORDS = [
+    "humanoid robot", "humanoid", "bipedal", "dexterous hand", "manipulation",
+    "locomotion", "sim-to-real", "embodied ai", "embodied intelligence",
+    "robot learning", "whole body control", "loco-manipulation",
+    "foundation model robot", "dexterity", "reinforcement learning robot",
+    "world model robot", "end effector", "tactile", "teleoperation",
+    "imitation learning", "deployment robot", "factory robot", "warehouse robot"
 ]
 
 def get_time_window_hours() -> int:
@@ -25,34 +52,48 @@ def get_time_window_hours() -> int:
     根据发布日程动态计算时间窗口：
     周一 (weekday 0) 覆盖过去 72 小时（涵盖周五、周六、周日）
     周三/周五 覆盖过去 48 小时
+    周日 (weekday 6) 覆盖过去 168 小时（一周）
     """
     now = datetime.now()
+    if now.weekday() == 6:
+        return 168
     if now.weekday() == 0:
         return 72
     return 48
 
-def calculate_virality_score(title: str, summary: str, base_bonus: int = 0) -> int:
-    """计算新闻的行业热度与轰动指数"""
+def calculate_virality_score(title: str, summary: str, base_bonus: int = 0,
+                             mode: str = "llm") -> int:
+    """
+    计算新闻的行业热度与轰动指数。
+    mode='llm'      → 使用大模型关键词库（默认，周一三五）
+    mode='embodied' → 使用具身智能关键词库（周日）
+    """
     text = (title + " " + summary).lower()
     score = base_bonus
-    
-    # 命中顶级科技巨头
-    for kw in TOP_TIER_KEYWORDS:
-        if kw in text:
-            score += 15
-            
-    # 命中重大商业/技术突破关键词
-    for kw in IMPACT_KEYWORDS:
-        if kw in text:
-            score += 10
-            
-    # 标题含大额数字或首创
-    if re.search(r'\$\d+(\.\d+)?\s*(billion|million|b|m)', text) or "首个" in text or "首次" in text:
+
+    if mode == "embodied":
+        for kw in EMBODIED_TOP_KEYWORDS:
+            if kw in text:
+                score += 15
+        for kw in EMBODIED_IMPACT_KEYWORDS:
+            if kw in text:
+                score += 10
+    else:
+        for kw in TOP_TIER_KEYWORDS:
+            if kw in text:
+                score += 15
+        for kw in IMPACT_KEYWORDS:
+            if kw in text:
+                score += 10
+
+    # 标题含大额数字（两种模式通用）
+    if re.search(r'\$\d+(\.\d+)?\s*(billion|million|b|m)', text):
         score += 15
-        
+
     return score
 
-def fetch_rss_news_in_window(feed_url: str, source_name: str, window_hours: int) -> List[Dict]:
+def fetch_rss_news_in_window(feed_url: str, source_name: str, window_hours: int,
+                             mode: str = "llm") -> List[Dict]:
     """抓取指定时间窗口内的 RSS 新闻，并计算热度评分"""
     news_items = []
     cutoff_time = datetime.now(timezone.utc) - timedelta(hours=window_hours)
@@ -70,7 +111,7 @@ def fetch_rss_news_in_window(feed_url: str, source_name: str, window_hours: int)
                 elif hasattr(entry, "updated_parsed") and entry.updated_parsed:
                     published_dt = datetime.fromtimestamp(time.mktime(entry.updated_parsed), tz=timezone.utc)
                 
-                # 时间窗口过滤：超过 48h/72h 的直接舍弃
+                # 时间窗口过滤
                 if published_dt and published_dt < cutoff_time:
                     continue
                 
@@ -82,7 +123,7 @@ def fetch_rss_news_in_window(feed_url: str, source_name: str, window_hours: int)
                 title = entry.get("title", "").strip()
                 
                 # 计算火爆热度得分
-                score = calculate_virality_score(title, summary, base_bonus=10)
+                score = calculate_virality_score(title, summary, base_bonus=10, mode=mode)
                 
                 news_items.append({
                     "source": source_name,
@@ -96,12 +137,20 @@ def fetch_rss_news_in_window(feed_url: str, source_name: str, window_hours: int)
         print(f"抓取 {source_name} 失败: {e}")
     return news_items
 
-def fetch_hacker_news_viral(window_hours: int) -> List[Dict]:
-    """通过 Hacker News 官方检索 API 获取全网讨论度极高的爆款 AI 新闻 (点赞>50)"""
+def fetch_hacker_news_viral(window_hours: int, mode: str = "llm") -> List[Dict]:
+    """通过 Hacker News 官方检索 API 获取全网讨论度极高的爆款新闻 (点赞>50)"""
     viral_items = []
     since_timestamp = int(time.time()) - (window_hours * 3600)
-    url = f"https://hn.algolia.com/api/v1/search_by_date?query=AI+OR+LLM+OR+OpenAI+OR+Gemini+OR+Anthropic+OR+DeepSeek&tags=story&numericFilters=points>50,created_at_i>{since_timestamp}"
-    
+
+    if mode == "embodied":
+        query = "robot OR humanoid OR embodied OR \"physical intelligence\" OR \"robot learning\""
+    else:
+        query = "AI OR LLM OR OpenAI OR Gemini OR Anthropic OR DeepSeek"
+
+    url = (
+        f"https://hn.algolia.com/api/v1/search_by_date?query={query}"
+        f"&tags=story&numericFilters=points>50,created_at_i>{since_timestamp}"
+    )
     try:
         resp = requests.get(url, timeout=12)
         if resp.status_code == 200:
@@ -113,7 +162,7 @@ def fetch_hacker_news_viral(window_hours: int) -> List[Dict]:
                 link = hit.get("url") or f"https://news.ycombinator.com/item?id={hit.get('objectID')}"
                 
                 # HN 的真实点赞和评论直接加权为火爆指数
-                score = calculate_virality_score(title, "", base_bonus=points + comments)
+                score = calculate_virality_score(title, "", base_bonus=points + comments, mode=mode)
                 
                 viral_items.append({
                     "source": "Hacker News 热议",
@@ -206,6 +255,84 @@ def aggregate_news() -> str:
         )
 
     return "\n".join(content_parts)
+
+
+def aggregate_embodied_ai_news() -> str:
+    """
+    聚合过去 168 小时（一周）内全网具身智能重大新闻，供周日具身智能周报使用。
+    信源：IEEE Spectrum Robotics、The Robot Report、TechCrunch（机器人频道）、
+          VentureBeat AI、The Verge（综合）、Hacker News（机器人话题）、Hugging Face。
+    """
+    window_hours = 168  # 固定一周窗口
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M")
+    print(f"🤖 具身智能周报时间窗口: 过去 {window_hours} 小时（当前时间: {now_str}）")
+
+    candidate_pool = []
+
+    # 1. 机器人垂直媒体
+    print("📡 正在采集 IEEE Spectrum Robotics...")
+    candidate_pool.extend(fetch_rss_news_in_window(
+        "https://spectrum.ieee.org/feeds/topic/robotics.rss",
+        "IEEE Spectrum Robotics", window_hours, mode="embodied"
+    ))
+
+    print("📡 正在采集 The Robot Report...")
+    candidate_pool.extend(fetch_rss_news_in_window(
+        "https://www.therobotreport.com/feed/",
+        "The Robot Report", window_hours, mode="embodied"
+    ))
+
+    # 2. 综合科技媒体机器人/AI 频道
+    print("📡 正在采集 TechCrunch Robotics...")
+    candidate_pool.extend(fetch_rss_news_in_window(
+        "https://techcrunch.com/category/robotics/feed/",
+        "TechCrunch Robotics", window_hours, mode="embodied"
+    ))
+
+    print("📡 正在采集 VentureBeat AI (embodied filter)...")
+    candidate_pool.extend(fetch_rss_news_in_window(
+        "https://venturebeat.com/category/ai/feed/",
+        "VentureBeat AI", window_hours, mode="embodied"
+    ))
+
+    print("📡 正在采集 The Verge Tech (embodied filter)...")
+    candidate_pool.extend(fetch_rss_news_in_window(
+        "https://www.theverge.com/rss/index.xml",
+        "The Verge", window_hours, mode="embodied"
+    ))
+
+    # 3. 开发者社区：Hacker News 机器人话题
+    print("🔥 正在获取 Hacker News 具身智能热议...")
+    candidate_pool.extend(fetch_hacker_news_viral(window_hours, mode="embodied"))
+
+    # 4. Hugging Face 机器人/具身方向论文
+    print("🌟 正在获取 Hugging Face 机器人高赞研究...")
+    candidate_pool.extend(fetch_huggingface_viral())
+
+    print(f"📊 过去 {window_hours} 小时内共初筛出 {len(candidate_pool)} 篇具身智能候选资讯。")
+
+    # 仅保留与具身智能关键词有关联的条目（score > 10 才算命中）
+    relevant_pool = [item for item in candidate_pool if item["score"] > 10]
+    print(f"🔍 经具身智能关键词过滤后保留 {len(relevant_pool)} 篇相关资讯。")
+
+    relevant_pool.sort(key=lambda x: x["score"], reverse=True)
+    top_candidates = relevant_pool[:15]  # 一周维度放宽到 15 篇
+
+    content_parts = [
+        f"# 全球具身智能重大新闻精选池（覆盖时间窗口：过去 {window_hours} 小时 / 本周）\n"
+        f"> 提示：以下候选资讯已通过具身智能专项关键词算法完成权重排序。\n"
+    ]
+
+    for idx, item in enumerate(top_candidates, 1):
+        content_parts.append(
+            f"### [{idx}] 【{item['source']} | 热度分: {item['score']}】{item['title']}\n"
+            f"- 发布时间: {item['published_at']}\n"
+            f"- 核心要点: {item['summary']}\n"
+            f"- 来源链接: {item['url']}\n"
+        )
+
+    return "\n".join(content_parts)
+
 
 if __name__ == "__main__":
     print(aggregate_news())

@@ -7,13 +7,16 @@ from datetime import datetime
 # 保证模块导入路径正确
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from fetcher import aggregate_news
-from writer import generate_wechat_article
+from fetcher import aggregate_news, aggregate_embodied_ai_news
+from writer import generate_wechat_article, generate_embodied_article
 from image_generator import generate_summary_card
 from builder import build_preview_page, notify_user
 from openrouter import fetch_openrouter_free_models, generate_easter_egg_html, inject_easter_egg
 
 DOCS_DIR = "docs"
+
+def is_sunday() -> bool:
+    return datetime.now().weekday() == 6
 
 def clean_old_history(docs_dir: str, keep_count: int = 5):
     """只保留 docs 目录下最新的 keep_count 个时间戳执行文件夹，删除多余的旧文件夹"""
@@ -46,25 +49,44 @@ def main():
         print("❌ 错误：未检测到 GEMINI_API_KEY 环境变量！请确保在 GitHub Settings -> Secrets 中添加了 GEMINI_API_KEY。")
         sys.exit(1)
 
-    # 1. 抓取全球大模型资讯
-    print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 🚀 开始执行大模型科技新闻采集...")
-    news_content = aggregate_news()
-    print(f"✅ 资讯采集完成，共收集素材约 {len(news_content)} 字符。")
-    
-    # 2. 调用 Gemini 3.x 生成微信图文与速览摘要
-    print("🤖 正在调用 Google Gemini 3.x 生成微信图文、爆款标题与速览摘要...")
-    title, digest, article_html, highlights = generate_wechat_article(news_content)
-    print(f"✅ Gemini 生成成功！\n📌 推荐标题: 《{title}》\n📝 推荐摘要: {digest}")
+    sunday_mode = is_sunday()
 
-    # 2.5 抓取 OpenRouter Discover 免费模型彩蛋并嵌入文章末尾
-    print("🎁 正在抓取 OpenRouter Discover 免费大模型彩蛋福利...")
-    try:
-        free_models = fetch_openrouter_free_models(top_n=2)
-        easter_egg_html = generate_easter_egg_html(free_models)
-        article_html = inject_easter_egg(article_html, easter_egg_html)
-        print(f"✅ 彩蛋已添加: 共包含 {len(free_models)} 款热门免费模型福利")
-    except Exception as e:
-        print(f"⚠️ 添加彩蛋模块失败 (不影响主流程): {e}")
+    if sunday_mode:
+        # ── 周日：具身智能周报模式 ────────────────────────────────────────
+        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 🤖 今天是周日，启动【具身智能周报】模式...")
+        news_content = aggregate_embodied_ai_news()
+        print(f"✅ 具身智能资讯采集完成，共收集素材约 {len(news_content)} 字符。")
+
+        print("🦾 正在调用 Google Gemini 3.x 生成具身智能周报...")
+        title, digest, article_html, highlights = generate_embodied_article(news_content)
+        print(f"✅ Gemini 生成成功！\n📌 推荐标题: 《{title}》\n📝 推荐摘要: {digest}")
+
+        # 周日不插入 OpenRouter 彩蛋（与主题不符）
+        notify_title = f"🤖 本周具身智能周报已就绪（{datetime.now().strftime('%m月%d日 %H:%M')}）"
+        notify_message = "本周《具身智能前沿观察》及速览审核长图已由 Gemini 3.x 生成完毕！点击链接即可查看摘要图并一键复制排版发布。"
+
+    else:
+        # ── 周一/三/五：大模型 AI Daily 模式 ────────────────────────────
+        print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] 🚀 开始执行大模型科技新闻采集...")
+        news_content = aggregate_news()
+        print(f"✅ 资讯采集完成，共收集素材约 {len(news_content)} 字符。")
+
+        print("🤖 正在调用 Google Gemini 3.x 生成微信图文、爆款标题与速览摘要...")
+        title, digest, article_html, highlights = generate_wechat_article(news_content)
+        print(f"✅ Gemini 生成成功！\n📌 推荐标题: 《{title}》\n📝 推荐摘要: {digest}")
+
+        # 2.5 抓取 OpenRouter Discover 免费模型彩蛋并嵌入文章末尾
+        print("🎁 正在抓取 OpenRouter Discover 免费大模型彩蛋福利...")
+        try:
+            free_models = fetch_openrouter_free_models(top_n=2)
+            easter_egg_html = generate_easter_egg_html(free_models)
+            article_html = inject_easter_egg(article_html, easter_egg_html)
+            print(f"✅ 彩蛋已添加: 共包含 {len(free_models)} 款热门免费模型福利")
+        except Exception as e:
+            print(f"⚠️ 添加彩蛋模块失败 (不影响主流程): {e}")
+
+        notify_title = f"📢 今日大模型早报与摘要图已就绪（{datetime.now().strftime('%m月%d日 %H:%M')}）"
+        notify_message = "今日《大模型科技观察》及速览审核长图已由 Gemini 3.x 生成完毕！点击链接即可查看摘要图并一键复制排版发布。"
 
     # 3. 按当前执行时间创建专属历史归档文件夹 (格式: 2026-09-22_10-00-00)
     exec_timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -100,11 +122,7 @@ def main():
     clean_old_history(DOCS_DIR, keep_count=5)
 
     # 8. 发送微信推送通知
-    today = datetime.now().strftime('%m月%d日 %H:%M')
-    notify_user(
-        title=f"📢 今日大模型早报与摘要图已就绪（{today}）",
-        message="今日《大模型科技观察》及速览审核长图已由 Gemini 3.x 生成完毕！点击链接即可查看摘要图并一键复制排版发布。"
-    )
+    notify_user(title=notify_title, message=notify_message)
     print("🎉 任务全部圆满完成！")
 
 if __name__ == "__main__":

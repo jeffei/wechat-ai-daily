@@ -2,11 +2,20 @@
 
 from html import escape
 
-COVER_IMAGE_URL = "https://jeffei.github.io/wechat-ai-daily/assets/cover.jpg"
+COVER_IMAGE_URL = "https://jeffei.github.io/wechat-ai-daily/assets/cover_llm.jpg"
+EMBODIED_COVER_IMAGE_URL = "https://jeffei.github.io/wechat-ai-daily/assets/cover_embodied.jpg"
+
 CATEGORIES = {
     "focus": "焦点头条 · 深度解读",
     "industry": "大厂与开源风云",
     "business": "前沿落地与商业观察",
+}
+
+# 具身智能周报专用栏目
+EMBODIED_CATEGORIES = {
+    "focus": "本周焦点 · 重大突破",
+    "industry": "头部玩家 · 产品与融资",
+    "business": "落地应用 · 商业进展",
 }
 
 ARTICLE_SCHEMA = {
@@ -116,6 +125,68 @@ def render_article(data: dict, issue_date: str) -> str:
         '<p style="margin: 0 0 14px; color: #67e8f9; font-size: 11px; letter-spacing: 2px;">EDITOR’S PERSPECTIVE</p>',
         *[_paragraph(p, "#e2e8f0") for p in data["commentary"]], '</section>',
         '<p style="margin: 26px 0 0; padding-top: 14px; border-top: 1px solid #dbe5ef; color: #64748b; font-size: 10px; letter-spacing: 1px; text-align: center;">AI DAILY · 持续观察技术与商业的下一步</p>',
+        '</section>',
+    ])
+    return "".join(parts)
+
+
+def render_embodied_article(data: dict, issue_date: str) -> str:
+    """具身智能周报专用渲染函数。主色调切换为机械橙，封面使用专属图。"""
+    validate_article(data)
+    # 颜色常量
+    ORANGE = "#f97316"
+    DARK = "#0f1117"
+    ORANGE_LIGHT = "#fff7ed"
+    ORANGE_DIM = "#fed7aa"
+
+    parts = [
+        '<section data-template="embodied-weekly-v1" style="font-family: -apple-system, BlinkMacSystemFont, '
+        "'PingFang SC', 'Microsoft YaHei', sans-serif; background-color: #ffffff; "
+        'color: #334155; font-size: 15px; line-height: 1.9; letter-spacing: 0.4px; '
+        'text-align: left; text-indent: 0; overflow-wrap: anywhere; word-break: break-word;">',
+        f'<section style="background-color: {DARK}; border-top: 4px solid {ORANGE}; padding: 24px 20px;">',
+        f'<p style="margin: 0 0 14px; color: {ORANGE}; font-size: 11px; letter-spacing: 2px;">EMBODIED AI WEEKLY / 具身智能周报</p>',
+        '<p style="margin: 0 0 12px; color: #ffffff; font-size: 28px; font-weight: bold; line-height: 1.4;">具身智能前沿观察</p>',
+        f'<p style="margin: 0; color: #a5b8d0; font-size: 12px;">{_text(issue_date)} · 全球具身智能情报精选</p></section>',
+        f'<img src="{EMBODIED_COVER_IMAGE_URL}" alt="具身智能前沿" style="display: block; width: 100%; height: auto; margin: 0 0 24px;"/>',
+        f'<section style="background-color: {ORANGE_LIGHT}; border-left: 3px solid {ORANGE}; padding: 18px 16px; margin: 0 0 24px;">',
+        f'<p style="margin: 0 0 10px; color: {ORANGE}; font-size: 12px; font-weight: bold;">SIGNAL / 本周风向标</p>',
+        _paragraph(data["trend"]), '</section>',
+    ]
+
+    for index, (category, label) in enumerate(EMBODIED_CATEGORIES.items(), 1):
+        # 具身智能标题用橙色系
+        parts.append(
+            f'<section style="margin: 30px 0 16px; border-bottom: 1px solid {ORANGE_DIM}; '
+            f'padding: 0 0 12px; text-align: left; text-indent: 0;">'
+            f'<span style="font-size: 12px; color: {ORANGE}; font-weight: bold;">0{index} / </span>'
+            f'<span style="font-size: 18px; color: #10243a; font-weight: bold;">{label}</span></section>'
+        )
+        items = [item for item in data["news"] if item["category"] == category]
+        if not items:
+            parts.append(_paragraph("本期暂无该栏目资讯。", "#64748b"))
+        for number, item in enumerate(items, 1):
+            parts.extend([
+                f'<section style="background-color: #fff7ed; border-left: 3px solid {ORANGE}; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;">',
+                f'<p style="margin: 0 0 10px; color: {ORANGE}; font-size: 11px; font-weight: bold;">BRIEF {index:02d}.{number:02d}</p>',
+                f'<h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">{_text(item["title"])}</h3>',
+                *[_paragraph(p) for p in item["paragraphs"]],
+                '<section style="border-top: 1px solid #fed7aa; padding-top: 12px;">',
+                f'<p style="margin: 0 0 6px; color: {ORANGE}; font-size: 12px; font-weight: bold;">影响解读</p>',
+                _paragraph(item["analysis"]), '</section>',
+                f'<p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：{_text(item["source"])}</p>',
+                '</section>',
+            ])
+
+    parts.extend([
+        f'<section style="margin: 30px 0 16px; border-bottom: 1px solid {ORANGE_DIM}; '
+        f'padding: 0 0 12px; text-align: left; text-indent: 0;">'
+        f'<span style="font-size: 12px; color: {ORANGE}; font-weight: bold;">04 / </span>'
+        f'<span style="font-size: 18px; color: #10243a; font-weight: bold;">主编锐评</span></section>',
+        f'<section style="background-color: {DARK}; border-top: 3px solid {ORANGE}; padding: 22px 18px; border-radius: 0 0 8px 8px;">',
+        f'<p style="margin: 0 0 14px; color: {ORANGE}; font-size: 11px; letter-spacing: 2px;">EDITOR\'S PERSPECTIVE</p>',
+        *[_paragraph(p, "#e2e8f0") for p in data["commentary"]], '</section>',
+        f'<p style="margin: 26px 0 0; padding-top: 14px; border-top: 1px solid {ORANGE_DIM}; color: #64748b; font-size: 10px; letter-spacing: 1px; text-align: center;">EMBODIED AI WEEKLY · 持续观察具身智能的下一步</p>',
         '</section>',
     ])
     return "".join(parts)

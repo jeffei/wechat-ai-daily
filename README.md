@@ -1,6 +1,9 @@
-# 🤖 微信公众号 AI 大模型科技早报自动化流水线 (WeChat AI Daily)
+# 🤖 微信公众号 AI 大模型早报 + 具身智能周报自动化流水线 (WeChat AI Daily)
 
-> 基于 **GitHub Actions + Google Gemini 3.x + GitHub Pages** 的全自动大模型资讯采集、智能成稿、高质感自媒体排版与一键发文系统。零服务器成本，专为微信个人订阅号打造。
+> 基于 **GitHub Actions + Google Gemini 3.x + GitHub Pages** 的全自动资讯采集、智能成稿、高质感自媒体排版与一键发文系统。零服务器成本，专为微信个人订阅号打造。
+>
+> - **周一 / 三 / 五**：全球 AI 大模型科技早报（深海军蓝主题）
+> - **周日**：具身智能周报（机械橙主题，覆盖过去一周人形机器人重大进展）
 
 ---
 
@@ -8,9 +11,12 @@
 
 微信个人订阅号受限于官方接口权限，无法直接通过 API 进行无人值守群发。本项目采用目前业内最优雅、最稳定的**“99% 自动化 + 1% 手动极速确认”**架构：
 
-* **全球热点自动追踪**：定时聚合 TechCrunch、VentureBeat、The Verge 及 Hugging Face 顶尖大模型动态。
+* **双栏目智能切换**：周日自动切换具身智能周报模式，独立关键词库、独立 Gemini 写作指令、独立橙色主题模板；其余三天正常出大模型早报。
+* **全球热点自动追踪**：
+  * 大模型早报：TechCrunch AI、VentureBeat AI、The Verge AI、Hacker News、Hugging Face Daily Papers。
+  * 具身智能周报：IEEE Spectrum Robotics、The Robot Report、TechCrunch Robotics、VentureBeat AI、The Verge、Hacker News（机器人话题）、Hugging Face。
 * **Google Gemini 3.x 深度撰稿**：智能提炼高价值科技新闻，自动产出爆款标题、精炼摘要与深度锐评。
-* **微信原生黄金排版**：严格遵循微信编辑器内联 CSS 渲染机制，使用固定的深海军蓝、电光青栏目与浅底新闻卡片；AI 只生成 JSON 内容，不参与样式设计。
+* **微信原生黄金排版**：AI 只生成 JSON 内容，不参与样式设计；固定模板保证每期视觉一致性。
 * **自动生成速览海报**：基于 Pillow 自动绘制 800px 高清科技风速览长图（`summary.png`），供朋友圈及社群分发。
 * **极速发文工作台**：生成专属静态网页，内置**标题复制、摘要复制、正文一键复制**，将日常发文压缩至 15 秒内。
 * **历史版本自动归档**：按执行时间戳归档，严格滚动保留最新 5 期，避免仓库臃肿。
@@ -21,7 +27,7 @@
 
 ```mermaid
 flowchart TD
-    A[GitHub Actions 定时触发<br/>每周一/三/五 10:00 CST] --> B[src/fetcher.py<br/>抓取全球 AI 重大科技新闻]
+    A[GitHub Actions 定时触发<br/>周一/三/五: 大模型早报<br/>周日: 具身智能周报] --> B[src/fetcher.py<br/>抓取全球 AI 重大科技新闻]
     B --> C[src/writer.py<br/>调用 Gemini 3.x 生成 JSON 内容]
     C --> D1[生成爆款标题 & 摘要]
     C --> T[src/template.py 固定模板渲染]
@@ -89,21 +95,21 @@ wechat-ai-daily/
 │       └── daily_news.yml      # GitHub Actions 自动化定时工作流
 ├── docs/                       # GitHub Pages 静态网站根目录
 │   ├── assets/
-│   │   └── cover.jpg           # 6 大巨头高清科技封面图（长期图床）
+│   │   ├── cover_llm.jpg       # AI 大模型早报封面图（长期图床）
+│   │   └── cover_embodied.jpg  # 具身智能周报封面图（长期图床）
 │   ├── YYYY-MM-DD_HH-MM-SS/    # 历史执行版本归档（自动滚动保留最新 5 期）
 │   │   ├── index.html
 │   │   └── summary.png
 │   ├── index.html              # 供外部访问的最新一期发布工作台
 │   └── summary.png             # 最新一期速览海报
 ├── src/
-│   ├── fetcher.py              # 全球 AI/大模型科技新闻采集器 (RSS/API)
-│   ├── writer.py               # Gemini 3.x JSON 写作、内容校验与降级引擎
+│   ├── fetcher.py              # 全球 AI/大模型 & 具身智能新闻采集器 (RSS/API，双模式)
+│   ├── writer.py               # Gemini 3.x JSON 写作、内容校验与降级引擎（双模式）
 │   ├── template.py             # 固定微信内联样式模板与内容协议
 │   ├── image_generator.py      # Pillow 高清信息图海报生成器
 │   ├── builder.py              # 网页组装器（含一键复制逻辑与样式）
 │   └── main.py                 # 主执行调度入口、历史归档清理与通知分发
 ├── requirements.txt            # Python 运行时依赖
-├── cover.jpg                   # 封面原图镜像
 └── README.md                   # 开发者与运营文档
 ```
 
@@ -156,8 +162,8 @@ python src/main.py
 ```yaml
 on:
   schedule:
-    # 目前设置为：每周一、三、五 中国时间 10:00 (即 UTC 02:00)
-    - cron: '0 2 * * 1,3,5'
+    # 目前设置为：周一/三/五 + 周日 中国时间 08:00 (即 UTC 00:00)
+    - cron: '0 0 * * 0,1,3,5'
 ```
 * 如需每天早上 8:30 执行，可修改为：`'30 0 * * *'`（UTC 00:30）。
 
