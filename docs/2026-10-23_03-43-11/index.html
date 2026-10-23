@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenAI谋求1.25万亿美元估值，科技巨头游说开支创新高 · 微信公众号发布工作台</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f3f8;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            color: #2d3748;
+        }
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .brand {
+            font-weight: 700;
+            color: #1a202c;
+            font-size: 16px;
+        }
+        .copy-main-btn {
+            background: #07c160;
+            color: white;
+            border: none;
+            padding: 11px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(7, 193, 96, 0.35);
+        }
+        .copy-main-btn:hover {
+            background: #06ad56;
+            transform: translateY(-1px);
+        }
+        .container {
+            max-width: 740px;
+            margin: 24px auto;
+            padding: 0 15px;
+        }
+        /* 微信公众号发布辅助工作台卡片 */
+        .helper-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border-top: 4px solid #1a73e8;
+        }
+        .helper-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a202c;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .helper-row {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+        .helper-label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #4a5568;
+            min-width: 75px;
+        }
+        .helper-val {
+            font-size: 14px;
+            color: #1a202c;
+            flex-grow: 1;
+            word-break: break-all;
+            line-height: 1.5;
+        }
+        .small-copy-btn {
+            background: #e8f0fe;
+            color: #1a73e8;
+            border: none;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s ease;
+        }
+        .small-copy-btn:hover {
+            background: #d2e3fc;
+        }
+        .article-card {
+            background: #ffffff;
+            padding: 35px 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+        .toast {
+            position: fixed;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a202c;
+            color: #ffffff;
+            padding: 11px 22px;
+            border-radius: 25px;
+            display: none;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="brand">🚀 微信公众号 · AI大模型早报发布台</div>
+        <button class="copy-main-btn" onclick="copyArticleBody()">📋 一键复制正文排版</button>
+    </div>
+
+    <div id="toast" class="toast">✅ 已复制到剪贴板！</div>
+
+    <div class="container">
+        <!-- 微信发布助手（标题、摘要） -->
+        <div class="helper-card">
+            <div class="helper-title">🎯 微信后台一键发文助手</div>
+            
+            <div class="helper-row">
+                <div class="helper-label">📌 推荐标题</div>
+                <div class="helper-val" id="title-text">OpenAI谋求1.25万亿美元估值，科技巨头游说开支创新高</div>
+                <button class="small-copy-btn" onclick="copyTextById('title-text', '文章标题已复制！')">复制标题</button>
+            </div>
+
+            <div class="helper-row">
+                <div class="helper-label">📝 推荐摘要</div>
+                <div class="helper-val" id="digest-text">AI行业资本运作与政策博弈齐攀顶峰：OpenAI被曝寻求300亿美元融资冲击1.25万亿美元估值，头部厂商三季度游说开支创历史纪录，智能体生态加速落地。</div>
+                <button class="small-copy-btn" onclick="copyTextById('digest-text', '推文摘要已复制！')">复制摘要</button>
+            </div>
+            
+            <div style="font-size: 12px; color: #718096; margin-top: 10px; display: flex; justify-content: space-between;">
+                <span>💡 复制标题与摘要后，点击上方绿色按钮复制正文，在公众号后台 Ctrl+V 即可。</span>
+            </div>
+        </div>
+
+        <!-- 审核速览长图 -->
+        
+        <div style="margin-bottom: 24px; background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); text-align: center;">
+            <div style="font-weight: 600; font-size: 16px; margin-bottom: 8px; color: #2d3748;">
+                🖼️ 今日审核速览摘要长图（已自动渲染）
+            </div>
+            <p style="font-size: 13px; color: #718096; margin-top: 0; margin-bottom: 14px;">
+                审核确认今日核心要点，可长按/右键保存直接发朋友圈、社群
+            </p>
+            <a href="summary.png" target="_blank" title="点击查看大图">
+                <img src="summary.png" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); border: 1px solid #edf2f7;" alt="今日早报速览摘要图" />
+            </a>
+            <div style="margin-top: 12px;">
+                <a href="summary.png" download="summary.png" style="display: inline-block; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; text-decoration: none; padding: 7px 16px; font-size: 13px; border-radius: 6px; font-weight: 600;">
+                    ⬇️ 下载原尺寸摘要海报
+                </a>
+            </div>
+        </div>
+        
+
+        <!-- 微信正文区域 -->
+        <div class="article-card">
+            <div style="font-size: 13px; color: #a0aec0; margin-bottom: 16px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
+                📖 微信排版效果实时预览区（已应用最舒适自媒体排版规范）
+            </div>
+            <div id="wechat-content">
+<section data-template="ai-daily-v1" style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #334155; font-size: 15px; line-height: 1.9; letter-spacing: 0.4px; text-align: left; text-indent: 0; overflow-wrap: anywhere; word-break: break-word;"><section style="background-color: #0b182b; border-top: 4px solid #22d3ee; padding: 24px 20px;"><p style="margin: 0 0 14px; color: #67e8f9; font-size: 11px; letter-spacing: 2px;">AI DAILY / INTELLIGENCE BRIEF</p><p style="margin: 0 0 12px; color: #ffffff; font-size: 28px; font-weight: bold; line-height: 1.4;">大模型前沿观察</p><p style="margin: 0; color: #a5b8d0; font-size: 12px;">2026年10月23日 · 全球 AI 情报精选</p></section><img src="https://jeffei.github.io/wechat-ai-daily/assets/cover_llm.jpg" alt="AI 科技前沿" style="display: block; width: 100%; height: auto; margin: 0 0 24px;"/><section style="background-color: #eff8fc; border-left: 3px solid #0891b2; padding: 18px 16px; margin: 0 0 24px;"><p style="margin: 0 0 10px; color: #087e8b; font-size: 12px; font-weight: bold;">SIGNAL / 今日风向标</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">全球AI生态正在步入空前的资本超重与政策深度博弈期，头部大厂通过创纪录的游说与千亿美元级资本运作为长期生存筑墙，同时行业竞争焦点已由单一基础模型快速向自主智能体架构及全员企业级落地全面倾斜。</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #dbe5ef; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #087e8b; font-weight: bold;">01 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">焦点头条 · 深度解读</span></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 01.01</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">英伟达、Anthropic与OpenAI三季度游说开支创历史新高</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">根据美国联邦披露数据，2026年7月至9月期间，英伟达、Anthropic与OpenAI在游说上的开支均创下各自的历史单季最高纪录。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">在这三家公司中，英伟达以220万美元的支出位列首位，Anthropic支出达210万美元紧随其后，OpenAI则支出了150万美元。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">随着AI治理法案与国家安全监管不断收紧，大模型领军企业正将战场从算力竞赛延伸至政治游说领域，高额政治支出已成为头部厂商保护自身商业模式与争夺规则制定权的标配。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：The Verge AI</p></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 01.02</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">DeepSeek被曝在美国联邦禁令出台数日后完成150亿美元融资</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">据外媒报道，中国人工智能机构DeepSeek已完成规模达150亿美元的融资，成为中国金额最大的融资轮次之一。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">该笔融资披露前数日，美国刚刚以国家安全担忧为由，下令要求联邦机构移除DeepSeek相关技术。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">地缘政治制约并未阻挡顶尖大模型研发的高估值吸金能力，超大规模融资表明全球资本仍在极力加码具备顶尖算法能力的非美生态关键玩家。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：TechCrunch AI</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #dbe5ef; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #087e8b; font-weight: bold;">02 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">大厂与开源风云</span></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 02.01</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">OpenAI被曝寻求以1.25万亿美元估值融资300亿美元</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">据知情人士透露，OpenAI正在推进一项规模达300亿美元的新融资计划，预计估值将达到1.25万亿美元。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">若本次融资成功落实，OpenAI将以超过万亿美元的估值打破纪录，成为全球历史上估值最高的初创公司与私有企业。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">在IPO前夕寻求万亿美元级别的定价，反映了前沿模型对后续万卡集群及超级算力建设的极度资金渴求，同时也正在将私有市场的AI估值泡沫推向极限考验。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：TechCrunch AI</p></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 02.02</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">Anthropic推出Claude Duet应用加速下注自主智能体</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">Anthropic正式推出名为Claude Duet的应用程序，被视为该公司在自主智能体领域的重大押注。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">目前该应用已对Pro和Max订阅计划的用户开放候补名单。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">基础模型的军备竞赛正在向以协同与自动执行为特征的智能体产品转移，头部厂商正通过高端订阅用户测试全新的工作流交互形态。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：TechCrunch AI</p></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 02.03</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">Canva发布首个自研图像生成模型Canva Craft</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">在线设计平台Canva推出了名为Canva Craft的图像生成模型，正面迎战OpenAI、微软与谷歌的同类技术。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">该模型采用两阶段架构，在正式生成图像之前会预先规划设计布局，以此提升设计成品的可用度。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">垂直场景巨头自研专有生成模型，显示出成熟SaaS平台不再满足于仅作为底层模型的套壳渠道，而是通过融合业务工作流的定制化架构构筑护城河。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：The Verge AI</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #dbe5ef; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #087e8b; font-weight: bold;">03 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">前沿落地与商业观察</span></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 03.01</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">优步向全球30,000名员工全面部署ChatGPT Work</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">网约车巨头优步宣布将企业级智能体ChatGPT Work全面推广至全公司所有30,000名员工。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">此前优步仅在小范围内开展了该工具的试点测试，此次决定标志着其正式进入全员日常办公深度集成阶段。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">这是企业级AI部署的一个关键里程碑，标志着生成式AI智能体正在脱离部门级试点，成为超大型跨国企业的基础生产力底座。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：TechCrunch AI</p></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 03.02</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">AI代码测试平台Blacksmith获红杉领投6600万美元晋升独角兽</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">帮助企业高效构建与测试AI代码的平台Blacksmith宣布完成6600万美元C轮融资。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">本轮融资由红杉资本领投，交易达成后Blacksmith的整体估值达到10亿美元，正式晋升独角兽行列。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">伴随AI生成代码的爆发，代码验证与测试基础设施成为刚需，开发者工具链环节正持续诞生具备高商业价值的垂类新贵。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：TechCrunch AI</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #dbe5ef; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #087e8b; font-weight: bold;">04 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">主编锐评</span></section><section style="background-color: #0b182b; border-top: 3px solid #22d3ee; padding: 22px 18px; border-radius: 0 0 8px 8px;"><p style="margin: 0 0 14px; color: #67e8f9; font-size: 11px; letter-spacing: 2px;">EDITOR’S PERSPECTIVE</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #e2e8f0; text-align: left; text-indent: 0;">从OpenAI冲击1.25万亿美元估值到DeepSeek的150亿美元逆势融资，AI核心圈层的马太效应已演绎到前所未有的极致。事实证明，模型迭代与算力扩张的沉重资本负担，正迫使领跑者通过超大规模资本运作来维持高壁垒。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #e2e8f0; text-align: left; text-indent: 0;">与此同时，从Meta的Muse网络愿景到Anthropic的Duet与优步的全员ChatGPT部署，行业叙事正明确向自主智能体体系过渡。但值得注意的是，伴随PHP漏洞挖掘与黑客利用智能体发起攻击的事实曝光，安全攻防的脆弱性预示着当智能体真正接管业务流程时，企业所需付出的安全与合规治理成本将迎来几何级攀升。</p></section><p style="margin: 26px 0 0; padding-top: 14px; border-top: 1px solid #dbe5ef; color: #64748b; font-size: 10px; letter-spacing: 1px; text-align: center;">AI DAILY · 持续观察技术与商业的下一步</p>
+<!-- 🎁 彩蛋 · OpenRouter 免费大模型福利 -->
+<section style="display: table; text-indent: 0; margin: 32px 0 14px 0; background-color: #fef3c7; border-radius: 6px; padding: 6px 14px; text-align: left;">
+    <span style="color: #b45309; font-size: 15px; font-weight: bold; letter-spacing: 0.5px; text-indent: 0; line-height: 1.2;">
+        🎁 彩蛋 · OpenRouter 免费大模型福利
+    </span>
+</section>
+<div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+    <p style="margin: 0 0 14px 0; font-size: 14px; line-height: 1.8; color: #78350f; text-align: justify;">
+        【专属福利】来自 <b>OpenRouter Discover</b> 实时全网热度最高的 2 款<b>免费大模型</b>！附带每周全网 Token 跑量与上下文规格，送给需要调试与开发的朋友：
+    </p>
+    <div style="background-color: #ffffff; border: 1px solid #fde68a; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+    <div style="font-size: 15px; font-weight: bold; color: #1f2937; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+        <span>🚀 1. Nemotron 3 Ultra (free)</span>
+        <span style="background-color: #dcfce7; color: #15803d; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 12px;">免费 (Free)</span>
+    </div>
+    <div style="font-size: 13px; color: #4b5563; line-height: 1.7;">
+        <div style="margin-bottom: 4px;">📊 <b>每周 Token 跑量：</b><span style="color: #d97706; font-weight: bold; font-size: 14px;">4.6T</span> Tokens/wk</div>
+        <div>🧠 <b>上下文窗口：</b><span style="color: #374151; font-weight: 500;">1M</span></div>
+    </div>
+</div>
+<div style="background-color: #ffffff; border: 1px solid #fde68a; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+    <div style="font-size: 15px; font-weight: bold; color: #1f2937; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+        <span>🚀 2. Nemotron 3.5 Super VL (free)</span>
+        <span style="background-color: #dcfce7; color: #15803d; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 12px;">免费 (Free)</span>
+    </div>
+    <div style="font-size: 13px; color: #4b5563; line-height: 1.7;">
+        <div style="margin-bottom: 4px;">📊 <b>每周 Token 跑量：</b><span style="color: #d97706; font-weight: bold; font-size: 14px;">1.4T</span> Tokens/wk</div>
+        <div>🧠 <b>上下文窗口：</b><span style="color: #374151; font-weight: 500;">1M</span></div>
+    </div>
+</div>
+</div>
+</section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2500);
+        }
+
+        async function copyTextById(elementId, successMsg) {
+            const text = document.getElementById(elementId).innerText.trim();
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast("✅ " + successMsg);
+            } catch(e) {
+                const input = document.createElement('textarea');
+                input.value = text;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                showToast("✅ " + successMsg);
+            }
+        }
+
+        async function copyArticleBody() {
+            const content = document.getElementById('wechat-content');
+            const html = content.innerHTML;
+            const text = content.innerText;
+            
+            try {
+                const blobHtml = new Blob([html], { type: 'text/html' });
+                const blobText = new Blob([text], { type: 'text/plain' });
+                const data = [new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })];
+                await navigator.clipboard.write(data);
+                showToast('✅ 正文排版已复制！微信后台直接 Ctrl + V 粘贴即可！');
+            } catch (err) {
+                const range = document.createRange();
+                range.selectNode(content);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+                document.execCommand('copy');
+                selection.removeAllRanges();
+                showToast('✅ 正文排版已复制到剪贴板！');
+            }
+        }
+    </script>
+</body>
+</html>
