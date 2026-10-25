@@ -222,7 +222,7 @@ def build_preview_page(
 </head>
 <body>
     <div class="top-bar">
-        <div class="brand">🚀 微信公众号 · AI大模型早报发布台</div>
+        <div class="brand">🚀 微信公众号 · AI早报发布台</div>
         <button class="copy-main-btn" onclick="copyArticleBody()">📋 一键复制正文排版</button>
     </div>
 

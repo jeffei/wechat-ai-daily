@@ -124,7 +124,7 @@ def render_article(data: dict, issue_date: str) -> str:
         '<section style="background-color: #0b182b; border-top: 3px solid #22d3ee; padding: 22px 18px; border-radius: 0 0 8px 8px;">',
         '<p style="margin: 0 0 14px; color: #67e8f9; font-size: 11px; letter-spacing: 2px;">EDITOR’S PERSPECTIVE</p>',
         *[_paragraph(p, "#e2e8f0") for p in data["commentary"]], '</section>',
-        '<p style="margin: 26px 0 0; padding-top: 14px; border-top: 1px solid #dbe5ef; color: #64748b; font-size: 10px; letter-spacing: 1px; text-align: center;">AI DAILY · 持续观察技术与商业的下一步</p>',
+        '<p style="margin: 26px 0 0; padding-top: 14px; border-top: 1px solid #dbe5ef; color: #64748b; font-size: 10px; letter-spacing: 1px; text-align: center;">AI DAILY · 持续观察大模型最前沿</p>',
         '</section>',
     ])
     return "".join(parts)
@@ -186,7 +186,7 @@ def render_embodied_article(data: dict, issue_date: str) -> str:
         f'<section style="background-color: {DARK}; border-top: 3px solid {ORANGE}; padding: 22px 18px; border-radius: 0 0 8px 8px;">',
         f'<p style="margin: 0 0 14px; color: {ORANGE}; font-size: 11px; letter-spacing: 2px;">EDITOR\'S PERSPECTIVE</p>',
         *[_paragraph(p, "#e2e8f0") for p in data["commentary"]], '</section>',
-        f'<p style="margin: 26px 0 0; padding-top: 14px; border-top: 1px solid {ORANGE_DIM}; color: #64748b; font-size: 10px; letter-spacing: 1px; text-align: center;">EMBODIED AI WEEKLY · 持续观察具身智能的下一步</p>',
+        f'<p style="margin: 26px 0 0; padding-top: 14px; border-top: 1px solid {ORANGE_DIM}; color: #64748b; font-size: 10px; letter-spacing: 1px; text-align: center;">EMBODIED AI WEEKLY · 持续观察具身智能最前沿</p>',
         '</section>',
     ])
     return "".join(parts)
