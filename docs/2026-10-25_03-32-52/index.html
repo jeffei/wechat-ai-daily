@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>具身智能周报：Digit 5面世，特斯拉量产Optimus，物理AI迎融资热潮 · 微信公众号发布工作台</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f3f8;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            color: #2d3748;
+        }
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .brand {
+            font-weight: 700;
+            color: #1a202c;
+            font-size: 16px;
+        }
+        .copy-main-btn {
+            background: #07c160;
+            color: white;
+            border: none;
+            padding: 11px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(7, 193, 96, 0.35);
+        }
+        .copy-main-btn:hover {
+            background: #06ad56;
+            transform: translateY(-1px);
+        }
+        .container {
+            max-width: 740px;
+            margin: 24px auto;
+            padding: 0 15px;
+        }
+        /* 微信公众号发布辅助工作台卡片 */
+        .helper-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border-top: 4px solid #1a73e8;
+        }
+        .helper-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a202c;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .helper-row {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+        .helper-label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #4a5568;
+            min-width: 75px;
+        }
+        .helper-val {
+            font-size: 14px;
+            color: #1a202c;
+            flex-grow: 1;
+            word-break: break-all;
+            line-height: 1.5;
+        }
+        .small-copy-btn {
+            background: #e8f0fe;
+            color: #1a73e8;
+            border: none;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s ease;
+        }
+        .small-copy-btn:hover {
+            background: #d2e3fc;
+        }
+        .article-card {
+            background: #ffffff;
+            padding: 35px 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+        .toast {
+            position: fixed;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a202c;
+            color: #ffffff;
+            padding: 11px 22px;
+            border-radius: 25px;
+            display: none;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="brand">🚀 微信公众号 · AI大模型早报发布台</div>
+        <button class="copy-main-btn" onclick="copyArticleBody()">📋 一键复制正文排版</button>
+    </div>
+
+    <div id="toast" class="toast">✅ 已复制到剪贴板！</div>
+
+    <div class="container">
+        <!-- 微信发布助手（标题、摘要） -->
+        <div class="helper-card">
+            <div class="helper-title">🎯 微信后台一键发文助手</div>
+            
+            <div class="helper-row">
+                <div class="helper-label">📌 推荐标题</div>
+                <div class="helper-val" id="title-text">具身智能周报：Digit 5面世，特斯拉量产Optimus，物理AI迎融资热潮</div>
+                <button class="small-copy-btn" onclick="copyTextById('title-text', '文章标题已复制！')">复制标题</button>
+            </div>
+
+            <div class="helper-row">
+                <div class="helper-label">📝 推荐摘要</div>
+                <div class="helper-val" id="digest-text">本周具身智能迎来硬件与模型双重突破：Agility Robotics推出Digit 5，特斯拉在加州启动Optimus人形机器人生产；Eka Robotics获1.5亿美元融资加速视觉-力-动作模型拓展。</div>
+                <button class="small-copy-btn" onclick="copyTextById('digest-text', '推文摘要已复制！')">复制摘要</button>
+            </div>
+            
+            <div style="font-size: 12px; color: #718096; margin-top: 10px; display: flex; justify-content: space-between;">
+                <span>💡 复制标题与摘要后，点击上方绿色按钮复制正文，在公众号后台 Ctrl+V 即可。</span>
+            </div>
+        </div>
+
+        <!-- 审核速览长图 -->
+        
+        <div style="margin-bottom: 24px; background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); text-align: center;">
+            <div style="font-weight: 600; font-size: 16px; margin-bottom: 8px; color: #2d3748;">
+                🖼️ 今日审核速览摘要长图（已自动渲染）
+            </div>
+            <p style="font-size: 13px; color: #718096; margin-top: 0; margin-bottom: 14px;">
+                审核确认今日核心要点，可长按/右键保存直接发朋友圈、社群
+            </p>
+            <a href="summary.png" target="_blank" title="点击查看大图">
+                <img src="summary.png" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); border: 1px solid #edf2f7;" alt="今日早报速览摘要图" />
+            </a>
+            <div style="margin-top: 12px;">
+                <a href="summary.png" download="summary.png" style="display: inline-block; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; text-decoration: none; padding: 7px 16px; font-size: 13px; border-radius: 6px; font-weight: 600;">
+                    ⬇️ 下载原尺寸摘要海报
+                </a>
+            </div>
+        </div>
+        
+
+        <!-- 微信正文区域 -->
+        <div class="article-card">
+            <div style="font-size: 13px; color: #a0aec0; margin-bottom: 16px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
+                📖 微信排版效果实时预览区（已应用最舒适自媒体排版规范）
+            </div>
+            <div id="wechat-content">
+<section data-template="embodied-weekly-v1" style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #334155; font-size: 15px; line-height: 1.9; letter-spacing: 0.4px; text-align: left; text-indent: 0; overflow-wrap: anywhere; word-break: break-word;"><section style="background-color: #0f1117; border-top: 4px solid #f97316; padding: 24px 20px;"><p style="margin: 0 0 14px; color: #f97316; font-size: 11px; letter-spacing: 2px;">EMBODIED AI WEEKLY / 具身智能周报</p><p style="margin: 0 0 12px; color: #ffffff; font-size: 28px; font-weight: bold; line-height: 1.4;">具身智能前沿观察</p><p style="margin: 0; color: #a5b8d0; font-size: 12px;">2026年10月25日 · 全球具身智能情报精选</p></section><img alt="具身智能前沿" src="https://jeffei.github.io/wechat-ai-daily/assets/cover_embodied.jpg" style="display: block; width: 100%; height: auto; margin: 0 0 24px;"/><section style="background-color: #fff7ed; border-left: 3px solid #f97316; padding: 18px 16px; margin: 0 0 24px;"><p style="margin: 0 0 10px; color: #f97316; font-size: 12px; font-weight: bold;">SIGNAL / 本周风向标</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">本周具身智能行业展现出明显的工程落地与基础模型齐头并进趋势。一方面，Agility Robotics发布Digit 5、特斯拉开启Optimus加州产线，加速人形机器人硬件规模化制造；另一方面，以Eka Robotics的VFA力控模型、Dream Labs的跨本体Dream API及Daimon Robotics的触觉智能为代表，感知、力控与跨硬件泛化等物理AI模型底座正吸引巨额资本重金押注。</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #fed7aa; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #f97316; font-weight: bold;">01 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">本周焦点 · 重大突破</span></section><section style="background-color: #fff7ed; border-left: 3px solid #f97316; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #f97316; font-size: 11px; font-weight: bold;">BRIEF 01.01</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">Agility Robotics正式发布Digit 5人形机器人，剑指规模化实用作业</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">从俄勒冈州立大学机器人实验室孵化成立的Agility Robotics正式发布全新一代人形机器人Digit 5。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">官方表示，Digit 5旨在成为首款能够安全、经济且规模化执行实用任务的人形机器人，目标是推动数万台人形机器人进入实际应用场景。</p><section style="border-top: 1px solid #fed7aa; padding-top: 12px;"><p style="margin: 0 0 6px; color: #f97316; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">Digit 5的亮相标志着头部人形机器人企业正全力跨越从样机展示到经济型规模化量产的门槛，实用性和成本控制成为现阶段产品迭代的核心标准。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：IEEE Spectrum Robotics</p></section><section style="background-color: #fff7ed; border-left: 3px solid #f97316; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #f97316; font-size: 11px; font-weight: bold;">BRIEF 01.02</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">特斯拉在加州启动Optimus人形机器人生产，持续加码AI与自动化研发</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">最新财报显示，特斯拉在营业收入持平且利润下滑43%的压力下，大幅增加了研发支出。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">在此背景下，特斯拉已在加利福尼亚州正式启动Optimus人形机器人的产线制造，坚定按下在机器人、人工智能和自动驾驶领域的加速键。</p><section style="border-top: 1px solid #fed7aa; padding-top: 12px;"><p style="margin: 0 0 6px; color: #f97316; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">特斯拉将利润压力转化为对Optimus量产的坚定投入，反映出头部科技巨头将具身智能视作下一代增长曲线的核心赌注，这也将直接刺激全球人形机器人产业链供应链的提速。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：TechCrunch Robotics</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #fed7aa; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #f97316; font-weight: bold;">02 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">头部玩家 · 产品与融资</span></section><section style="background-color: #fff7ed; border-left: 3px solid #f97316; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #f97316; font-size: 11px; font-weight: bold;">BRIEF 02.01</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">物理AI初创企业Eka Robotics估值达14.5亿美元，斩获1.5亿美元新融资</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">Eka Robotics宣布完成1.5亿美元融资，投后估值达到14.5亿美元，凭借其研发的物理AI模型在业界引发广泛关注。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">该公司正在构建名为“视觉-力-动作”（VFA）的全新模型，旨在通过大规模强化学习让机器人掌握物理直觉，其机械臂在多样化物体抓取上表现出高度拟人化的平滑性。</p><section style="border-top: 1px solid #fed7aa; padding-top: 12px;"><p style="margin: 0 0 6px; color: #f97316; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">纯视觉大模型在物理交互中的局限性正催生新一代多模态物理交互底座，融入高精度力控反馈的物理AI模型已成为资本与行业评估具身智能技术深度的新标杆。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：The Robot Report</p></section><section style="background-color: #fff7ed; border-left: 3px solid #f97316; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #f97316; font-size: 11px; font-weight: bold;">BRIEF 02.02</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">Dream Labs完成9000万美元融资并推出跨硬件架构Dream API</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">机器人AI研发机构Dream Labs宣布完成9000万美元融资，并同步推出Dream API开发接口。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">据介绍，其核心AI模型Dream-1能够支持跨厂商、跨本体的机器人硬件系统，并实现机器人跨场景学习能力的迁移与共享。</p><section style="border-top: 1px solid #fed7aa; padding-top: 12px;"><p style="margin: 0 0 6px; color: #f97316; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">跨本体通用模型与API工具的兴起，有望降低具身智能软件的开发与泛化门槛，为多厂商机器人协同与技能复用铺平底层通路。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：The Robot Report</p></section><section style="background-color: #fff7ed; border-left: 3px solid #f97316; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #f97316; font-size: 11px; font-weight: bold;">BRIEF 02.03</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">Daimon Robotics打造触觉智能基础设施层，提升物理作业可靠性</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">Daimon Robotics公布其围绕具身智能触觉感知的基础设施方案。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">该团队将触觉感知、真实世界数据采集、仿真系统与AI大模型打通，致力于帮助机器人更稳定可靠地应对真实环境中的复杂物理交互任务。</p><section style="border-top: 1px solid #fed7aa; padding-top: 12px;"><p style="margin: 0 0 6px; color: #f97316; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">除视觉外，高精度触觉与物理力学数据的闭环是实现细粒度具身操作不可或缺的一环，专用触觉基座方案将加速高难度装配及交互任务的算法迭代。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：The Robot Report</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #fed7aa; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #f97316; font-weight: bold;">03 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">落地应用 · 商业进展</span></section><section style="background-color: #fff7ed; border-left: 3px solid #f97316; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #f97316; font-size: 11px; font-weight: bold;">BRIEF 03.01</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">农业装备巨头AGCO与Agility达成协议，将在堪萨斯工厂引入Digit人形机器人</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">农业设备制造商AGCO宣布将引入Agility Robotics旗下Digit人形机器人开展试点应用。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">该试点项目预计将于2027年正式启动，部署地点位于AGCO设在堪萨斯州的农业装备生产工厂。</p><section style="border-top: 1px solid #fed7aa; padding-top: 12px;"><p style="margin: 0 0 6px; color: #f97316; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">工业重型装备制造场景的复杂装配与搬运需求，正成为检验人形机器人真实工业适配度的试验田，商业化场景正从仓储物流向更复杂的工业智造纵深演进。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：The Robot Report</p></section><section style="background-color: #fff7ed; border-left: 3px solid #f97316; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #f97316; font-size: 11px; font-weight: bold;">BRIEF 03.02</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">Gecko Robotics获美国海军3亿美元大额合同，工业检测机器人深入核心领域</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">自动化检测与机器人企业Gecko Robotics宣布与美国海军签署一项价值3亿美元的业务合同。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">Gecko方面表示，该长期订单表明美国军工部门对其机器人交付成果与核心防务能力的认可。</p><section style="border-top: 1px solid #fed7aa; padding-top: 12px;"><p style="margin: 0 0 6px; color: #f97316; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">具备严苛工况作业能力的特种检测机器人已进入高壁垒、高价值的商业化变现深水区，展现了具身检测技术在国防基础设施维护上的扎实价值。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：The Robot Report</p></section><section style="background-color: #fff7ed; border-left: 3px solid #f97316; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #f97316; font-size: 11px; font-weight: bold;">BRIEF 03.03</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">林业机器人初创公司Kodama完成700万美元融资，通过远程操作与数据飞轮推进伐木自动化</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">聚焦林业与采伐设备自动化的机器人公司Kodama宣布完成700万美元融资。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">该公司现阶段以远程遥控作业作为切入点，在实际林业操作中积累关键交互数据，以此逐步构建自动化作业能力。</p><section style="border-top: 1px solid #fed7aa; padding-top: 12px;"><p style="margin: 0 0 6px; color: #f97316; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">在复杂野外非结构化环境中，采用“人机协同遥控-积累物理交互数据-推进自主化”的渐进式商业路径，为极端特种垂直行业的具身落地提供了实用范例。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：The Robot Report</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #fed7aa; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #f97316; font-weight: bold;">04 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">主编锐评</span></section><section style="background-color: #0f1117; border-top: 3px solid #f97316; padding: 22px 18px; border-radius: 0 0 8px 8px;"><p style="margin: 0 0 14px; color: #f97316; font-size: 11px; letter-spacing: 2px;">EDITOR'S PERSPECTIVE</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #e2e8f0; text-align: left; text-indent: 0;">观察本周的产业风向，具身智能赛道正呈现出清晰的“物理交互深化”与“工程制造落地”两大轴线。在硬件层面，特斯拉在财务承压之下依然全面开启Optimus加州产线，Agility Robotics则以高性价比和规模化为首要目标推出Digit 5。事实表明，第一梯队人形机器人企业已从单纯追求运控演示，转向直面产线节拍、良率与单位经济效益的工程化制造深水区。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #e2e8f0; text-align: left; text-indent: 0;">在技术与模型架构层面，Eka Robotics凭借视觉-力-动作（VFA）模型跻身独角兽行列，以及Daimon Robotics对触觉基础设施的构建，清晰地释放出一个信号：仅依赖高维纯视觉生成在真实物理世界中的鲁棒性仍有天花板，融合精准力控与触觉反馈的物理AI底座正成为具身智能下半场的核心护城河。谁能率先攻克泛化力控并构建跨本体的软硬件闭环，谁就将真正主导智能物理实体的规模化爆发。</p></section><p style="margin: 26px 0 0; padding-top: 14px; border-top: 1px solid #fed7aa; color: #64748b; font-size: 10px; letter-spacing: 1px; text-align: center;">EMBODIED AI WEEKLY · 持续观察具身智能的下一步</p></section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2500);
+        }
+
+        async function copyTextById(elementId, successMsg) {
+            const text = document.getElementById(elementId).innerText.trim();
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast("✅ " + successMsg);
+            } catch(e) {
+                const input = document.createElement('textarea');
+                input.value = text;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                showToast("✅ " + successMsg);
+            }
+        }
+
+        async function copyArticleBody() {
+            const content = document.getElementById('wechat-content');
+            const html = content.innerHTML;
+            const text = content.innerText;
+            
+            try {
+                const blobHtml = new Blob([html], { type: 'text/html' });
+                const blobText = new Blob([text], { type: 'text/plain' });
+                const data = [new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })];
+                await navigator.clipboard.write(data);
+                showToast('✅ 正文排版已复制！微信后台直接 Ctrl + V 粘贴即可！');
+            } catch (err) {
+                const range = document.createRange();
+                range.selectNode(content);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+                document.execCommand('copy');
+                selection.removeAllRanges();
+                showToast('✅ 正文排版已复制到剪贴板！');
+            }
+        }
+    </script>
+</body>
+</html>
