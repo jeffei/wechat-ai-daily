@@ -7,10 +7,11 @@ from datetime import datetime
 # 保证模块导入路径正确
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from fetcher import aggregate_news, aggregate_embodied_ai_news
+from fetcher import aggregate_news, aggregate_embodied_ai_news, download_news_images
 from writer import generate_wechat_article, generate_embodied_article
 from image_generator import generate_summary_card
 from builder import build_preview_page, notify_user
+from template import render_embodied_article
 from openrouter import fetch_openrouter_free_models, generate_easter_egg_html, inject_easter_egg
 
 DOCS_DIR = "docs"
@@ -58,7 +59,7 @@ def main():
         print(f"✅ 具身智能资讯采集完成，共收集素材约 {len(news_content)} 字符。")
 
         print("🦾 正在调用 Google Gemini 3.x 生成具身智能周报...")
-        title, digest, article_html, highlights = generate_embodied_article(news_content)
+        title, digest, article_data, highlights = generate_embodied_article(news_content)
         print(f"✅ Gemini 生成成功！\n📌 推荐标题: 《{title}》\n📝 推荐摘要: {digest}")
 
         # 周日不插入 OpenRouter 彩蛋（与主题不符）
@@ -94,6 +95,14 @@ def main():
     os.makedirs(archive_dir, exist_ok=True)
     print(f"📁 已创建本次执行归档目录: {archive_dir}")
 
+    # 3.5 周日模式：下载新闻配图到归档目录，并渲染最终 HTML
+    if sunday_mode:
+        print("📸 正在下载具身智能新闻配图到本地归档...")
+        download_news_images(article_data, save_dir=archive_dir)
+        today_str = datetime.now().strftime("%Y年%m月%d日")
+        article_html = render_embodied_article(article_data, today_str)
+        print("✅ 配图已本地化，HTML 已渲染完成。")
+
     # 4. 生成【审核摘要图】并存放在本次目录中
     img_archive_path = os.path.join(archive_dir, "summary.png")
     generate_summary_card(highlights, output_path=img_archive_path)
@@ -116,10 +125,16 @@ def main():
     # 项目根目录也存一份作为镜像
     shutil.copy2(html_archive_path, "index.html")
     shutil.copy2(img_archive_path, "summary.png")
+    # 将下载的新闻配图也同步复制到 docs/ 根目录和项目根目录（确保 GitHub Pages 引用正确）
+    for fname in os.listdir(archive_dir):
+        if fname.startswith("news_img_"):
+            src = os.path.join(archive_dir, fname)
+            shutil.copy2(src, os.path.join(DOCS_DIR, fname))
+            shutil.copy2(src, fname)
     print(f"✅ 最新网页与摘要图已就绪: {latest_html_path} & {latest_img_path}")
 
-    # 7. 严格执行归档保留策略：仅保留最新的 5 个历史归档文件夹
-    clean_old_history(DOCS_DIR, keep_count=5)
+    # 7. 严格执行归档保留策略：仅保留最新的 3 个历史归档文件夹
+    clean_old_history(DOCS_DIR, keep_count=3)
 
     # 8. 发送微信推送通知
     notify_user(title=notify_title, message=notify_message)

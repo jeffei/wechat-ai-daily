@@ -47,6 +47,102 @@ EMBODIED_IMPACT_KEYWORDS = [
     "imitation learning", "deployment robot", "factory robot", "warehouse robot"
 ]
 
+def extract_image_url(entry) -> str:
+    """从 RSS entry 中尝试提取配图 URL（优先 media_content / media_thumbnail / enclosure）"""
+    # 优先 media_content（高分辨率）
+    media_content = entry.get('media_content', [])
+    if media_content:
+        for mc in media_content:
+            url = mc.get('url', '')
+            mtype = mc.get('medium', mc.get('type', ''))
+            if url and ('image' in mtype or url.lower().endswith(('.jpg', '.jpeg', '.png', '.webp'))):
+                return url
+
+    # media_thumbnail
+    media_thumb = entry.get('media_thumbnail', [])
+    if media_thumb:
+        for mt in media_thumb:
+            url = mt.get('url', '')
+            if url:
+                return url
+
+    # enclosure
+    enclosures = entry.get('enclosures', [])
+    if enclosures:
+        for enc in enclosures:
+            url = enc.get('href', enc.get('url', ''))
+            enc_type = enc.get('type', '')
+            if url and ('image' in enc_type or url.lower().endswith(('.jpg', '.jpeg', '.png', '.webp'))):
+                return url
+
+    # 最后尝试从 summary / description 的 HTML 中提取第一个 <img> 的 src
+    raw_summary = entry.get('summary', '') or entry.get('description', '')
+    if raw_summary and '<img' in raw_summary.lower():
+        img_match = re.search(r'<img[^>]+src=["\'](http[^"\'>]+)["\'\s]', raw_summary, re.IGNORECASE)
+        if img_match:
+            img_url = img_match.group(1)
+            # 过滤过小的追踪像素或图标
+            if not any(skip in img_url.lower() for skip in ['pixel', 'tracker', '1x1', 'badge', 'icon', 'logo', 'avatar']):
+                return img_url
+
+    return ''
+
+
+
+def download_news_images(article_data: dict, save_dir: str) -> dict:
+    """
+    将具身智能周报 article 中的远程 image_url 下载到 save_dir，
+    并将 image_url 替换为本地文件名。下载失败时清空该字段（不影响正文）。
+    返回更新后的 article_data（原地修改）。
+    """
+    import os
+    from urllib.parse import urlparse
+
+    os.makedirs(save_dir, exist_ok=True)
+    img_counter = 0
+
+    for item in article_data.get("news", []):
+        remote_url = item.get("image_url", "").strip()
+        if not remote_url:
+            continue
+
+        img_counter += 1
+        # 根据远程 URL 的扩展名决定本地文件名
+        parsed = urlparse(remote_url)
+        ext = os.path.splitext(parsed.path)[1].lower()
+        if ext not in ('.jpg', '.jpeg', '.png', '.webp', '.gif'):
+            ext = '.jpg'  # 默认 jpg
+        local_filename = f"news_img_{img_counter}{ext}"
+        local_path = os.path.join(save_dir, local_filename)
+
+        try:
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                "Accept": "image/webp,image/apng,image/*,*/*;q=0.8",
+                "Referer": remote_url,
+            }
+            resp = requests.get(remote_url, headers=headers, timeout=15, stream=True)
+            if resp.status_code == 200:
+                content_type = resp.headers.get("Content-Type", "")
+                if "image" not in content_type and len(resp.content) < 1000:
+                    # 响应不是图片（可能是 HTML 错误页），放弃
+                    print(f"⚠️ 配图下载疑似非图片内容 (Content-Type: {content_type})，跳过: {remote_url}")
+                    item["image_url"] = ""
+                    continue
+                with open(local_path, 'wb') as img_file:
+                    img_file.write(resp.content)
+                item["image_url"] = local_filename
+                print(f"📸 配图已下载: {remote_url} → {local_filename} ({len(resp.content) / 1024:.0f} KB)")
+            else:
+                print(f"⚠️ 配图下载失败 (HTTP {resp.status_code}): {remote_url}")
+                item["image_url"] = ""
+        except Exception as e:
+            print(f"⚠️ 配图下载异常: {remote_url} → {e}")
+            item["image_url"] = ""
+
+    return article_data
+
+
 def get_time_window_hours() -> int:
     """
     根据发布日程动态计算时间窗口：
@@ -125,13 +221,17 @@ def fetch_rss_news_in_window(feed_url: str, source_name: str, window_hours: int,
                 # 计算火爆热度得分
                 score = calculate_virality_score(title, summary, base_bonus=10, mode=mode)
                 
+                # 提取新闻配图（具身智能周报中可展示机器人产品图片）
+                image_url = extract_image_url(entry)
+
                 news_items.append({
                     "source": source_name,
                     "title": title,
                     "summary": summary[:280] + "..." if len(summary) > 280 else summary,
                     "url": entry.get("link", ""),
                     "score": score,
-                    "published_at": published_dt.strftime("%Y-%m-%d %H:%M UTC") if published_dt else "近期"
+                    "published_at": published_dt.strftime("%Y-%m-%d %H:%M UTC") if published_dt else "近期",
+                    "image_url": image_url
                 })
     except Exception as e:
         print(f"抓取 {source_name} 失败: {e}")
@@ -324,11 +424,15 @@ def aggregate_embodied_ai_news() -> str:
     ]
 
     for idx, item in enumerate(top_candidates, 1):
+        image_line = ""
+        if item.get("image_url"):
+            image_line = f"- 配图链接: {item['image_url']}\n"
         content_parts.append(
             f"### [{idx}] 【{item['source']} | 热度分: {item['score']}】{item['title']}\n"
             f"- 发布时间: {item['published_at']}\n"
             f"- 核心要点: {item['summary']}\n"
             f"- 来源链接: {item['url']}\n"
+            f"{image_line}"
         )
 
     return "\n".join(content_parts)

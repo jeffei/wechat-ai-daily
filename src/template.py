@@ -33,6 +33,7 @@ ARTICLE_SCHEMA = {
                 "paragraphs": {"type": "ARRAY", "items": {"type": "STRING"}},
                 "analysis": {"type": "STRING"},
                 "source": {"type": "STRING"},
+                "image_url": {"type": "STRING"},
             },
             "required": ["category", "title", "paragraphs", "analysis", "source"],
         }},
@@ -49,16 +50,26 @@ def validate_article(data: dict) -> dict:
         if kind == "OBJECT":
             if not isinstance(value, dict):
                 raise ValueError(f"{path} 必须是对象")
-            if set(value) != set(schema["properties"]):
-                raise ValueError(f"{path} 字段不符合内容协议")
+            required = set(schema.get("required", schema["properties"].keys()))
+            allowed = set(schema["properties"].keys())
+            actual = set(value.keys())
+            missing = required - actual
+            extra = actual - allowed
+            if missing:
+                raise ValueError(f"{path} 缺少必需字段: {missing}")
+            if extra:
+                raise ValueError(f"{path} 包含未知字段: {extra}")
             for key, child in schema["properties"].items():
-                check(value[key], child, f"{path}.{key}")
+                if key in value:
+                    check(value[key], child, f"{path}.{key}")
         elif kind == "ARRAY":
             if not isinstance(value, list) or not value:
                 raise ValueError(f"{path} 必须是非空列表")
             for i, item in enumerate(value):
                 check(item, schema["items"], f"{path}[{i}]")
-        elif not isinstance(value, str) or not value.strip():
+        elif not isinstance(value, str):
+            raise ValueError(f"{path} 必须是文本")
+        elif not value.strip() and path.rsplit(".", 1)[-1] not in ("image_url",):
             raise ValueError(f"{path} 必须是非空文本")
         elif "enum" in schema and value not in schema["enum"]:
             raise ValueError(f"{path} 包含未知栏目")
@@ -166,10 +177,25 @@ def render_embodied_article(data: dict, issue_date: str) -> str:
         if not items:
             parts.append(_paragraph("本期暂无该栏目资讯。", "#64748b"))
         for number, item in enumerate(items, 1):
-            parts.extend([
+            # 构建新闻卡片内容
+            card_parts = [
                 f'<section style="background-color: #fff7ed; border-left: 3px solid {ORANGE}; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;">',
                 f'<p style="margin: 0 0 10px; color: {ORANGE}; font-size: 11px; font-weight: bold;">BRIEF {index:02d}.{number:02d}</p>',
                 f'<h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">{_text(item["title"])}</h3>',
+            ]
+            # 如果有配图（机器人新产品等），在标题下方展示
+            img_url = item.get("image_url", "").strip()
+            if img_url:
+                card_parts.append(
+                    f'<div style="margin: 0 0 16px; text-align: center;">'
+                    f'<img src="{escape(img_url, quote=True)}" alt="{_text(item["title"])}" '
+                    f'style="display: block; width: 100%; max-width: 560px; height: auto; '
+                    f'margin: 0 auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); '
+                    f'border: 1px solid #fed7aa;" />'
+                    f'<p style="margin: 6px 0 0; font-size: 11px; color: #94a3b8; text-align: center;">▲ 图片来源：{_text(item["source"])}</p>'
+                    f'</div>'
+                )
+            card_parts.extend([
                 *[_paragraph(p) for p in item["paragraphs"]],
                 '<section style="border-top: 1px solid #fed7aa; padding-top: 12px;">',
                 f'<p style="margin: 0 0 6px; color: {ORANGE}; font-size: 12px; font-weight: bold;">影响解读</p>',
@@ -177,6 +203,7 @@ def render_embodied_article(data: dict, issue_date: str) -> str:
                 f'<p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：{_text(item["source"])}</p>',
                 '</section>',
             ])
+            parts.extend(card_parts)
 
     parts.extend([
         f'<section style="margin: 30px 0 16px; border-bottom: 1px solid {ORANGE_DIM}; '
