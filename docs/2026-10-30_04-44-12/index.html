@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>谷歌发布Gemini 4 Carbon，微软单季从OpenAI吸金百亿 · 微信公众号发布工作台</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f3f8;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            color: #2d3748;
+        }
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .brand {
+            font-weight: 700;
+            color: #1a202c;
+            font-size: 16px;
+        }
+        .copy-main-btn {
+            background: #07c160;
+            color: white;
+            border: none;
+            padding: 11px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(7, 193, 96, 0.35);
+        }
+        .copy-main-btn:hover {
+            background: #06ad56;
+            transform: translateY(-1px);
+        }
+        .container {
+            max-width: 740px;
+            margin: 24px auto;
+            padding: 0 15px;
+        }
+        /* 微信公众号发布辅助工作台卡片 */
+        .helper-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border-top: 4px solid #1a73e8;
+        }
+        .helper-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a202c;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .helper-row {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+        .helper-label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #4a5568;
+            min-width: 75px;
+        }
+        .helper-val {
+            font-size: 14px;
+            color: #1a202c;
+            flex-grow: 1;
+            word-break: break-all;
+            line-height: 1.5;
+        }
+        .small-copy-btn {
+            background: #e8f0fe;
+            color: #1a73e8;
+            border: none;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s ease;
+        }
+        .small-copy-btn:hover {
+            background: #d2e3fc;
+        }
+        .article-card {
+            background: #ffffff;
+            padding: 35px 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+        .toast {
+            position: fixed;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a202c;
+            color: #ffffff;
+            padding: 11px 22px;
+            border-radius: 25px;
+            display: none;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="brand">🚀 微信公众号 · AI早报发布台</div>
+        <button class="copy-main-btn" onclick="copyArticleBody()">📋 一键复制正文排版</button>
+    </div>
+
+    <div id="toast" class="toast">✅ 已复制到剪贴板！</div>
+
+    <div class="container">
+        <!-- 微信发布助手（标题、摘要） -->
+        <div class="helper-card">
+            <div class="helper-title">🎯 微信后台一键发文助手</div>
+            
+            <div class="helper-row">
+                <div class="helper-label">📌 推荐标题</div>
+                <div class="helper-val" id="title-text">谷歌发布Gemini 4 Carbon，微软单季从OpenAI吸金百亿</div>
+                <button class="small-copy-btn" onclick="copyTextById('title-text', '文章标题已复制！')">复制标题</button>
+            </div>
+
+            <div class="helper-row">
+                <div class="helper-label">📝 推荐摘要</div>
+                <div class="helper-val" id="digest-text">谷歌推Gemini 4 Carbon登顶基准榜；微软从OpenAI获百亿美元收入；Mistral推万亿参数网安模型；Thrive百亿美元收购ADT。</div>
+                <button class="small-copy-btn" onclick="copyTextById('digest-text', '推文摘要已复制！')">复制摘要</button>
+            </div>
+            
+            <div style="font-size: 12px; color: #718096; margin-top: 10px; display: flex; justify-content: space-between;">
+                <span>💡 复制标题与摘要后，点击上方绿色按钮复制正文，在公众号后台 Ctrl+V 即可。</span>
+            </div>
+        </div>
+
+        <!-- 审核速览长图 -->
+        
+        <div style="margin-bottom: 24px; background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); text-align: center;">
+            <div style="font-weight: 600; font-size: 16px; margin-bottom: 8px; color: #2d3748;">
+                🖼️ 今日审核速览摘要长图（已自动渲染）
+            </div>
+            <p style="font-size: 13px; color: #718096; margin-top: 0; margin-bottom: 14px;">
+                审核确认今日核心要点，可长按/右键保存直接发朋友圈、社群
+            </p>
+            <a href="summary.png" target="_blank" title="点击查看大图">
+                <img src="summary.png" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); border: 1px solid #edf2f7;" alt="今日早报速览摘要图" />
+            </a>
+            <div style="margin-top: 12px;">
+                <a href="summary.png" download="summary.png" style="display: inline-block; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; text-decoration: none; padding: 7px 16px; font-size: 13px; border-radius: 6px; font-weight: 600;">
+                    ⬇️ 下载原尺寸摘要海报
+                </a>
+            </div>
+        </div>
+        
+
+        <!-- 微信正文区域 -->
+        <div class="article-card">
+            <div style="font-size: 13px; color: #a0aec0; margin-bottom: 16px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
+                📖 微信排版效果实时预览区（已应用最舒适自媒体排版规范）
+            </div>
+            <div id="wechat-content">
+<section data-template="ai-daily-v1" style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #334155; font-size: 15px; line-height: 1.9; letter-spacing: 0.4px; text-align: left; text-indent: 0; overflow-wrap: anywhere; word-break: break-word;"><section style="background-color: #0b182b; border-top: 4px solid #22d3ee; padding: 24px 20px;"><p style="margin: 0 0 14px; color: #67e8f9; font-size: 11px; letter-spacing: 2px;">AI DAILY / INTELLIGENCE BRIEF</p><p style="margin: 0 0 12px; color: #ffffff; font-size: 28px; font-weight: bold; line-height: 1.4;">大模型前沿观察</p><p style="margin: 0; color: #a5b8d0; font-size: 12px;">2026年10月30日 · 全球 AI 情报精选</p></section><img src="https://jeffei.github.io/wechat-ai-daily/assets/cover_llm.jpg" alt="AI 科技前沿" style="display: block; width: 100%; height: auto; margin: 0 0 24px;"/><section style="background-color: #eff8fc; border-left: 3px solid #0891b2; padding: 18px 16px; margin: 0 0 24px;"><p style="margin: 0 0 10px; color: #087e8b; font-size: 12px; font-weight: bold;">SIGNAL / 今日风向标</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">大模型技术角逐正从通用基准跑分全面转向垂直硬核领域，网络安全成为谷歌与Mistral等顶尖团队争夺的核心战场；与此同时，前沿AI的商业变现全面爆发，无论是微软单季吸金百亿的亮眼成绩，还是巨额资本并购传统安防与推进车载Agent，都预示着AI产业化落地正迈入重资产、深融合的新阶段。</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #dbe5ef; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #087e8b; font-weight: bold;">01 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">焦点头条 · 深度解读</span></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 01.01</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">谷歌发布Gemini 4 Carbon，登顶智能指数权威榜单</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">谷歌正式推出了最新前沿大模型Gemini 4 Carbon。该模型在代码编写、自主智能体任务以及网络安全防护等领域实现了显著的能力跃升。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">在Artificial Analysis最新发布的Intelligence Index v5.0基准评测中，Gemini 4 Carbon成功斩获全网榜首位置。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">网络安全正成为前沿模型的新高地，谷歌通过强化Agent与安全攻防能力，进一步稳固其在前沿大模型竞局中的领跑地位。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：The Verge AI</p></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 01.02</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">微软单季度从OpenAI获取百亿美元商业收入</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">微软披露在截至9月30日的季度中，通过与OpenAI的商业合作安排（包含收入分成等）获得了100亿美元的收入。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">这一数据直接体现了两家公司在商业绑定上的紧密程度。同期微软整体季度营收达到创纪录的923亿美元，同比增长19%，Azure业务收入也首次明确披露为332亿美元。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">首次亮出的具体账单证明了微软将大模型能力云化变现的极强动能，也印证了其与OpenAI之间极高的商业共生依赖度。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：TechCrunch AI</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #dbe5ef; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #087e8b; font-weight: bold;">02 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">大厂与开源风云</span></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 02.01</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">Mistral开源万亿参数模型权重，主攻网络安全</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">开源AI先锋Mistral正式开放了其万亿参数级人工智能模型的权重，重点瞄准网络安全应用场景。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">Mistral官方表示，该开源模型能够为企业组织提供闭源商业模型所无法比拟的网络防御自主可控权。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">开源模型突破万亿参数并聚焦敏感的网络安全场景，为重视数据主权与防御控制权的企业提供了关键替代方案。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：TechCrunch AI</p></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 02.02</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">Gemini对话界面现已原生支持生成与编辑文档</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">谷歌对Gemini对话交互进行了重要升级，所有Gemini用户即日起可直接在聊天界面中生成、预览并编辑PDF、Google Docs、Google Sheets以及幻灯片等文档。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">此外，该界面同样原生支持Markdown文件、TXT文本与代码的直接编辑与调试。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">交互由对话框生成向工作区级协同演进，大模型正在加速蚕食传统办公软件原生界面的独立价值。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：The Verge AI</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #dbe5ef; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #087e8b; font-weight: bold;">03 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">前沿落地与商业观察</span></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 03.01</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">OpenAI支持的Thrive以153亿美元收购安防巨头ADT</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">获得OpenAI投资支持的Thrive Holdings宣布达成协议，将以153亿美元的交易规模收购知名安全监控与服务公司ADT。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">Thrive计划将前沿人工智能技术全面引入家庭安全业务场景，重构传统安防防护体系。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">百亿美元级重资产收购传统安防网络，展现出AI生态资本正通过兼并实体渠道加速推动物理世界的AI智能化落地。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：TechCrunch AI</p></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 03.02</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">AI个人智能体Wabi获5500万美元融资，估值超12亿美元</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">定位为个人智能体的AI应用Wabi宣布完成5500万美元的新一轮融资，公司最新估值已达到12.5亿美元。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">Wabi专注于让AI智能体自动构建轻量级微应用（mini apps），以此拓展个人化日常任务的处理边界。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">智能体自动生成应用的架构正催生下一代独角兽，个人Agent从单向问答迈向轻量级软件生产的趋势正被资本快速买单。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：TechCrunch AI</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #dbe5ef; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #087e8b; font-weight: bold;">04 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">主编锐评</span></section><section style="background-color: #0b182b; border-top: 3px solid #22d3ee; padding: 22px 18px; border-radius: 0 0 8px 8px;"><p style="margin: 0 0 14px; color: #67e8f9; font-size: 11px; letter-spacing: 2px;">EDITOR’S PERSPECTIVE</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #e2e8f0; text-align: left; text-indent: 0;">事实表明，微软单季度从OpenAI获取的收入已攀升至百亿美元量级，同时Azure云收入亦首次公开并逼近头部同行。主编判断，生成式AI已经彻底渡过概念验证期，进入大规模真金白银兑现的商业收割阶段，巨头生态与底层独角兽的收益循环正成为支撑极高研发投入的关键护城河。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #e2e8f0; text-align: left; text-indent: 0;">事实显示，无论谷歌发布的Gemini 4 Carbon还是Mistral放出的万亿参数开源模型，均不约而同将网络安全列为核心突破口，同时Thrive以153亿美元吞下ADT进军物理安防。主编判断，单纯拼文本理解与文生图的红利正在收窄，大模型的决胜高地已全面转移至高风险、高技术门槛、涉及物理世界与数字基础设施安全的硬核防御领域。</p></section><p style="margin: 26px 0 0; padding-top: 14px; border-top: 1px solid #dbe5ef; color: #64748b; font-size: 10px; letter-spacing: 1px; text-align: center;">AI DAILY · 持续观察大模型最前沿</p>
+<!-- 🎁 彩蛋 · OpenRouter 免费大模型福利 -->
+<section style="display: table; text-indent: 0; margin: 32px 0 14px 0; background-color: #fef3c7; border-radius: 6px; padding: 6px 14px; text-align: left;">
+    <span style="color: #b45309; font-size: 15px; font-weight: bold; letter-spacing: 0.5px; text-indent: 0; line-height: 1.2;">
+        🎁 彩蛋 · OpenRouter 免费大模型福利
+    </span>
+</section>
+<div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+    <p style="margin: 0 0 14px 0; font-size: 14px; line-height: 1.8; color: #78350f; text-align: justify;">
+        【专属福利】来自 <b>OpenRouter Discover</b> 实时全网热度最高的 2 款<b>免费大模型</b>！附带每周全网 Token 跑量与上下文规格，送给需要调试与开发的朋友：
+    </p>
+    <div style="background-color: #ffffff; border: 1px solid #fde68a; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+    <div style="font-size: 15px; font-weight: bold; color: #1f2937; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+        <span>🚀 1. Space Bunny Alpha</span>
+        <span style="background-color: #dcfce7; color: #15803d; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 12px;">免费 (Free)</span>
+    </div>
+    <div style="font-size: 13px; color: #4b5563; line-height: 1.7;">
+        <div style="margin-bottom: 4px;">📊 <b>每周 Token 跑量：</b><span style="color: #d97706; font-weight: bold; font-size: 14px;">23.4T</span> Tokens/wk</div>
+        <div>🧠 <b>上下文窗口：</b><span style="color: #374151; font-weight: 500;">1M</span></div>
+    </div>
+</div>
+<div style="background-color: #ffffff; border: 1px solid #fde68a; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+    <div style="font-size: 15px; font-weight: bold; color: #1f2937; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+        <span>🚀 2. Nemotron 3 Ultra (free)</span>
+        <span style="background-color: #dcfce7; color: #15803d; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 12px;">免费 (Free)</span>
+    </div>
+    <div style="font-size: 13px; color: #4b5563; line-height: 1.7;">
+        <div style="margin-bottom: 4px;">📊 <b>每周 Token 跑量：</b><span style="color: #d97706; font-weight: bold; font-size: 14px;">5.9T</span> Tokens/wk</div>
+        <div>🧠 <b>上下文窗口：</b><span style="color: #374151; font-weight: 500;">1M</span></div>
+    </div>
+</div>
+</div>
+</section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2500);
+        }
+
+        async function copyTextById(elementId, successMsg) {
+            const text = document.getElementById(elementId).innerText.trim();
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast("✅ " + successMsg);
+            } catch(e) {
+                const input = document.createElement('textarea');
+                input.value = text;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                showToast("✅ " + successMsg);
+            }
+        }
+
+        async function copyArticleBody() {
+            const content = document.getElementById('wechat-content');
+            const html = content.innerHTML;
+            const text = content.innerText;
+            
+            try {
+                const blobHtml = new Blob([html], { type: 'text/html' });
+                const blobText = new Blob([text], { type: 'text/plain' });
+                const data = [new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })];
+                await navigator.clipboard.write(data);
+                showToast('✅ 正文排版已复制！微信后台直接 Ctrl + V 粘贴即可！');
+            } catch (err) {
+                const range = document.createRange();
+                range.selectNode(content);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+                document.execCommand('copy');
+                selection.removeAllRanges();
+                showToast('✅ 正文排版已复制到剪贴板！');
+            }
+        }
+    </script>
+</body>
+</html>
