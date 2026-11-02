@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>四大巨头联手推抓取退出规范，算力扩张遭遇融资与环保双重阻力 · 微信公众号发布工作台</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f3f8;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            color: #2d3748;
+        }
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .brand {
+            font-weight: 700;
+            color: #1a202c;
+            font-size: 16px;
+        }
+        .copy-main-btn {
+            background: #07c160;
+            color: white;
+            border: none;
+            padding: 11px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(7, 193, 96, 0.35);
+        }
+        .copy-main-btn:hover {
+            background: #06ad56;
+            transform: translateY(-1px);
+        }
+        .container {
+            max-width: 740px;
+            margin: 24px auto;
+            padding: 0 15px;
+        }
+        /* 微信公众号发布辅助工作台卡片 */
+        .helper-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border-top: 4px solid #1a73e8;
+        }
+        .helper-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a202c;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .helper-row {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+        .helper-label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #4a5568;
+            min-width: 75px;
+        }
+        .helper-val {
+            font-size: 14px;
+            color: #1a202c;
+            flex-grow: 1;
+            word-break: break-all;
+            line-height: 1.5;
+        }
+        .small-copy-btn {
+            background: #e8f0fe;
+            color: #1a73e8;
+            border: none;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s ease;
+        }
+        .small-copy-btn:hover {
+            background: #d2e3fc;
+        }
+        .article-card {
+            background: #ffffff;
+            padding: 35px 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+        .toast {
+            position: fixed;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a202c;
+            color: #ffffff;
+            padding: 11px 22px;
+            border-radius: 25px;
+            display: none;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="brand">🚀 微信公众号 · AI早报发布台</div>
+        <button class="copy-main-btn" onclick="copyArticleBody()">📋 一键复制正文排版</button>
+    </div>
+
+    <div id="toast" class="toast">✅ 已复制到剪贴板！</div>
+
+    <div class="container">
+        <!-- 微信发布助手（标题、摘要） -->
+        <div class="helper-card">
+            <div class="helper-title">🎯 微信后台一键发文助手</div>
+            
+            <div class="helper-row">
+                <div class="helper-label">📌 推荐标题</div>
+                <div class="helper-val" id="title-text">四大巨头联手推抓取退出规范，算力扩张遭遇融资与环保双重阻力</div>
+                <button class="small-copy-btn" onclick="copyTextById('title-text', '文章标题已复制！')">复制标题</button>
+            </div>
+
+            <div class="helper-row">
+                <div class="helper-label">📝 推荐摘要</div>
+                <div class="helper-val" id="digest-text">OpenAI、谷歌等多家巨头联合支持出版商内容抓取退出新标准；同时，资本市场对AI算力基建的高额支出表现出审慎态度，相关融资与环保争议持续发酵。</div>
+                <button class="small-copy-btn" onclick="copyTextById('digest-text', '推文摘要已复制！')">复制摘要</button>
+            </div>
+            
+            <div style="font-size: 12px; color: #718096; margin-top: 10px; display: flex; justify-content: space-between;">
+                <span>💡 复制标题与摘要后，点击上方绿色按钮复制正文，在公众号后台 Ctrl+V 即可。</span>
+            </div>
+        </div>
+
+        <!-- 审核速览长图 -->
+        
+        <div style="margin-bottom: 24px; background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); text-align: center;">
+            <div style="font-weight: 600; font-size: 16px; margin-bottom: 8px; color: #2d3748;">
+                🖼️ 今日审核速览摘要长图（已自动渲染）
+            </div>
+            <p style="font-size: 13px; color: #718096; margin-top: 0; margin-bottom: 14px;">
+                审核确认今日核心要点，可长按/右键保存直接发朋友圈、社群
+            </p>
+            <a href="summary.png" target="_blank" title="点击查看大图">
+                <img src="summary.png" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); border: 1px solid #edf2f7;" alt="今日早报速览摘要图" />
+            </a>
+            <div style="margin-top: 12px;">
+                <a href="summary.png" download="summary.png" style="display: inline-block; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; text-decoration: none; padding: 7px 16px; font-size: 13px; border-radius: 6px; font-weight: 600;">
+                    ⬇️ 下载原尺寸摘要海报
+                </a>
+            </div>
+        </div>
+        
+
+        <!-- 微信正文区域 -->
+        <div class="article-card">
+            <div style="font-size: 13px; color: #a0aec0; margin-bottom: 16px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
+                📖 微信排版效果实时预览区（已应用最舒适自媒体排版规范）
+            </div>
+            <div id="wechat-content">
+<section data-template="ai-daily-v1" style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #334155; font-size: 15px; line-height: 1.9; letter-spacing: 0.4px; text-align: left; text-indent: 0; overflow-wrap: anywhere; word-break: break-word;"><section style="background-color: #0b182b; border-top: 4px solid #22d3ee; padding: 24px 20px;"><p style="margin: 0 0 14px; color: #67e8f9; font-size: 11px; letter-spacing: 2px;">AI DAILY / INTELLIGENCE BRIEF</p><p style="margin: 0 0 12px; color: #ffffff; font-size: 28px; font-weight: bold; line-height: 1.4;">大模型前沿观察</p><p style="margin: 0; color: #a5b8d0; font-size: 12px;">2026年11月02日 · 全球 AI 情报精选</p></section><img src="https://jeffei.github.io/wechat-ai-daily/assets/cover_llm.jpg" alt="AI 科技前沿" style="display: block; width: 100%; height: auto; margin: 0 0 24px;"/><section style="background-color: #eff8fc; border-left: 3px solid #0891b2; padding: 18px 16px; margin: 0 0 24px;"><p style="margin: 0 0 10px; color: #087e8b; font-size: 12px; font-weight: bold;">SIGNAL / 今日风向标</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">AI行业正面临规则重构与资本收紧的双重考验：巨头在版权与抓取机制上主动建立通用退出标准，而算力重资产基础设施的高昂成本与环保问题也令投资机构趋向审慎。</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #dbe5ef; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #087e8b; font-weight: bold;">01 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">焦点头条 · 深度解读</span></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 01.01</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">OpenAI、谷歌、微软与Anthropic联合支持统一的内容抓取退出标准</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">OpenAI、谷歌、微软和Anthropic四家人工智能巨头宣布，将采纳一项新的通用标准，允许出版商统一选择退出其用于AI训练的内容抓取流程。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">通过这一机制，内容发布者只需进行一次控制设置，即可将自己的AI训练授权偏好跨多家头部AI企业同步应用，无需逐一进行繁琐的单独配置。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">四大头部厂商在版权抓取控制权上达成共识，标志着AI模型训练的数据获取机制正走向规范化，有助于缓解内容产业与模型厂商之间的版权法律纠纷与紧张关系。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：The Verge AI</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #dbe5ef; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #087e8b; font-weight: bold;">02 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">大厂与开源风云</span></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 02.01</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">谷歌首颗AI数据中心卫星成功上线，搭载TPU在轨运行Gemma 4</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">谷歌宣布其配备AI芯片的数据中心卫星已在太空中成功启动张量处理单元（TPU），并向地球发回了首个生成响应。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">星载系统成功运行了Google DeepMind的Gemma 4模型，并根据提示词在轨道上完成了生成诗歌的首轮测试。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">将边缘TPU算力部署至卫星平台，为偏远区域和极端环境下的实时空间数据分析提供了验证范式，探索了未来算力基础设施向上拓展的新路径。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：The Verge AI</p></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 02.02</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">苹果宣布 Apple Intelligence 将随 iOS 27.3 正式登陆中国市场</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">苹果在其中国官网新闻中心宣布，Apple Intelligence 将通过即将推出的 iOS 27.3 系统正式面向中国市场上线。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">相关AI功能将在11月4日启动的 iOS 27.3 Beta 版中率先开放体验，随后随正式版向公众发布。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">这标志着苹果在关键海外市场的AI端侧能力合规与本地化落地取得了实质性进展，有助于增强其旗舰硬件在全球第二大智能手机市场的核心竞争力。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：The Verge AI</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #dbe5ef; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #087e8b; font-weight: bold;">03 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">前沿落地与商业观察</span></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 03.01</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">算力基建资金承压：OpenAI下调融资预期，英伟达或需为数据中心贷款担保</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">据报道，OpenAI最新一轮融资规模未能达到此前的高位预期，公司已下调了该轮融资的募资目标。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">与此呼应，为缓解投资者对算力开支的担忧，芯片制造商英伟达正考虑为基础设施厂商 Nscale 位于西弗吉尼亚州的AI数据中心贷款提供联合签署担保。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">AI模型的高额研发与基建成本正对资本市场形成压力，芯片供应商亲自介入算力贷款担保与融资目标缩减，均显示出行业正在更理性地评估算力ROI与重资产风险。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：TechCrunch AI</p></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 03.02</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">xAI面临空气污染诉讼推进，Anthropic遭评级机构降级担忧</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">美国全国有色人种协进会（NAACP）指控马斯克旗下的AI公司 xAI 违反《清洁空气法》，当地法官已裁定允许该数据中心污染诉讼继续推进。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">同时，《金融时报》引述黑石集团预测指出，信贷评级机构在Anthropic完成IPO后可能给予其较高的“垃圾级”债务评级，高额开支将显著推高其未来的借贷成本。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">AI数据中心快速扩张引发的电力消耗与排放问题，正使其面临严峻的环保法律阻力，叠加信贷评级机构对算力烧钱模式的警惕，巨头扩张路径面临合规与财务双重考验。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：TechCrunch AI</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #dbe5ef; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #087e8b; font-weight: bold;">04 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">主编锐评</span></section><section style="background-color: #0b182b; border-top: 3px solid #22d3ee; padding: 22px 18px; border-radius: 0 0 8px 8px;"><p style="margin: 0 0 14px; color: #67e8f9; font-size: 11px; letter-spacing: 2px;">EDITOR’S PERSPECTIVE</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #e2e8f0; text-align: left; text-indent: 0;">头部大模型厂商联合接纳统一的opt-out标准，不仅是一次行业自律的公关举措，更说明训练数据授权的野蛮生长时代正在走向终结。过去一年来版权诉讼的不断累积，迫使厂商从零散的个案谈判转向建立系统化的行业准则。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #e2e8f0; text-align: left; text-indent: 0;">与此同时，从OpenAI下调融资目标、Anthropic被预测面临垃圾债评级，到英伟达甚至需要考虑为算力借款做担保，事实数据清楚地折射出二级市场与金融机构对无节制资本支出的警惕。当AI算力基建撞上重资产财务回报周期与环保合规壁垒，全行业对商业变现效率的考核正变得前所未有的严苛。</p></section><p style="margin: 26px 0 0; padding-top: 14px; border-top: 1px solid #dbe5ef; color: #64748b; font-size: 10px; letter-spacing: 1px; text-align: center;">AI DAILY · 持续观察大模型最前沿</p>
+<!-- 🎁 彩蛋 · OpenRouter 免费大模型福利 -->
+<section style="display: table; text-indent: 0; margin: 32px 0 14px 0; background-color: #fef3c7; border-radius: 6px; padding: 6px 14px; text-align: left;">
+    <span style="color: #b45309; font-size: 15px; font-weight: bold; letter-spacing: 0.5px; text-indent: 0; line-height: 1.2;">
+        🎁 彩蛋 · OpenRouter 免费大模型福利
+    </span>
+</section>
+<div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+    <p style="margin: 0 0 14px 0; font-size: 14px; line-height: 1.8; color: #78350f; text-align: justify;">
+        【专属福利】来自 <b>OpenRouter Discover</b> 实时全网热度最高的 2 款<b>免费大模型</b>！附带每周全网 Token 跑量与上下文规格，送给需要调试与开发的朋友：
+    </p>
+    <div style="background-color: #ffffff; border: 1px solid #fde68a; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+    <div style="font-size: 15px; font-weight: bold; color: #1f2937; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+        <span>🚀 1. Space Bunny Alpha</span>
+        <span style="background-color: #dcfce7; color: #15803d; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 12px;">免费 (Free)</span>
+    </div>
+    <div style="font-size: 13px; color: #4b5563; line-height: 1.7;">
+        <div style="margin-bottom: 4px;">📊 <b>每周 Token 跑量：</b><span style="color: #d97706; font-weight: bold; font-size: 14px;">23.4T</span> Tokens/wk</div>
+        <div>🧠 <b>上下文窗口：</b><span style="color: #374151; font-weight: 500;">1M</span></div>
+    </div>
+</div>
+<div style="background-color: #ffffff; border: 1px solid #fde68a; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+    <div style="font-size: 15px; font-weight: bold; color: #1f2937; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+        <span>🚀 2. Nemotron 3 Ultra (free)</span>
+        <span style="background-color: #dcfce7; color: #15803d; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 12px;">免费 (Free)</span>
+    </div>
+    <div style="font-size: 13px; color: #4b5563; line-height: 1.7;">
+        <div style="margin-bottom: 4px;">📊 <b>每周 Token 跑量：</b><span style="color: #d97706; font-weight: bold; font-size: 14px;">5.9T</span> Tokens/wk</div>
+        <div>🧠 <b>上下文窗口：</b><span style="color: #374151; font-weight: 500;">1M</span></div>
+    </div>
+</div>
+</div>
+</section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2500);
+        }
+
+        async function copyTextById(elementId, successMsg) {
+            const text = document.getElementById(elementId).innerText.trim();
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast("✅ " + successMsg);
+            } catch(e) {
+                const input = document.createElement('textarea');
+                input.value = text;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                showToast("✅ " + successMsg);
+            }
+        }
+
+        async function copyArticleBody() {
+            const content = document.getElementById('wechat-content');
+            const html = content.innerHTML;
+            const text = content.innerText;
+            
+            try {
+                const blobHtml = new Blob([html], { type: 'text/html' });
+                const blobText = new Blob([text], { type: 'text/plain' });
+                const data = [new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })];
+                await navigator.clipboard.write(data);
+                showToast('✅ 正文排版已复制！微信后台直接 Ctrl + V 粘贴即可！');
+            } catch (err) {
+                const range = document.createRange();
+                range.selectNode(content);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+                document.execCommand('copy');
+                selection.removeAllRanges();
+                showToast('✅ 正文排版已复制到剪贴板！');
+            }
+        }
+    </script>
+</body>
+</html>
