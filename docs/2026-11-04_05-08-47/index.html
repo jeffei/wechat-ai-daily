@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT搜索占比达谷歌20%，Fal估值达160亿 · 微信公众号发布工作台</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f3f8;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            color: #2d3748;
+        }
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .brand {
+            font-weight: 700;
+            color: #1a202c;
+            font-size: 16px;
+        }
+        .copy-main-btn {
+            background: #07c160;
+            color: white;
+            border: none;
+            padding: 11px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(7, 193, 96, 0.35);
+        }
+        .copy-main-btn:hover {
+            background: #06ad56;
+            transform: translateY(-1px);
+        }
+        .container {
+            max-width: 740px;
+            margin: 24px auto;
+            padding: 0 15px;
+        }
+        /* 微信公众号发布辅助工作台卡片 */
+        .helper-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            border-top: 4px solid #1a73e8;
+        }
+        .helper-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a202c;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .helper-row {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+        .helper-label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #4a5568;
+            min-width: 75px;
+        }
+        .helper-val {
+            font-size: 14px;
+            color: #1a202c;
+            flex-grow: 1;
+            word-break: break-all;
+            line-height: 1.5;
+        }
+        .small-copy-btn {
+            background: #e8f0fe;
+            color: #1a73e8;
+            border: none;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s ease;
+        }
+        .small-copy-btn:hover {
+            background: #d2e3fc;
+        }
+        .article-card {
+            background: #ffffff;
+            padding: 35px 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+        .toast {
+            position: fixed;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a202c;
+            color: #ffffff;
+            padding: 11px 22px;
+            border-radius: 25px;
+            display: none;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="brand">🚀 微信公众号 · AI早报发布台</div>
+        <button class="copy-main-btn" onclick="copyArticleBody()">📋 一键复制正文排版</button>
+    </div>
+
+    <div id="toast" class="toast">✅ 已复制到剪贴板！</div>
+
+    <div class="container">
+        <!-- 微信发布助手（标题、摘要） -->
+        <div class="helper-card">
+            <div class="helper-title">🎯 微信后台一键发文助手</div>
+            
+            <div class="helper-row">
+                <div class="helper-label">📌 推荐标题</div>
+                <div class="helper-val" id="title-text">ChatGPT搜索占比达谷歌20%，Fal估值达160亿</div>
+                <button class="small-copy-btn" onclick="copyTextById('title-text', '文章标题已复制！')">复制标题</button>
+            </div>
+
+            <div class="helper-row">
+                <div class="helper-label">📝 推荐摘要</div>
+                <div class="helper-val" id="digest-text">OpenAI透露ChatGPT搜索量已达谷歌20%；谷歌强制学校捆绑AI与搜索服务；AI推理需求爆发，初创公司Fal融得13亿美元估值翻倍至160亿。</div>
+                <button class="small-copy-btn" onclick="copyTextById('digest-text', '推文摘要已复制！')">复制摘要</button>
+            </div>
+            
+            <div style="font-size: 12px; color: #718096; margin-top: 10px; display: flex; justify-content: space-between;">
+                <span>💡 复制标题与摘要后，点击上方绿色按钮复制正文，在公众号后台 Ctrl+V 即可。</span>
+            </div>
+        </div>
+
+        <!-- 审核速览长图 -->
+        
+        <div style="margin-bottom: 24px; background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); text-align: center;">
+            <div style="font-weight: 600; font-size: 16px; margin-bottom: 8px; color: #2d3748;">
+                🖼️ 今日审核速览摘要长图（已自动渲染）
+            </div>
+            <p style="font-size: 13px; color: #718096; margin-top: 0; margin-bottom: 14px;">
+                审核确认今日核心要点，可长按/右键保存直接发朋友圈、社群
+            </p>
+            <a href="summary.png" target="_blank" title="点击查看大图">
+                <img src="summary.png" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); border: 1px solid #edf2f7;" alt="今日早报速览摘要图" />
+            </a>
+            <div style="margin-top: 12px;">
+                <a href="summary.png" download="summary.png" style="display: inline-block; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; text-decoration: none; padding: 7px 16px; font-size: 13px; border-radius: 6px; font-weight: 600;">
+                    ⬇️ 下载原尺寸摘要海报
+                </a>
+            </div>
+        </div>
+        
+
+        <!-- 微信正文区域 -->
+        <div class="article-card">
+            <div style="font-size: 13px; color: #a0aec0; margin-bottom: 16px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px;">
+                📖 微信排版效果实时预览区（已应用最舒适自媒体排版规范）
+            </div>
+            <div id="wechat-content">
+<section data-template="ai-daily-v1" style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #334155; font-size: 15px; line-height: 1.9; letter-spacing: 0.4px; text-align: left; text-indent: 0; overflow-wrap: anywhere; word-break: break-word;"><section style="background-color: #0b182b; border-top: 4px solid #22d3ee; padding: 24px 20px;"><p style="margin: 0 0 14px; color: #67e8f9; font-size: 11px; letter-spacing: 2px;">AI DAILY / INTELLIGENCE BRIEF</p><p style="margin: 0 0 12px; color: #ffffff; font-size: 28px; font-weight: bold; line-height: 1.4;">大模型前沿观察</p><p style="margin: 0; color: #a5b8d0; font-size: 12px;">2026年11月04日 · 全球 AI 情报精选</p></section><img src="https://jeffei.github.io/wechat-ai-daily/assets/cover_llm.jpg" alt="AI 科技前沿" style="display: block; width: 100%; height: auto; margin: 0 0 24px;"/><section style="background-color: #eff8fc; border-left: 3px solid #0891b2; padding: 18px 16px; margin: 0 0 24px;"><p style="margin: 0 0 10px; color: #087e8b; font-size: 12px; font-weight: bold;">SIGNAL / 今日风向标</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">本期核心趋势展现出大模型产业在入口争夺与算力经济上的双重演进：一方面，OpenAI与谷歌在搜索入口展开正面博弈，生成式搜索快速侵蚀传统搜索份额；另一方面，AI推理算力需求呈爆发式增长，驱动推理服务商估值狂飙，但模型厂商自身仍需艰难应对算力成本边际效益恶化的财务课题。</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #dbe5ef; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #087e8b; font-weight: bold;">01 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">焦点头条 · 深度解读</span></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 01.01</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">OpenAI称ChatGPT搜索查询量已达到谷歌的20%</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">OpenAI消费者产品负责人Adam Fry透露，通过ChatGPT运行的搜索查询量目前已经相当于谷歌搜索总量的20%。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">在许多用户群体中，“Ask Chat”正在逐步替代传统的“Google it”，生成式AI获取信息的习惯正在快速普及。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">这一数据标志着生成式AI对传统搜索引擎统治地位的实质性分流，OpenAI在搜索领域的商业化想象空间得到极大拓展。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：The Verge AI</p></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 01.02</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">谷歌对拒绝AI功能的学校采取全面禁用搜索政策</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">谷歌明确通知教育机构，如果学校选择关闭或拒绝Gemini等AI功能，将完全无法继续访问谷歌搜索。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">这一政策涵盖了Gemini、Gemini Notebook以及Classroom中的AI组件，表明AI已被深层集成至搜索产品底层。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">谷歌通过强行捆绑AI与核心搜索服务，意在加速AI在教育端的渗透率，但也引发了关于用户选择权与垄断行为的争论。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：The Verge AI</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #dbe5ef; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #087e8b; font-weight: bold;">02 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">大厂与开源风云</span></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 02.01</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">Anthropic研制FlashProve系统验证模型身份，算力成本压力同步上升</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">Anthropic正在开发名为FlashProve的身份验证系统，允许外界检验AI输出结果是否确实来自其声称的模型。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">与其同时，财务数据显示Anthropic目前正面临算力边际利润下滑的困境，算力经济学难题短期内仍难以解开。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">FlashProve为模型安全与合规提供了可信验证手段，但研发与训练的高昂算力开支也对其盈利能力构成了严重挑战。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：TechCrunch AI</p></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 02.02</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">苹果加码AI合规与硬件端语音智能功能测试</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">苹果发布最新App Store规则，要求包含性或浪漫内容的AI伴侣应用与约会软件必须标注18岁以上年龄限制。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">同时，Apple Watch开始公测Audio Intelligence功能，支持对对话进行回放、总结及自动记录要点。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">苹果在强化内容安全监管的同时，加速将AI语音与记录能力融入可穿戴设备，推进端侧AI落地体验。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：TechCrunch AI</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #dbe5ef; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #087e8b; font-weight: bold;">03 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">前沿落地与商业观察</span></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 03.01</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">AI推理初创公司Fal估值翻倍至160亿美元</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">创立五年的AI推理初创公司Fal宣布完成新一轮13亿美元融资，由Bessemer领投。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">伴随全球对AI推理算力需求的剧增，Fal的公司估值在此轮融资后直接翻倍至160亿美元。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">资本市场正在从模型训练向推理应用快速倾斜，具有高效率与低延迟优势的推理服务商正在迎来价值爆发期。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：TechCrunch AI</p></section><section style="background-color: #f5f8fc; border-left: 3px solid #2563eb; padding: 18px 16px; margin: 0 0 18px; border-radius: 0 8px 8px 0;"><p style="margin: 0 0 10px; color: #2563eb; font-size: 11px; font-weight: bold;">BRIEF 03.02</p><h3 style="margin: 0 0 14px; color: #10243a; font-size: 18px; line-height: 1.6; text-align: left;">Trajectory与Ballistic Ventures相继获得巨额资金支持</h3><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">成立一年的Trajectory完成4500万美元融资，估值达3亿美元，旨在降低非技术专家参与AI模型训练的门槛。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">网络安全机构Ballistic Ventures拟为其旗舰基金与独立投资工具筹集共计4.9亿美元，以把握AI驱动的安全红利。</p><section style="border-top: 1px solid #dbe5ef; padding-top: 12px;"><p style="margin: 0 0 6px; color: #087e8b; font-size: 12px; font-weight: bold;">影响解读</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #334155; text-align: left; text-indent: 0;">这表明投融资正在向“模型训练门槛下沉”与“AI原生网络安全防护”两大垂直实用场景深水区迈进。</p></section><p style="margin: 0; color: #64748b; font-size: 11px; line-height: 1.7;">信息来源：TechCrunch AI</p></section><section style="margin: 30px 0 16px; border-bottom: 1px solid #dbe5ef; padding: 0 0 12px; text-align: left; text-indent: 0;"><span style="font-size: 12px; color: #087e8b; font-weight: bold;">04 / </span><span style="font-size: 18px; color: #10243a; font-weight: bold;">主编锐评</span></section><section style="background-color: #0b182b; border-top: 3px solid #22d3ee; padding: 22px 18px; border-radius: 0 0 8px 8px;"><p style="margin: 0 0 14px; color: #67e8f9; font-size: 11px; letter-spacing: 2px;">EDITOR’S PERSPECTIVE</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #e2e8f0; text-align: left; text-indent: 0;">事实层面，OpenAI搜索份额的快速提升与谷歌的强硬捆绑策略，凸显了AI时代搜索入口争夺战已进入白热化阶段。搜索不再仅是关键词检索，而是演变成直接提供解答的交互界面。</p><p style="margin: 0 0 14px; font-size: 15px; line-height: 1.9; color: #e2e8f0; text-align: left; text-indent: 0;">财务与产业层面，Fal的估值狂飙与Anthropic算力边际效益下滑形成鲜明对比。这表明当大模型进入大规模部署阶段，推理算力的基础设施属性愈发突显，而高昂的训练与运营成本依旧是模型开发商面临的沉重负担。</p></section><p style="margin: 26px 0 0; padding-top: 14px; border-top: 1px solid #dbe5ef; color: #64748b; font-size: 10px; letter-spacing: 1px; text-align: center;">AI DAILY · 持续观察大模型最前沿</p>
+<!-- 🎁 彩蛋 · OpenRouter 免费大模型福利 -->
+<section style="display: table; text-indent: 0; margin: 32px 0 14px 0; background-color: #fef3c7; border-radius: 6px; padding: 6px 14px; text-align: left;">
+    <span style="color: #b45309; font-size: 15px; font-weight: bold; letter-spacing: 0.5px; text-indent: 0; line-height: 1.2;">
+        🎁 彩蛋 · OpenRouter 免费大模型福利
+    </span>
+</section>
+<div style="background-color: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 18px 20px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+    <p style="margin: 0 0 14px 0; font-size: 14px; line-height: 1.8; color: #78350f; text-align: justify;">
+        【专属福利】来自 <b>OpenRouter Discover</b> 实时全网热度最高的 2 款<b>免费大模型</b>！附带每周全网 Token 跑量与上下文规格，送给需要调试与开发的朋友：
+    </p>
+    <div style="background-color: #ffffff; border: 1px solid #fde68a; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+    <div style="font-size: 15px; font-weight: bold; color: #1f2937; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+        <span>🚀 1. Space Bunny Alpha</span>
+        <span style="background-color: #dcfce7; color: #15803d; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 12px;">免费 (Free)</span>
+    </div>
+    <div style="font-size: 13px; color: #4b5563; line-height: 1.7;">
+        <div style="margin-bottom: 4px;">📊 <b>每周 Token 跑量：</b><span style="color: #d97706; font-weight: bold; font-size: 14px;">23.4T</span> Tokens/wk</div>
+        <div>🧠 <b>上下文窗口：</b><span style="color: #374151; font-weight: 500;">1M</span></div>
+    </div>
+</div>
+<div style="background-color: #ffffff; border: 1px solid #fde68a; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+    <div style="font-size: 15px; font-weight: bold; color: #1f2937; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+        <span>🚀 2. Nemotron 3 Ultra (free)</span>
+        <span style="background-color: #dcfce7; color: #15803d; font-size: 12px; font-weight: bold; padding: 2px 8px; border-radius: 12px;">免费 (Free)</span>
+    </div>
+    <div style="font-size: 13px; color: #4b5563; line-height: 1.7;">
+        <div style="margin-bottom: 4px;">📊 <b>每周 Token 跑量：</b><span style="color: #d97706; font-weight: bold; font-size: 14px;">5.9T</span> Tokens/wk</div>
+        <div>🧠 <b>上下文窗口：</b><span style="color: #374151; font-weight: 500;">1M</span></div>
+    </div>
+</div>
+</div>
+</section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2500);
+        }
+
+        async function copyTextById(elementId, successMsg) {
+            const text = document.getElementById(elementId).innerText.trim();
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast("✅ " + successMsg);
+            } catch(e) {
+                const input = document.createElement('textarea');
+                input.value = text;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                showToast("✅ " + successMsg);
+            }
+        }
+
+        async function copyArticleBody() {
+            const content = document.getElementById('wechat-content');
+            const html = content.innerHTML;
+            const text = content.innerText;
+            
+            try {
+                const blobHtml = new Blob([html], { type: 'text/html' });
+                const blobText = new Blob([text], { type: 'text/plain' });
+                const data = [new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })];
+                await navigator.clipboard.write(data);
+                showToast('✅ 正文排版已复制！微信后台直接 Ctrl + V 粘贴即可！');
+            } catch (err) {
+                const range = document.createRange();
+                range.selectNode(content);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+                document.execCommand('copy');
+                selection.removeAllRanges();
+                showToast('✅ 正文排版已复制到剪贴板！');
+            }
+        }
+    </script>
+</body>
+</html>
