@@ -290,7 +290,15 @@ def build_preview_page(
 
         async function copyArticleBody() {{
             const content = document.getElementById('wechat-content');
-            const html = content.innerHTML;
+            // 将相对路径图片转为绝对路径，确保微信后台粘贴时能够正常拉取并转存网络图片（尤其是 GIF 动图）
+            const clone = content.cloneNode(true);
+            const imgs = clone.querySelectorAll('img');
+            imgs.forEach(img => {{
+                if (img.src) {{
+                    img.setAttribute('src', img.src);
+                }}
+            }});
+            const html = clone.innerHTML;
             const text = content.innerText;
             
             try {{

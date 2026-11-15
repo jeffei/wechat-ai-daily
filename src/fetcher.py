@@ -1,3 +1,4 @@
+import os
 import requests
 import feedparser
 import time
@@ -49,13 +50,15 @@ EMBODIED_IMPACT_KEYWORDS = [
 
 def extract_image_url(entry) -> str:
     """从 RSS entry 中尝试提取配图 URL（优先 media_content / media_thumbnail / enclosure）"""
+    valid_exts = ('.jpg', '.jpeg', '.png', '.webp', '.gif')
     # 优先 media_content（高分辨率）
     media_content = entry.get('media_content', [])
     if media_content:
         for mc in media_content:
             url = mc.get('url', '')
             mtype = mc.get('medium', mc.get('type', ''))
-            if url and ('image' in mtype or url.lower().endswith(('.jpg', '.jpeg', '.png', '.webp'))):
+            clean_url = url.lower().split('?')[0]
+            if url and ('image' in mtype or clean_url.endswith(valid_exts)):
                 return url
 
     # media_thumbnail
@@ -72,7 +75,8 @@ def extract_image_url(entry) -> str:
         for enc in enclosures:
             url = enc.get('href', enc.get('url', ''))
             enc_type = enc.get('type', '')
-            if url and ('image' in enc_type or url.lower().endswith(('.jpg', '.jpeg', '.png', '.webp'))):
+            clean_url = url.lower().split('?')[0]
+            if url and ('image' in enc_type or clean_url.endswith(valid_exts)):
                 return url
 
     # 最后尝试从 summary / description 的 HTML 中提取第一个 <img> 的 src
@@ -89,15 +93,94 @@ def extract_image_url(entry) -> str:
 
 
 
+def process_and_save_image(content: bytes, save_dir: str, img_counter: int) -> str:
+    """
+    智能检测图片真实二进制格式及是否为多帧动图并规范化存储：
+    1. 若为多帧动图（GIF 或 Animated WebP）：
+       - 微信公众号唯一支持的原生动图格式是标准 GIF（GIF89a）。
+       - 若原图为 WebP 动图，自动利用 Pillow 转换为标准多帧 GIF；
+       - 若动图过大（宽 > 540px 或体积 > 5MB），等比缩放并压缩至 5MB 以内，防止被微信后台判定过大而降级为静止图；
+       - 保存为 news_img_{img_counter}.gif。
+    2. 若为静态图：
+       - 若原图为 WebP 格式，转换为兼容性极佳的 JPEG 格式；
+       - 保存为 news_img_{img_counter}.jpg。
+    返回保存的本地文件名（如 news_img_1.gif 或 news_img_1.jpg），失败返回空字符串。
+    """
+    import io
+    from PIL import Image, ImageSequence
+
+    try:
+        im = Image.open(io.BytesIO(content))
+        is_animated = getattr(im, "is_animated", False) and getattr(im, "n_frames", 1) > 1
+
+        if is_animated:
+            local_filename = f"news_img_{img_counter}.gif"
+            local_path = os.path.join(save_dir, local_filename)
+
+            # 如果本来就是 GIF 且体积不超过 5MB，直接写入保留最高质量
+            if im.format == "GIF" and len(content) <= 5 * 1024 * 1024:
+                with open(local_path, "wb") as f:
+                    f.write(content)
+                return local_filename
+
+            # 否则（如 Animated WebP 或体积 > 5MB 的大 GIF）：用 Pillow 转换/优化
+            w, h = im.size
+            max_width = 540
+            if w > max_width:
+                new_w = max_width
+                new_h = int(h * max_width / w)
+            else:
+                new_w, new_h = w, h
+
+            frames = []
+            durations = []
+            for frame in ImageSequence.Iterator(im):
+                f = frame.convert("RGBA")
+                if (new_w, new_h) != (w, h):
+                    f = f.resize((new_w, new_h), Image.Resampling.LANCZOS)
+                frames.append(f.convert("P", palette=Image.ADAPTIVE))
+                durations.append(frame.info.get("duration", 100))
+
+            if frames:
+                frames[0].save(
+                    local_path,
+                    save_all=True,
+                    append_images=frames[1:],
+                    duration=durations,
+                    loop=im.info.get("loop", 0),
+                    optimize=True,
+                    format="GIF",
+                )
+                return local_filename
+        else:
+            # 静态图
+            local_filename = f"news_img_{img_counter}.jpg"
+            local_path = os.path.join(save_dir, local_filename)
+
+            # WebP 静态图转为标准 JPEG 提升微信及全平台兼容性
+            if im.format == "WEBP" or im.mode in ("RGBA", "P"):
+                rgb_im = im.convert("RGB")
+                rgb_im.save(local_path, "JPEG", quality=90)
+            elif im.format == "JPEG":
+                with open(local_path, "wb") as f:
+                    f.write(content)
+            else:
+                im.convert("RGB").save(local_path, "JPEG", quality=90)
+
+            return local_filename
+
+    except Exception as e:
+        print(f"⚠️ 规范化处理图片异常: {e}")
+        return ""
+
+
 def download_news_images(article_data: dict, save_dir: str) -> dict:
     """
     将具身智能周报 article 中的远程 image_url 下载到 save_dir，
-    并将 image_url 替换为本地文件名。下载失败时清空该字段（不影响正文）。
+    并将 image_url 替换为规范化的本地文件名（动图为 .gif，静态图为 .jpg）。
+    下载失败时清空该字段（不影响正文）。
     返回更新后的 article_data（原地修改）。
     """
-    import os
-    from urllib.parse import urlparse
-
     os.makedirs(save_dir, exist_ok=True)
     img_counter = 0
 
@@ -107,32 +190,29 @@ def download_news_images(article_data: dict, save_dir: str) -> dict:
             continue
 
         img_counter += 1
-        # 根据远程 URL 的扩展名决定本地文件名
-        parsed = urlparse(remote_url)
-        ext = os.path.splitext(parsed.path)[1].lower()
-        if ext not in ('.jpg', '.jpeg', '.png', '.webp', '.gif'):
-            ext = '.jpg'  # 默认 jpg
-        local_filename = f"news_img_{img_counter}{ext}"
-        local_path = os.path.join(save_dir, local_filename)
 
         try:
+            # 优先接收标准动图格式（GIF），避免源站 CDN 强行将 GIF 动图转码为 WebP
             headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-                "Accept": "image/webp,image/apng,image/*,*/*;q=0.8",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Accept": "image/gif,image/png,image/jpeg,image/*;q=0.9",
                 "Referer": remote_url,
             }
             resp = requests.get(remote_url, headers=headers, timeout=15, stream=True)
             if resp.status_code == 200:
                 content_type = resp.headers.get("Content-Type", "")
                 if "image" not in content_type and len(resp.content) < 1000:
-                    # 响应不是图片（可能是 HTML 错误页），放弃
                     print(f"⚠️ 配图下载疑似非图片内容 (Content-Type: {content_type})，跳过: {remote_url}")
                     item["image_url"] = ""
                     continue
-                with open(local_path, 'wb') as img_file:
-                    img_file.write(resp.content)
-                item["image_url"] = local_filename
-                print(f"📸 配图已下载: {remote_url} → {local_filename} ({len(resp.content) / 1024:.0f} KB)")
+
+                saved_filename = process_and_save_image(resp.content, save_dir, img_counter)
+                if saved_filename:
+                    item["image_url"] = saved_filename
+                    local_size_kb = os.path.getsize(os.path.join(save_dir, saved_filename)) / 1024
+                    print(f"📸 配图已保存并规范化: {remote_url} → {saved_filename} ({local_size_kb:.0f} KB)")
+                else:
+                    item["image_url"] = ""
             else:
                 print(f"⚠️ 配图下载失败 (HTTP {resp.status_code}): {remote_url}")
                 item["image_url"] = ""

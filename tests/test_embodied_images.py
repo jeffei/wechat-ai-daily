@@ -1,3 +1,4 @@
+import io
 import json
 import os
 import sys
@@ -7,12 +8,38 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 from bs4 import BeautifulSoup
+from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from template import render_article, render_embodied_article, validate_article
 from writer import generate_wechat_article, generate_embodied_article
-from fetcher import extract_image_url, download_news_images
+from fetcher import extract_image_url, download_news_images, process_and_save_image
 from main import clean_old_history
+
+
+def make_dummy_jpeg() -> bytes:
+    buf = io.BytesIO()
+    im = Image.new("RGB", (100, 100), color="blue")
+    im.save(buf, format="JPEG")
+    return buf.getvalue()
+
+
+def make_dummy_animated_gif() -> bytes:
+    buf = io.BytesIO()
+    frame1 = Image.new("RGBA", (100, 100), color="red")
+    frame2 = Image.new("RGBA", (100, 100), color="yellow")
+    p1 = frame1.convert("P")
+    p2 = frame2.convert("P")
+    p1.save(buf, format="GIF", save_all=True, append_images=[p2], duration=100, loop=0)
+    return buf.getvalue()
+
+
+def make_dummy_animated_webp() -> bytes:
+    buf = io.BytesIO()
+    frame1 = Image.new("RGBA", (100, 100), color="green")
+    frame2 = Image.new("RGBA", (100, 100), color="blue")
+    frame1.save(buf, format="WEBP", save_all=True, append_images=[frame2], duration=100, loop=0)
+    return buf.getvalue()
 
 
 def example_embodied():
@@ -45,9 +72,9 @@ def example_embodied():
 
 class EmbodiedNewsImageTests(unittest.TestCase):
     def test_extract_image_url_priorities(self):
-        # 1. media_content
-        entry1 = {"media_content": [{"url": "https://example.com/highres.jpg", "medium": "image"}]}
-        self.assertEqual(extract_image_url(entry1), "https://example.com/highres.jpg")
+        # 1. media_content with .gif and query params
+        entry1 = {"media_content": [{"url": "https://example.com/highres.gif?id=123&width=800", "medium": "image"}]}
+        self.assertEqual(extract_image_url(entry1), "https://example.com/highres.gif?id=123&width=800")
 
         # 2. media_thumbnail
         entry2 = {"media_thumbnail": [{"url": "https://example.com/thumb.png"}]}
@@ -83,8 +110,8 @@ class EmbodiedNewsImageTests(unittest.TestCase):
     def test_download_news_images_success_and_failure(self, mock_get):
         data = example_embodied()
 
-        # 模拟第一张图片下载成功，第二张本来就为空
-        mock_resp = Mock(status_code=200, content=b"fake-image-bytes", headers={"Content-Type": "image/jpeg"})
+        # 模拟第一张静态图片下载成功，第二张本来就为空
+        mock_resp = Mock(status_code=200, content=make_dummy_jpeg(), headers={"Content-Type": "image/jpeg"})
         mock_get.return_value = mock_resp
 
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -98,6 +125,42 @@ class EmbodiedNewsImageTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp_dir:
             updated_data2 = download_news_images(data2, tmp_dir)
             self.assertEqual(updated_data2["news"][0]["image_url"], "")
+
+    @patch("fetcher.requests.get")
+    def test_download_animated_gif_preserves_gif(self, mock_get):
+        data = example_embodied()
+        data["news"][0]["image_url"] = "https://example.com/action.gif"
+
+        mock_resp = Mock(status_code=200, content=make_dummy_animated_gif(), headers={"Content-Type": "image/gif"})
+        mock_get.return_value = mock_resp
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            updated_data = download_news_images(data, tmp_dir)
+            self.assertEqual(updated_data["news"][0]["image_url"], "news_img_1.gif")
+            saved_path = Path(tmp_dir) / "news_img_1.gif"
+            self.assertTrue(saved_path.exists())
+            with Image.open(saved_path) as im:
+                self.assertEqual(im.format, "GIF")
+                self.assertTrue(getattr(im, "is_animated", False))
+
+    @patch("fetcher.requests.get")
+    def test_download_animated_webp_converts_to_gif(self, mock_get):
+        data = example_embodied()
+        # 源站给的是 WebP 动图链接
+        data["news"][0]["image_url"] = "https://example.com/motion.webp"
+
+        mock_resp = Mock(status_code=200, content=make_dummy_animated_webp(), headers={"Content-Type": "image/webp"})
+        mock_get.return_value = mock_resp
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            updated_data = download_news_images(data, tmp_dir)
+            # 必须自动转换为 .gif，以确保微信公众号可播放动图
+            self.assertEqual(updated_data["news"][0]["image_url"], "news_img_1.gif")
+            saved_path = Path(tmp_dir) / "news_img_1.gif"
+            self.assertTrue(saved_path.exists())
+            with Image.open(saved_path) as im:
+                self.assertEqual(im.format, "GIF")
+                self.assertTrue(getattr(im, "is_animated", False))
 
     def test_clean_old_history_keeps_specified_count(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
