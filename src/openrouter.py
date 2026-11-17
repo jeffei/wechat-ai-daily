@@ -1,5 +1,6 @@
 import re
 import requests
+from bs4 import BeautifulSoup
 from typing import List, Dict
 
 DISCOVER_URL = "https://openrouter.ai/discover"
@@ -19,28 +20,35 @@ def fetch_openrouter_free_models(top_n: int = 2) -> List[Dict]:
         resp = requests.get(DISCOVER_URL, headers=headers, timeout=12)
         if resp.status_code == 200:
             html = resp.text
-            idx = html.find("Free models</h2>")
+            idx = html.find("Free models")
             if idx != -1:
-                end_idx = html.find("</tbody>", idx)
-                section_html = html[idx:end_idx]
-                rows = section_html.split('<tr class="or-table__row group cursor-pointer">')[1:]
-                for row in rows:
-                    name_match = re.search(r'font-semibold">([^<]+)</span>', row)
-                    vals = re.findall(r'tabular-nums font-medium text-foreground">([^<]+)</span>', row)
-                    if name_match and len(vals) >= 2:
-                        models.append({
-                            "name": name_match.group(1).strip(),
-                            "tokens_wk": vals[0].strip(),
-                            "context": vals[1].strip()
-                        })
+                end_idx = html.find("</table>", idx)
+                if end_idx == -1:
+                    end_idx = html.find("</tbody>", idx)
+                section_html = html[idx:end_idx] if end_idx != -1 else html[idx:idx + 8000]
+                soup = BeautifulSoup(section_html, "html.parser")
+                for tr in soup.find_all("tr"):
+                    tds = tr.find_all("td")
+                    if len(tds) >= 4:
+                        # 结构: [0] Rank, [1] Model Name, [2] Tokens/wk, [3] Context
+                        name = tds[1].get_text(strip=True)
+                        tokens_wk = tds[2].get_text(strip=True)
+                        context = tds[3].get_text(strip=True)
+                        if name and tokens_wk and context:
+                            models.append({
+                                "name": name,
+                                "tokens_wk": tokens_wk,
+                                "context": context
+                            })
     except Exception as e:
         print(f"⚠️ 抓取 OpenRouter Discover 免费模型失败: {e}")
 
-    # 若页面改版或网络波动未抓到数据，使用保底的高热度免费模型数据
+    # 若页面改版或网络波动未抓到数据，使用最新的保底数据并输出明确日志
     if not models:
+        print("⚠️ 未能从 OpenRouter Discover 动态解析到免费模型，使用保底数据")
         models = [
-            {"name": "Space Bunny Alpha", "tokens_wk": "23.4T", "context": "1M"},
-            {"name": "Nemotron 3 Ultra (free)", "tokens_wk": "5.9T", "context": "1M"}
+            {"name": "Nemotron 3 Ultra (free)", "tokens_wk": "3.2T", "context": "1M"},
+            {"name": "Nemotron 3.5 Super VL (free)", "tokens_wk": "3.0T", "context": "1M"}
         ]
         
     return models[:top_n]
